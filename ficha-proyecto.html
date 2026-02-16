@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGS - Ficha del Proyecto</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 210px;
+            background: #3a3a3a;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .logo-section {
+            padding: 20px;
+            border-bottom: 1px solid #555;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 36px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .user-info {
+            padding: 15px;
+            border-bottom: 1px solid #555;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            border: 2px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-version {
+            font-size: 11px;
+            color: #aaa;
+            margin-top: 3px;
+        }
+
+        .company-select {
+            width: calc(100% - 30px);
+            margin: 15px;
+            padding: 8px 12px;
+            background: #444;
+            color: white;
+            border: 1px solid #555;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .company-select:hover {
+            background: #4a4a4a;
+        }
+
+        .menu {
+            flex: 1;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .menu-item {
+            padding: 12px 15px;
+            color: #ccc;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            font-size: 13px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .menu-item:hover {
+            background: #444;
+            color: white;
+        }
+
+        .menu-item.active {
+            background: #ee8866;
+            color: white;
+        }
+
+        .menu-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            background: white;
+            border-bottom: 1px solid #ddd;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #333;
+            margin: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .header-project-info {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .header-project-info .info-label {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 6px 14px;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .header-project-info .info-label .label-title {
+            font-size: 10px;
+            font-weight: bold;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .header-project-info .info-label .label-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            margin-top: 2px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #ee8866;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #e67550;
+        }
+
+        .btn-secondary {
+            background-color: #ddd;
+            color: #666;
+        }
+
+        .btn-secondary:hover {
+            background-color: #ccc;
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            padding: 10px 20px;
+            border: none;
+            background: #f0f0f0;
+            color: #666;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .tab-button:hover {
+            background: #e0e0e0;
+        }
+
+        .tab-button.active {
+            background: #ee8866;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Section Styles */
+        .section {
+            margin-bottom: 20px;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-header {
+            background-color: #f8f8f8;
+            color: #333;
+            padding: 16px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .section-body {
+            padding: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 18px;
+        }
+
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        .form-row.triple {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 13px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #5fb3ad;
+            background-color: white;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Document List Styles */
+        .document-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            background: #f9f9f9;
+            transition: all 0.2s;
+        }
+
+        .document-item:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            background: #fff;
+        }
+
+        .document-info {
+            flex: 1;
+        }
+
+        .document-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .document-meta {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .document-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-download {
+            background: #5fb3ad;
+            color: white;
+        }
+
+        .btn-download:hover {
+            background: #4fa39d;
+        }
+
+        .btn-delete {
+            background: #ccc;
+            color: #666;
+        }
+
+        .btn-delete:hover {
+            background: #999;
+            color: white;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+
+        thead {
+            background-color: #f8f8f8;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            color: #333;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 13px;
+            color: #666;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        /* Subsection */
+        .subsection {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #e8e8e8;
+        }
+
+        .subsection-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 6px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #f9f9f9;
+        }
+
+        .upload-area:hover {
+            border-color: #ee8866;
+            background: #fff;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-pending {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .scrollable-table {
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo-section">
+            <a href="#" class="logo">SGS</a>
+        </div>
+        
+        <div class="user-info">
+            <div class="user-icon">👤</div>
+            <div class="user-details">
+                <div class="user-name">VIVIANA LOPEZ</div>
+                <div class="user-version">Versión 1.0.2</div>
+            </div>
+        </div>
+
+        <select class="company-select">
+            <option>SGS CHILE</option>
+        </select>
+
+        <nav class="menu">
+            <a href="#" class="menu-item">
+                <span class="menu-icon">🏠</span>
+                <span>INICIO</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">📄</span>
+                <span>DOCUMENTOS</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">📝</span>
+                <span>INFORME DE TERRENO</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">📋</span>
+                <span>LISTADO OL</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">📋</span>
+                <span>LISTADO OI</span>
+            </a>
+            <a href="proyectos.html" class="menu-item active">
+                <span class="menu-icon">🏢</span>
+                <span>PROYECTOS</span>
+            </a>
+            <a href="calendario-proyecto.html" class="menu-item">
+                <span class="menu-icon">📅</span>
+                <span>CALENDARIO</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">📦</span>
+                <span>PREPARACIÓN DE MATERIALES</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <a href="proyectos.html" class="btn btn-secondary" style="text-decoration: none;">← Volver</a>
+                <h1>Ficha del Proyecto</h1>
+            </div>
+            <div class="header-project-info">
+                <div class="info-label">
+                    <span class="label-title">Cliente</span>
+                    <span class="label-value">Corp Nacional del Cobre de Chile</span>
+                </div>
+                <div class="info-label">
+                    <span class="label-title">OL</span>
+                    <span class="label-value">801598</span>
+                </div>
+                <div class="info-label">
+                    <span class="label-title">Proyecto</span>
+                    <span class="label-value">Chuquicamata</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Tabs de navegación principal -->
+            <div class="tabs">
+                <button class="tab-button active" data-tab="fichas">📋 Ficha ambiental</button>
+                <button class="tab-button" data-tab="repositorio">📁 Repositorio Documental</button>
+                <button class="tab-button" data-tab="informes">📊 Informes de Terreno</button>
+                <a href="calendario-proyecto.html" class="tab-button" style="text-decoration: none;">📅 Calendario</a>
+            </div>
+
+            <!-- TAB 1: FICHA AMBIENTAL -->
+            <div id="fichas" class="tab-content active">
+                <div class="section">
+                    <div class="section-header">INFORMACIÓN DEL PROYECTO</div>
+                    <div class="section-body">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Nombre del Proyecto</label>
+                                <input type="text" placeholder="Ej: Monitoreo Ambiental 2026">
+                            </div>
+                            <div class="form-group">
+                                <label>Código del Proyecto</label>
+                                <input type="text" placeholder="Ej: SGS-2026-001">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Cliente</label>
+                                <input type="text" placeholder="Nombre del cliente">
+                            </div>
+                            <div class="form-group">
+                                <label>Responsable del Proyecto</label>
+                                <input type="text" placeholder="Nombre del responsable">
+                            </div>
+                        </div>
+                        <div class="form-row full">
+                            <div class="form-group">
+                                <label>Descripción del Proyecto</label>
+                                <textarea placeholder="Describa el propósito y alcance del proyecto"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-header">INFORMACIÓN AMBIENTAL Y TÉCNICA</div>
+                    <div class="section-body">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Tipo de Proyecto</label>
+                                <select>
+                                    <option value="">Seleccionar...</option>
+                                    <option value="monitoreo">Monitoreo Ambiental</option>
+                                    <option value="evaluacion">Evaluación Ambiental</option>
+                                    <option value="auditoría">Auditoría Ambiental</option>
+                                    <option value="inspección">Inspección Ambiental</option>
+                                    <option value="otro">Otro</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Ubicación/Zona</label>
+                                <input type="text" placeholder="Especifique la ubicación del proyecto">
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <div class="subsection-title">Instrumentos de Carácter Ambiental Aplicables</div>
+                            <div id="instrumentos-list">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Tipo de Instrumento</label>
+                                        <select>
+                                            <option value="">Seleccionar...</option>
+                                            <option value="RCA">RCA - Resolución de Calificación Ambiental</option>
+                                            <option value="PDC">PDC - Plan de Cumplimiento</option>
+                                            <option value="DS">DS - Decreto Supremo</option>
+                                            <option value="PPDA">PPDA - Plan de Prevención y/o Descontaminación</option>
+                                            <option value="ORD">ORD - Ordinario SMA</option>
+                                            <option value="RES">RES - Resolución SMA</option>
+                                            <option value="PAS">PAS - Programa de Seguimiento Ambiental</option>
+                                            <option value="OTR">OTR - Otro instrumento ambiental</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Código/Referencia</label>
+                                        <input type="text" placeholder="Ej: 123/2026">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <div class="subsection-title">Componentes y Matrices Evaluados</div>
+                            
+                            <div class="form-group">
+                                <label>Componente Químico</label>
+                                <select id="quimico-tipo" onchange="toggleMatrices('quimico')">
+                                    <option value="">No aplica</option>
+                                    <option value="aplica">Aplica</option>
+                                </select>
+                                <div id="quimico-matrices" style="display:none; margin-top: 10px;">
+                                    <div class="checkbox-group">
+                                        <label><input type="checkbox"> Agua de Mar</label>
+                                        <label><input type="checkbox"> Agua Industrial</label>
+                                        <label><input type="checkbox"> Agua Residual</label>
+                                        <label><input type="checkbox"> Agua Superficial</label>
+                                        <label><input type="checkbox"> Sedimentos Acuáticos</label>
+                                        <label><input type="checkbox"> Sedimentos Marinos</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-top: 15px;">
+                                <label>Componente Biológico</label>
+                                <select id="biologico-tipo" onchange="toggleMatrices('biologico')">
+                                    <option value="">No aplica</option>
+                                    <option value="aplica">Aplica</option>
+                                </select>
+                                <div id="biologico-matrices" style="display:none; margin-top: 10px;">
+                                    <div class="checkbox-group">
+                                        <label><input type="checkbox"> Flora Terrestre</label>
+                                        <label><input type="checkbox"> Fauna Terrestre</label>
+                                        <label><input type="checkbox"> Flora Marina</label>
+                                        <label><input type="checkbox"> Fauna Marina</label>
+                                        <label><input type="checkbox"> Hidrobiología</label>
+                                        <label><input type="checkbox"> Microbiología</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-top: 15px;">
+                                <label>Componente Físico</label>
+                                <select id="fisico-tipo" onchange="toggleMatrices('fisico')">
+                                    <option value="">No aplica</option>
+                                    <option value="aplica">Aplica</option>
+                                </select>
+                                <div id="fisico-matrices" style="display:none; margin-top: 10px;">
+                                    <div class="checkbox-group">
+                                        <label><input type="checkbox"> Meteorología</label>
+                                        <label><input type="checkbox"> Oceanografía</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <div class="subsection-title">Alcance Técnico - Parámetros a Muestrear</div>
+                            <div class="scrollable-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 5%;">#</th>
+                                            <th style="width: 35%;">Parámetro</th>
+                                            <th style="width: 55%;">Metodología</th>
+                                            <th style="width: 5%;">Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="parametros-tbody">
+                                        <tr>
+                                            <td style="text-align: center; color: #999; font-weight: 600;">1</td>
+                                            <td>Temperatura</td>
+                                            <td>Standard Methods 2550 B, Ed 23 2017</td>
+                                            <td style="text-align: center;">
+                                                <button class="btn-small btn-delete" onclick="removeRow(this)">×</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: center; color: #999; font-weight: 600;">2</td>
+                                            <td>pH</td>
+                                            <td>Standard Methods 4500-H+ B, Ed 23 2017</td>
+                                            <td style="text-align: center;">
+                                                <button class="btn-small btn-delete" onclick="removeRow(this)">×</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: center; color: #999; font-weight: 600;">3</td>
+                                            <td>Oxígeno Disuelto</td>
+                                            <td>Standard Methods 4500-O G, Ed 23 2017</td>
+                                            <td style="text-align: center;">
+                                                <button class="btn-small btn-delete" onclick="removeRow(this)">×</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <div class="subsection-title">Puntos de Muestreo/Estaciones</div>
+                            <div class="form-row triple">
+                                <div class="form-group">
+                                    <label>Número de Estaciones</label>
+                                    <input type="number" min="0" value="0">
+                                </div>
+                                <div class="form-group">
+                                    <label>Número de Estratos</label>
+                                    <input type="number" min="1" value="1">
+                                </div>
+                                <div class="form-group">
+                                    <label>Número de Réplicas</label>
+                                    <input type="number" min="1" value="1">
+                                </div>
+                            </div>
+                            <div class="scrollable-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 5%;">#</th>
+                                            <th style="width: 25%;">Nombre Estación</th>
+                                            <th style="width: 35%;">Ubicación</th>
+                                            <th style="width: 30%;">Coordenadas</th>
+                                            <th style="width: 5%;">Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="text-align: center; color: #999; font-weight: 600;">1</td>
+                                            <td>EST-01</td>
+                                            <td>Punto de descarga principal</td>
+                                            <td>-33.4569° S, -70.6483° W</td>
+                                            <td style="text-align: center;">
+                                                <button class="btn-small btn-delete" onclick="removeRow(this)">×</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="btn btn-primary">Guardar Ficha Ambiental</button>
+                    <button class="btn btn-secondary">Cancelar</button>
+                </div>
+            </div>
+
+            <!-- TAB 2: REPOSITORIO DOCUMENTAL -->
+            <div id="repositorio" class="tab-content">
+                <div class="tabs" style="background: white; margin-bottom: 15px;">
+                    <button class="tab-button active" data-subtab="cadenas" onclick="switchSubTab(event)">Cadenas de Custodia</button>
+                    <button class="tab-button" data-subtab="laboratorio" onclick="switchSubTab(event)">Informes de Laboratorio</button>
+                    <button class="tab-button" data-subtab="registros-ois" onclick="switchSubTab(event)">Registros por OIS</button>
+                    <button class="tab-button" data-subtab="documentos-ois" onclick="switchSubTab(event)">Documentos por OIS</button>
+                    <button class="tab-button" data-subtab="documentos-generales" onclick="switchSubTab(event)">Documentos Generales</button>
+                </div>
+
+                <!-- Cadenas de Custodia -->
+                <div id="cadenas" class="tab-content active">
+                    <div class="section">
+                        <div class="section-header">
+                            CADENAS DE CUSTODIA POR OIS
+                            <div style="float: right; margin-top: -5px;">
+                                <button class="btn btn-primary" style="font-size: 12px; padding: 8px 15px;">+ Subir Cadena</button>
+                            </div>
+                        </div>
+                        <div class="section-body">
+                            <div style="margin-bottom: 15px;">
+                                <input type="text" placeholder="Filtrar por OIS o número de cadena..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            <div id="cadenas-list">
+                                <div class="document-item">
+                                    <div class="document-info">
+                                        <div class="document-name">Cadena de Custodia OIS-2026-001</div>
+                                        <div class="document-meta">Creado: 15 de Enero 2026 | OIS: OIS-2026-001 | Estado: ✓ Completa</div>
+                                    </div>
+                                    <div class="document-actions">
+                                        <button class="btn-small btn-download">Ver</button>
+                                        <button class="btn-small btn-download">Descargar</button>
+                                        <button class="btn-small btn-delete">Eliminar</button>
+                                    </div>
+                                </div>
+                                <div class="document-item">
+                                    <div class="document-info">
+                                        <div class="document-name">Cadena de Custodia OIS-2026-002</div>
+                                        <div class="document-meta">Creado: 18 de Enero 2026 | OIS: OIS-2026-002 | Estado: ✓ Completa</div>
+                                    </div>
+                                    <div class="document-actions">
+                                        <button class="btn-small btn-download">Ver</button>
+                                        <button class="btn-small btn-download">Descargar</button>
+                                        <button class="btn-small btn-delete">Eliminar</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="text-align: center; padding: 40px; color: #ccc;">
+                                <p>Cargue o cree cadenas de custodia para las diferentes OIS</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Informes de Laboratorio -->
+                <div id="laboratorio" class="tab-content">
+                    <div class="section">
+                        <div class="section-header">
+                            INFORMES DE LABORATORIO
+                            <div style="float: right; margin-top: -5px;">
+                                <button class="btn btn-primary" style="font-size: 12px; padding: 8px 15px;">+ Subir Informe</button>
+                            </div>
+                        </div>
+                        <div class="section-body">
+                            <div style="margin-bottom: 15px;">
+                                <input type="text" placeholder="Filtrar por parámetro o fecha..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            <div class="scrollable-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Nº Informe</th>
+                                            <th>Fecha Análisis</th>
+                                            <th>Parámetros</th>
+                                            <th>Laboratorio</th>
+                                            <th>Estado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>INF-LAB-2026-001</td>
+                                            <td>10 de Enero 2026</td>
+                                            <td>Temperatura, pH, OD</td>
+                                            <td>SGS - Análisis Químicos</td>
+                                            <td><span class="status-badge status-active">Completado</span></td>
+                                            <td>
+                                                <button class="btn-small btn-download">Ver</button>
+                                                <button class="btn-small btn-download">Descargar</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>INF-LAB-2026-002</td>
+                                            <td>20 de Enero 2026</td>
+                                            <td>Metales Totales, DBO5</td>
+                                            <td>SGS - Análisis Químicos</td>
+                                            <td><span class="status-badge status-pending">Pendiente</span></td>
+                                            <td>
+                                                <button class="btn-small btn-download">Ver</button>
+                                                <button class="btn-small btn-download">Descargar</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Registros por OIS -->
+                <div id="registros-ois" class="tab-content">
+                    <div class="section">
+                        <div class="section-header">
+                            REGISTROS POR OIS
+                            <div style="float: right; margin-top: -5px;">
+                                <button class="btn btn-primary" style="font-size: 12px; padding: 8px 15px;">+ Nuevo Registro</button>
+                            </div>
+                        </div>
+                        <div class="section-body">
+                            <div style="margin-bottom: 15px;">
+                                <input type="text" placeholder="Filtrar por número OIS..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            <div class="scrollable-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>OIS</th>
+                                            <th>Descripción</th>
+                                            <th>Fecha de Creación</th>
+                                            <th>Muestras</th>
+                                            <th>Estado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>OIS-2026-001</td>
+                                            <td>Muestreo Agua Superficial - Zona 1</td>
+                                            <td>05 de Enero 2026</td>
+                                            <td>12 muestras</td>
+                                            <td><span class="status-badge status-active">Activa</span></td>
+                                            <td>
+                                                <button class="btn-small btn-download">Ver</button>
+                                                <button class="btn-small btn-delete">Editar</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>OIS-2026-002</td>
+                                            <td>Muestreo Sedimentos - Zona 2</td>
+                                            <td>12 de Enero 2026</td>
+                                            <td>8 muestras</td>
+                                            <td><span class="status-badge status-active">Activa</span></td>
+                                            <td>
+                                                <button class="btn-small btn-download">Ver</button>
+                                                <button class="btn-small btn-delete">Editar</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documentos por OIS -->
+                <div id="documentos-ois" class="tab-content">
+                    <div class="section">
+                        <div class="section-header">
+                            DOCUMENTOS POR OIS
+                            <div style="float: right; margin-top: -5px;">
+                                <button class="btn btn-primary" style="font-size: 12px; padding: 8px 15px;">+ Subir Documento</button>
+                            </div>
+                        </div>
+                        <div class="section-body">
+                            <div style="margin-bottom: 15px;">
+                                <input type="text" placeholder="Filtrar por OIS o tipo de documento..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            <div id="documentos-ois-list">
+                                <div style="margin-bottom: 15px; padding: 15px; border-left: 4px solid #ee8866; background: #f9f9f9; border-radius: 4px;">
+                                    <div style="font-weight: 600; color: #333; margin-bottom: 10px;">OIS-2026-001</div>
+                                    <div class="document-item" style="border: none; margin-bottom: 8px; padding: 10px;">
+                                        <div class="document-info">
+                                            <div class="document-name" style="font-size: 14px;">Formulario de Muestreo</div>
+                                            <div class="document-meta">Subido: 05 de Enero 2026</div>
+                                        </div>
+                                        <div class="document-actions">
+                                            <button class="btn-small btn-download">Descargar</button>
+                                            <button class="btn-small btn-delete">Eliminar</button>
+                                        </div>
+                                    </div>
+                                    <div class="document-item" style="border: none; margin-bottom: 0; padding: 10px;">
+                                        <div class="document-info">
+                                            <div class="document-name" style="font-size: 14px;">Fotografías de Terreno</div>
+                                            <div class="document-meta">Subido: 05 de Enero 2026</div>
+                                        </div>
+                                        <div class="document-actions">
+                                            <button class="btn-small btn-download">Descargar</button>
+                                            <button class="btn-small btn-delete">Eliminar</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="margin-bottom: 15px; padding: 15px; border-left: 4px solid #5fb3ad; background: #f9f9f9; border-radius: 4px;">
+                                    <div style="font-weight: 600; color: #333; margin-bottom: 10px;">OIS-2026-002</div>
+                                    <div class="document-item" style="border: none; margin-bottom: 0; padding: 10px;">
+                                        <div class="document-info">
+                                            <div class="document-name" style="font-size: 14px;">Formulario de Muestreo</div>
+                                            <div class="document-meta">Subido: 12 de Enero 2026</div>
+                                        </div>
+                                        <div class="document-actions">
+                                            <button class="btn-small btn-download">Descargar</button>
+                                            <button class="btn-small btn-delete">Eliminar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documentos Generales -->
+                <div id="documentos-generales" class="tab-content">
+                    <div class="section">
+                        <div class="section-header">
+                            DOCUMENTOS GENERALES DEL PROYECTO
+                            <div style="float: right; margin-top: -5px;">
+                                <button class="btn btn-primary" style="font-size: 12px; padding: 8px 15px;">+ Subir Documento</button>
+                            </div>
+                        </div>
+                        <div class="section-body">
+                            <div style="margin-bottom: 15px;">
+                                <input type="text" placeholder="Filtrar por tipo de documento..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            <div id="documentos-generales-list">
+                                <div class="document-item">
+                                    <div class="document-info">
+                                        <div class="document-name">Propuesta Técnica del Proyecto</div>
+                                        <div class="document-meta">Subido: 01 de Enero 2026 | Tamaño: 2.5 MB</div>
+                                    </div>
+                                    <div class="document-actions">
+                                        <button class="btn-small btn-download">Descargar</button>
+                                        <button class="btn-small btn-delete">Eliminar</button>
+                                    </div>
+                                </div>
+                                <div class="document-item">
+                                    <div class="document-info">
+                                        <div class="document-name">Contrato de Servicios</div>
+                                        <div class="document-meta">Subido: 02 de Enero 2026 | Tamaño: 1.2 MB</div>
+                                    </div>
+                                    <div class="document-actions">
+                                        <button class="btn-small btn-download">Descargar</button>
+                                        <button class="btn-small btn-delete">Eliminar</button>
+                                    </div>
+                                </div>
+                                <div class="document-item">
+                                    <div class="document-info">
+                                        <div class="document-name">Plan de Muestreo Integral</div>
+                                        <div class="document-meta">Subido: 03 de Enero 2026 | Tamaño: 3.1 MB</div>
+                                    </div>
+                                    <div class="document-actions">
+                                        <button class="btn-small btn-download">Descargar</button>
+                                        <button class="btn-small btn-delete">Eliminar</button>
+                                    </div>
+                                </div>
+                                <div class="document-item">
+                                    <div class="document-info">
+                                        <div class="document-name">Matriz de Cumplimiento Ambiental</div>
+                                        <div class="document-meta">Subido: 10 de Enero 2026 | Tamaño: 890 KB</div>
+                                    </div>
+                                    <div class="document-actions">
+                                        <button class="btn-small btn-download">Descargar</button>
+                                        <button class="btn-small btn-delete">Eliminar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: INFORMES DE TERRENO -->
+            <div id="informes" class="tab-content">
+                <div class="section">
+                    <div class="section-header">
+                        INFORMES DE TERRENO
+                        <div style="float: right; margin-top: -5px;">
+                            <button class="btn btn-primary" style="font-size: 12px; padding: 8px 15px;">+ Nuevo Informe</button>
+                        </div>
+                    </div>
+                    <div class="section-body">
+                        <div style="margin-bottom: 15px;">
+                            <input type="text" placeholder="Filtrar por número de informe, fecha o inspector..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                        </div>
+                        <div class="scrollable-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Nº Informe</th>
+                                        <th>Fecha Inspección</th>
+                                        <th>Inspector</th>
+                                        <th>OIS Asociada</th>
+                                        <th>Ubicación</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>INF-TER-2026-001</td>
+                                        <td>05 de Enero 2026</td>
+                                        <td>Carlos Mendoza</td>
+                                        <td>OIS-2026-001</td>
+                                        <td>Zona 1 - Punto de descarga</td>
+                                        <td><span class="status-badge status-active">Completado</span></td>
+                                        <td>
+                                            <button class="btn-small btn-download">Ver</button>
+                                            <button class="btn-small btn-download">Editar</button>
+                                            <button class="btn-small btn-delete">Eliminar</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>INF-TER-2026-002</td>
+                                        <td>12 de Enero 2026</td>
+                                        <td>Viviana López</td>
+                                        <td>OIS-2026-002</td>
+                                        <td>Zona 2 - Sedimentos</td>
+                                        <td><span class="status-badge status-pending">En Revisión</span></td>
+                                        <td>
+                                            <button class="btn-small btn-download">Ver</button>
+                                            <button class="btn-small btn-download">Editar</button>
+                                            <button class="btn-small btn-delete">Eliminar</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>INF-TER-2026-003</td>
+                                        <td>20 de Enero 2026</td>
+                                        <td>Carlos Mendoza</td>
+                                        <td>OIS-2026-001</td>
+                                        <td>Zona 1 - Agua Superficial</td>
+                                        <td><span class="status-badge status-pending">Borrador</span></td>
+                                        <td>
+                                            <button class="btn-small btn-download">Ver</button>
+                                            <button class="btn-small btn-download">Editar</button>
+                                            <button class="btn-small btn-delete">Eliminar</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section" style="margin-top: 20px;">
+                    <div class="section-header">FORMULARIO DE INFORME DE TERRENO</div>
+                    <div class="section-body">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Número de Informe</label>
+                                <input type="text" placeholder="Auto-generado" disabled style="background: #f0f0f0; cursor: not-allowed;">
+                            </div>
+                            <div class="form-group">
+                                <label>OIS Asociada</label>
+                                <select>
+                                    <option value="">Seleccionar OIS...</option>
+                                    <option value="OIS-2026-001">OIS-2026-001</option>
+                                    <option value="OIS-2026-002">OIS-2026-002</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Fecha de Inspección</label>
+                                <input type="date">
+                            </div>
+                            <div class="form-group">
+                                <label>Inspector</label>
+                                <input type="text" placeholder="Nombre del inspector">
+                            </div>
+                        </div>
+
+                        <div class="form-row full">
+                            <div class="form-group">
+                                <label>Ubicación/Zona de Muestreo</label>
+                                <input type="text" placeholder="Especifique la ubicación exacta">
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <div class="subsection-title">Observaciones de Terreno</div>
+                            <div class="form-row full">
+                                <div class="form-group">
+                                    <label>Descripción General de Condiciones</label>
+                                    <textarea placeholder="Describa las condiciones ambientales, climáticas y operacionales observadas"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-row full">
+                                <div class="form-group">
+                                    <label>Observaciones Relevantes</label>
+                                    <textarea placeholder="Registre cualquier anomalía, incidente o situación importante encontrada"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <div class="subsection-title">Muestras Colectadas</div>
+                            <div style="margin-bottom: 15px;">
+                                <button class="btn btn-primary" style="font-size: 12px; padding: 8px 15px;">+ Agregar Muestra</button>
+                            </div>
+                            <div class="scrollable-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>ID Muestra</th>
+                                            <th>Parámetros</th>
+                                            <th>Hora Colección</th>
+                                            <th>Conservación</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>M-EST01-001</td>
+                                            <td>Temperatura, pH, OD</td>
+                                            <td>09:30</td>
+                                            <td>Refrigerada 4°C</td>
+                                            <td>
+                                                <button class="btn-small btn-download">Editar</button>
+                                                <button class="btn-small btn-delete">Eliminar</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>M-EST01-002</td>
+                                            <td>Metales Totales, DBO5</td>
+                                            <td>09:45</td>
+                                            <td>Refrigerada 4°C</td>
+                                            <td>
+                                                <button class="btn-small btn-download">Editar</button>
+                                                <button class="btn-small btn-delete">Eliminar</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <div class="subsection-title">Adjuntos</div>
+                            <div class="upload-area" onclick="document.getElementById('file-input').click();">
+                                <div style="font-size: 24px; margin-bottom: 10px;">📎</div>
+                                <div style="font-weight: 500; color: #333; margin-bottom: 5px;">Arrastre archivos o haga clic para seleccionar</div>
+                                <div style="font-size: 12px; color: #999;">Fotografías, formularios, gráficos, etc.</div>
+                                <input type="file" id="file-input" multiple style="display: none;">
+                            </div>
+                            <div id="adjuntos-list" style="margin-top: 15px;">
+                                <div class="document-item">
+                                    <div class="document-info">
+                                        <div class="document-name">Fotografía_Zona1_20260105.jpg</div>
+                                        <div class="document-meta">Tamaño: 2.3 MB | Cargado: 05 Enero 2026</div>
+                                    </div>
+                                    <div class="document-actions">
+                                        <button class="btn-small btn-delete">Eliminar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <div class="subsection-title">Estado y Firma</div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Estado del Informe</label>
+                                    <select>
+                                        <option value="borrador">Borrador</option>
+                                        <option value="revision">En Revisión</option>
+                                        <option value="completado">Completado</option>
+                                        <option value="aprobado">Aprobado</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Nombre de quien firma</label>
+                                    <input type="text" placeholder="Inspector responsable">
+                                </div>
+                            </div>
+                            <div class="form-row full">
+                                <div class="form-group">
+                                    <label>Observaciones Finales</label>
+                                    <textarea placeholder="Conclusiones, recomendaciones o comentarios finales del inspector"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 20px; margin-bottom: 20px;">
+                    <button class="btn btn-primary">Guardar Informe</button>
+                    <button class="btn btn-secondary">Guardar como Borrador</button>
+                    <button class="btn btn-secondary">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const tabName = this.getAttribute('data-tab');
+                if (tabName) {
+                    switchTab(this);
+                }
+            });
+        });
+
+        function switchTab(button) {
+            const tabName = button.getAttribute('data-tab');
+            
+            // Remove active class from all buttons and contents
+            document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            // Add active class to clicked button and corresponding content
+            button.classList.add('active');
+            const tabContent = document.getElementById(tabName);
+            if (tabContent) {
+                tabContent.classList.add('active');
+            }
+        }
+
+        function switchSubTab(event) {
+            const button = event.target;
+            const subtabName = button.getAttribute('data-subtab');
+            
+            // Remove active class from all subtab buttons and contents in the repository section
+            const repositorioSection = document.getElementById('repositorio');
+            repositorioSection.querySelectorAll('.tab-button').forEach(b => {
+                if (b.getAttribute('data-subtab')) {
+                    b.classList.remove('active');
+                }
+            });
+            repositorioSection.querySelectorAll('.tab-content').forEach(c => {
+                if (c.id && ['cadenas', 'laboratorio', 'registros-ois', 'documentos-ois', 'documentos-generales'].includes(c.id)) {
+                    c.classList.remove('active');
+                }
+            });
+            
+            // Add active class
+            button.classList.add('active');
+            const subtabContent = document.getElementById(subtabName);
+            if (subtabContent) {
+                subtabContent.classList.add('active');
+            }
+        }
+
+        // Toggle matrices visibility
+        function toggleMatrices(component) {
+            const select = document.getElementById(component + '-tipo');
+            const matrices = document.getElementById(component + '-matrices');
+            if (select.value === 'aplica') {
+                matrices.style.display = 'block';
+            } else {
+                matrices.style.display = 'none';
+            }
+        }
+
+        // Remove row from table
+        function removeRow(button) {
+            if (confirm('¿Está seguro de que desea eliminar esta fila?')) {
+                button.closest('tr').remove();
+            }
+        }
+
+        // Handle file uploads
+        document.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+        document.addEventListener('drop', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+        // Add some basic form validation
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('change', function() {
+                if (this.value < 0) {
+                    this.value = 0;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

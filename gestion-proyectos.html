@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGS - Gestión de Proyectos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 210px;
+            background: #3a3a3a;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .logo-section {
+            padding: 20px;
+            border-bottom: 1px solid #555;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 36px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .user-info {
+            padding: 15px;
+            border-bottom: 1px solid #555;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            border: 2px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-version {
+            font-size: 11px;
+            color: #aaa;
+            margin-top: 3px;
+        }
+
+        .company-select {
+            width: calc(100% - 30px);
+            margin: 15px;
+            padding: 8px 12px;
+            background: #444;
+            color: white;
+            border: 1px solid #555;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .company-select:hover {
+            background: #4a4a4a;
+        }
+
+        .menu {
+            flex: 1;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .menu-item {
+            padding: 12px 15px;
+            color: #ccc;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            font-size: 13px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .menu-item:hover {
+            background: #444;
+            color: white;
+        }
+
+        .menu-item.active {
+            background: #ee8866;
+            color: white;
+        }
+
+        .menu-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            background: white;
+            border-bottom: 1px solid #ddd;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #333;
+            margin: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #ee8866;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #e67550;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f5f5f5;
+        }
+
+        /* Section Card */
+        .section {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: #fafafa;
+            padding: 14px 20px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-body {
+            padding: 20px;
+        }
+
+        /* Search */
+        .search-bar {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            transition: border-color 0.2s;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: #ee8866;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f8f8f8;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            color: #333;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 13px;
+            color: #666;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .scrollable-table {
+            overflow-x: auto;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-sin-iniciar {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .status-en-ejecucion {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .status-finalizado {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        /* Action Buttons */
+        .btn-small {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-ver {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .btn-ver:hover {
+            background: #bbdefb;
+        }
+
+        .btn-calendario {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .btn-calendario:hover {
+            background: #ffe0b2;
+        }
+
+        .btn-editar {
+            background: #f5f5f5;
+            color: #555;
+        }
+
+        .btn-editar:hover {
+            background: #e0e0e0;
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 6px;
+        }
+
+        .td-code {
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .empty-state span {
+            font-size: 40px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* Project count */
+        .project-count {
+            font-size: 12px;
+            color: #999;
+            font-weight: 400;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 560px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 17px;
+            color: #333;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 6px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: Arial, sans-serif;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #ee8866;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .modal-footer {
+            padding: 16px 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-cancel {
+            background: #f5f5f5;
+            color: #555;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-cancel:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-crear {
+            background: #ee8866;
+            color: white;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .btn-crear:hover {
+            background: #e67550;
+        }
+
+        /* Toast notification */
+        .toast {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #333;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 5000;
+            animation: toastIn 0.3s ease;
+        }
+
+        .toast.show {
+            display: block;
+        }
+
+        @keyframes toastIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo-section">
+            <a href="#" class="logo">SGS</a>
+        </div>
+
+        <div class="user-info">
+            <div class="user-icon">👤</div>
+            <div class="user-details">
+                <div class="user-name">VIVIANA LOPEZ</div>
+                <div class="user-version">Versión 1.0.2</div>
+            </div>
+        </div>
+
+        <select class="company-select">
+            <option>SGS CHILE</option>
+        </select>
+
+        <nav class="menu">
+            <a href="#" class="menu-item">
+                <span class="menu-icon">🏠</span>
+                <span>INICIO</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">📄</span>
+                <span>DOCUMENTOS</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">📝</span>
+                <span>INFORME DE TERRENO</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">📋</span>
+                <span>LISTADO OL</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">📋</span>
+                <span>LISTADO OI</span>
+            </a>
+            <a href="gestion-proyectos.html" class="menu-item active">
+                <span class="menu-icon">🏢</span>
+                <span>PROYECTOS</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">📅</span>
+                <span>CALENDARIO</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">📦</span>
+                <span>PREPARACIÓN DE MATERIALES</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Gestión de Proyectos</h1>
+            <div class="header-actions">
+                <a href="ficha-proyecto-inicial.html" class="btn btn-primary" style="text-decoration:none;">+ Nuevo Proyecto</a>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <div class="section-header">
+                    LISTA DE PROYECTOS
+                    <span class="project-count" id="projectCount"></span>
+                </div>
+                <div class="section-body">
+                    <input type="text" class="search-bar" id="searchInput" placeholder="Buscar proyecto por nombre, código o cliente...">
+                    <div class="scrollable-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Nombre del Proyecto</th>
+                                    <th>Cliente</th>
+                                    <th>OL</th>
+                                    <th>Responsable</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="projectTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="empty-state" id="emptyState" style="display:none;">
+                        <span>📁</span>
+                        No se encontraron proyectos
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Nuevo Proyecto -->
+    <div class="modal-overlay" id="modalNuevoProyecto">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Nuevo Proyecto</h3>
+                <button class="modal-close" onclick="cerrarModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="inputCliente">Cliente</label>
+                        <select id="inputCliente">
+                            <option value="">Seleccione cliente...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputOL">OL</label>
+                        <select id="inputOL" disabled>
+                            <option value="">Seleccione cliente primero...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputNombre">Nombre del Proyecto</label>
+                    <input type="text" id="inputNombre" placeholder="Nombre descriptivo del proyecto">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="inputCodigo">Código</label>
+                        <input type="text" id="inputCodigo" placeholder="Ej: SGS-2026-005">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputResponsable">Responsable</label>
+                        <select id="inputResponsable">
+                            <option value="">Seleccione responsable...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputDescripcion">Descripción</label>
+                    <textarea id="inputDescripcion" placeholder="Breve descripción del proyecto y sus objetivos..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+                <button class="btn-crear" onclick="crearProyecto()">Crear Proyecto</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Datos maestros: Clientes con sus OLs
+        const clientes = [
+            {
+                nombre: 'Corp Nacional del Cobre de Chile',
+                ols: ['800504', '800505', '800510', '800520']
+            },
+            {
+                nombre: 'Engie Energía Chile',
+                ols: ['800612', '800615']
+            },
+            {
+                nombre: 'Minera Los Andes SpA',
+                ols: ['800701', '800702']
+            },
+            {
+                nombre: 'Lundin Mining',
+                ols: ['800389', '800390', '800391']
+            },
+            {
+                nombre: 'BHP Billiton',
+                ols: ['800800', '800801', '800802', '800810']
+            },
+            {
+                nombre: 'Antofagasta Minerals',
+                ols: ['800900', '800905']
+            },
+            {
+                nombre: 'Teck Resources',
+                ols: ['801000', '801001']
+            }
+        ];
+
+        // Datos maestros: Responsables
+        const responsables = [
+            'Viviana López',
+            'Carlos Mendoza',
+            'María González',
+            'Pedro Sánchez',
+            'Ana Rodríguez',
+            'Jorge Alegría',
+            'Yessenia Gajardo',
+            'Cynthia Ocaranza'
+        ];
+
+        // Datos de proyectos
+        const proyectos = [
+            {
+                codigo: 'SGS-2026-001',
+                nombre: 'Monitoreo Ambiental Chuquicamata',
+                cliente: 'Corp Nacional del Cobre de Chile',
+                ol: '800504',
+                responsable: 'Viviana López',
+                estado: 'en-ejecucion',
+                descripcion: 'Monitoreo ambiental integral de aguas, suelos y aire en faena Chuquicamata'
+            },
+            {
+                codigo: 'SGS-2026-002',
+                nombre: 'Control Emisiones Planta Tocopilla',
+                cliente: 'Engie Energía Chile',
+                ol: '800612',
+                responsable: 'Carlos Mendoza',
+                estado: 'en-ejecucion',
+                descripcion: 'Control y seguimiento de emisiones atmosféricas en planta termoeléctrica'
+            },
+            {
+                codigo: 'SGS-2026-003',
+                nombre: 'Línea Base Ambiental Proyecto Minero Los Andes',
+                cliente: 'Minera Los Andes SpA',
+                ol: '800701',
+                responsable: 'María González',
+                estado: 'sin-iniciar',
+                descripcion: 'Estudio de línea base ambiental para evaluación de impacto ambiental'
+            },
+            {
+                codigo: 'SGS-2025-018',
+                nombre: 'Monitoreo Aguas Subterráneas Atacama',
+                cliente: 'Lundin Mining',
+                ol: '800389',
+                responsable: 'Pedro Sánchez',
+                estado: 'finalizado',
+                descripcion: 'Monitoreo trimestral de calidad de aguas subterráneas en área de influencia'
+            }
+        ];
+
+        const estadoLabels = {
+            'sin-iniciar': 'Sin iniciar',
+            'en-ejecucion': 'En ejecución',
+            'finalizado': 'Finalizado'
+        };
+
+        // Renderizar tabla
+        function renderTabla(filtro) {
+            const tbody = document.getElementById('projectTableBody');
+            const emptyState = document.getElementById('emptyState');
+            const search = (filtro || '').toLowerCase();
+
+            const filtrados = proyectos.filter(p => {
+                if (!search) return true;
+                return p.nombre.toLowerCase().includes(search) ||
+                       p.codigo.toLowerCase().includes(search) ||
+                       p.cliente.toLowerCase().includes(search) ||
+                       p.ol.toLowerCase().includes(search) ||
+                       p.responsable.toLowerCase().includes(search);
+            });
+
+            document.getElementById('projectCount').textContent = `(${filtrados.length} de ${proyectos.length})`;
+
+            if (filtrados.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+
+            tbody.innerHTML = filtrados.map(p => `
+                <tr>
+                    <td class="td-code">${p.codigo}</td>
+                    <td>${p.nombre}</td>
+                    <td>${p.cliente}</td>
+                    <td>${p.ol}</td>
+                    <td>${p.responsable}</td>
+                    <td><span class="status-badge status-${p.estado}">${estadoLabels[p.estado]}</span></td>
+                    <td>
+                        <div class="actions-cell">
+                            <button class="btn-small btn-ver" onclick="verFicha('${p.codigo}')">Ficha</button>
+                            <button class="btn-small btn-calendario" onclick="verCalendario('${p.codigo}')">Calendario</button>
+                            <button class="btn-small btn-editar" onclick="editarProyecto('${p.codigo}')">Editar</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Búsqueda
+        document.getElementById('searchInput').addEventListener('input', function() {
+            renderTabla(this.value);
+        });
+
+        // Poblar combo de clientes
+        function poblarComboClientes() {
+            const select = document.getElementById('inputCliente');
+            select.innerHTML = '<option value="">Seleccione cliente...</option>';
+            clientes.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.nombre;
+                opt.textContent = c.nombre;
+                select.appendChild(opt);
+            });
+        }
+
+        // Poblar combo de OLs según cliente seleccionado
+        function poblarComboOLs(clienteNombre) {
+            const select = document.getElementById('inputOL');
+            select.innerHTML = '';
+
+            if (!clienteNombre) {
+                select.innerHTML = '<option value="">Seleccione cliente primero...</option>';
+                select.disabled = true;
+                return;
+            }
+
+            const cliente = clientes.find(c => c.nombre === clienteNombre);
+            if (!cliente || cliente.ols.length === 0) {
+                select.innerHTML = '<option value="">Sin OLs disponibles</option>';
+                select.disabled = true;
+                return;
+            }
+
+            select.disabled = false;
+            select.innerHTML = '<option value="">Seleccione OL...</option>';
+            cliente.ols.forEach(ol => {
+                const opt = document.createElement('option');
+                opt.value = ol;
+                opt.textContent = ol;
+                select.appendChild(opt);
+            });
+        }
+
+        // Poblar combo de responsables
+        function poblarComboResponsables() {
+            const select = document.getElementById('inputResponsable');
+            select.innerHTML = '<option value="">Seleccione responsable...</option>';
+            responsables.forEach(r => {
+                const opt = document.createElement('option');
+                opt.value = r;
+                opt.textContent = r;
+                select.appendChild(opt);
+            });
+        }
+
+        // Evento: al cambiar cliente, actualizar OLs
+        document.getElementById('inputCliente').addEventListener('change', function() {
+            poblarComboOLs(this.value);
+        });
+
+        // Inicializar combos
+        poblarComboClientes();
+        poblarComboResponsables();
+
+        // Abrir modal
+        function abrirModalNuevoProyecto() {
+            // Restaurar botón por si venía de editar
+            const btnCrear = document.querySelector('.btn-crear');
+            btnCrear.textContent = 'Crear Proyecto';
+            btnCrear.onclick = crearProyecto;
+            document.querySelector('.modal-header h3').textContent = 'Nuevo Proyecto';
+
+            // Reset campos
+            document.getElementById('inputCliente').value = '';
+            poblarComboOLs('');
+            document.getElementById('inputNombre').value = '';
+            document.getElementById('inputCodigo').value = '';
+            document.getElementById('inputResponsable').value = '';
+            document.getElementById('inputDescripcion').value = '';
+            document.getElementById('modalNuevoProyecto').classList.add('show');
+        }
+
+        // Cerrar modal
+        function cerrarModal() {
+            document.getElementById('modalNuevoProyecto').classList.remove('show');
+            // Restaurar botón
+            const btnCrear = document.querySelector('.btn-crear');
+            btnCrear.textContent = 'Crear Proyecto';
+            btnCrear.onclick = crearProyecto;
+            document.querySelector('.modal-header h3').textContent = 'Nuevo Proyecto';
+        }
+
+        // Crear proyecto
+        function crearProyecto() {
+            const cliente = document.getElementById('inputCliente').value;
+            const ol = document.getElementById('inputOL').value;
+            const nombre = document.getElementById('inputNombre').value.trim();
+            const codigo = document.getElementById('inputCodigo').value.trim();
+            const responsable = document.getElementById('inputResponsable').value;
+            const descripcion = document.getElementById('inputDescripcion').value.trim();
+
+            if (!cliente || !nombre || !codigo) {
+                alert('Por favor complete al menos: Cliente, Nombre del Proyecto y Código');
+                return;
+            }
+
+            proyectos.unshift({
+                codigo: codigo,
+                nombre: nombre,
+                cliente: cliente,
+                ol: ol,
+                responsable: responsable,
+                estado: 'sin-iniciar',
+                descripcion: descripcion
+            });
+
+            cerrarModal();
+            renderTabla(document.getElementById('searchInput').value);
+            mostrarToast(`Proyecto "${nombre}" creado exitosamente`);
+        }
+
+        // Navegación a ficha
+        function verFicha(codigo) {
+            const proyecto = proyectos.find(p => p.codigo === codigo);
+            if (!proyecto) {
+                window.location.href = `ficha-proyecto-inicial.html?proyecto=${codigo}`;
+                return;
+            }
+            const params = new URLSearchParams({
+                proyecto: proyecto.codigo,
+                cliente: proyecto.cliente || '',
+                ol: proyecto.ol || '',
+                responsable: proyecto.responsable || '',
+                nombre: proyecto.nombre || ''
+            });
+            window.location.href = `ficha-proyecto-inicial.html?${params.toString()}`;
+        }
+
+        // Navegación a calendario
+        function verCalendario(codigo) {
+            window.location.href = `calendario-proyecto.html?proyecto=${codigo}`;
+        }
+
+        // Editar proyecto
+        function editarProyecto(codigo) {
+            const proyecto = proyectos.find(p => p.codigo === codigo);
+            if (!proyecto) return;
+
+            document.querySelector('.modal-header h3').textContent = 'Editar Proyecto';
+
+            // Setear cliente y cargar sus OLs
+            document.getElementById('inputCliente').value = proyecto.cliente;
+            poblarComboOLs(proyecto.cliente);
+            document.getElementById('inputOL').value = proyecto.ol;
+
+            document.getElementById('inputNombre').value = proyecto.nombre;
+            document.getElementById('inputCodigo').value = proyecto.codigo;
+            document.getElementById('inputResponsable').value = proyecto.responsable;
+            document.getElementById('inputDescripcion').value = proyecto.descripcion;
+            document.getElementById('modalNuevoProyecto').classList.add('show');
+
+            // Cambiar botón a modo edición
+            const btnCrear = document.querySelector('.btn-crear');
+            btnCrear.textContent = 'Guardar Cambios';
+            btnCrear.onclick = function() {
+                proyecto.cliente = document.getElementById('inputCliente').value;
+                proyecto.ol = document.getElementById('inputOL').value;
+                proyecto.nombre = document.getElementById('inputNombre').value.trim();
+                proyecto.codigo = document.getElementById('inputCodigo').value.trim();
+                proyecto.responsable = document.getElementById('inputResponsable').value;
+                proyecto.descripcion = document.getElementById('inputDescripcion').value.trim();
+
+                cerrarModal();
+                renderTabla(document.getElementById('searchInput').value);
+                mostrarToast('Proyecto actualizado');
+            };
+        }
+
+        // Toast de notificación
+        function mostrarToast(mensaje) {
+            const toast = document.getElementById('toast');
+            toast.textContent = mensaje;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Cerrar modal con Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') cerrarModal();
+        });
+
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('modalNuevoProyecto').addEventListener('click', function(e) {
+            if (e.target === this) cerrarModal();
+        });
+
+        // Renderizar al cargar
+        renderTabla();
+    </script>
+</body>
+</html>

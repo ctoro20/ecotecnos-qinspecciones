@@ -1,0 +1,2250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGS - Enviar Muestras a Laboratorio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #f5f6f8; color: #334155; display: flex; height: 100vh; }
+        .sidebar { width: 210px; background: #3a3a3a; color: white; display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; }
+        .logo-section { padding: 20px; border-bottom: 1px solid #555; text-align: center; }
+        .logo { font-size: 36px; font-weight: bold; color: white; text-decoration: none; }
+        .user-info { padding: 15px; border-bottom: 1px solid #555; display: flex; align-items: center; gap: 10px; }
+        .user-icon { width: 35px; height: 35px; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; }
+        .user-icon i { color: #d1d5db; font-size: 14px; }
+        .user-details { flex: 1; min-width: 0; }
+        .user-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .user-version { font-size: 11px; color: #aaa; margin-top: 3px; }
+        .company-select { width: calc(100% - 30px); margin: 15px; padding: 8px 12px; background: #444; color: white; border: 1px solid #555; border-radius: 4px; font-size: 13px; cursor: pointer; }
+        .company-select:hover { background: #4a4a4a; }
+        .menu { flex: 1; padding: 10px; display: flex; flex-direction: column; gap: 5px; }
+        .menu-item { padding: 12px 15px; color: #ccc; text-decoration: none; display: flex; align-items: center; gap: 12px; border-radius: 4px; transition: all 0.2s; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .menu-item:hover { background: #444; color: white; }
+        .menu-item.active { background: #ee8866; color: white; }
+        .menu-icon { font-size: 18px; flex-shrink: 0; width: 18px; display: inline-flex; justify-content: center; color: #a8b0bb; }
+        .menu-icon i { font-size: 15px; }
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .header { background: white; border-bottom: 1px solid #ddd; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .header h1 { font-size: 24px; color: #333; margin: 0; }
+        .btn-volver { padding: 8px 16px; background: #f0f0f0; color: #555; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; font-size: 13px; text-decoration: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-volver:hover { background: #e0e0e0; }
+        .header-project-info { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-left: auto; min-width: 0; }
+        .header-project-info .info-label { background: #f5f5f5; border: 1px solid #ddd; padding: 6px 14px; border-radius: 6px; display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
+        .header-project-info .info-label.cliente { min-width: 230px; max-width: 320px; }
+        .header-project-info .info-label.ol { min-width: 84px; max-width: 96px; }
+        .header-project-info .info-label.proyecto { min-width: 230px; max-width: 320px; }
+        .header-project-info .label-title { font-size: 10px; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.1; }
+        .header-project-info .label-value { font-size: 13px; font-weight: 600; color: #333; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+        .header-project-info .label-value.small { font-size: 13px; }
+        .content { flex: 1; overflow-y: auto; padding: 18px 20px; background: #f5f5f5; }
+        .page { width: 100%; padding: 0 0 20px; }
+        .btn { border: none; border-radius: 999px; font-size: 13px; font-weight: 700; padding: 10px 18px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-back { background: #ffffff; color: #334155; border: 1px solid #d1d5db; }
+        .btn-primary { background: #38b2a0; color: #ffffff; }
+        .btn-secondary { background: #ffffff; color: #374151; border: 1px solid #d1d5db; }
+        .lab-header { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 10px; overflow: hidden; margin-bottom: 14px; }
+        .lab-summary-main { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 18px 8px; }
+        .lab-summary-left { min-width: 0; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .lab-summary-label { font-size: 11px; color: #9b9fa6; text-transform: uppercase; letter-spacing: .04em; font-weight: 600; }
+        .lab-summary-label.inline { margin-right: 2px; }
+        .lab-summary-code { font-size: 18px; font-weight: 700; color: #ef835d; line-height: 1.1; }
+        .lab-pill { display: inline-flex; align-items: center; border-radius: 999px; border: 1px solid #d9d9db; background: #f4f4f5; color: #666b73; font-size: 12px; font-weight: 700; padding: 6px 13px; line-height: 1.2; }
+        .lab-pill.state { border-color: #eb8a61; background: #ef835d; color: #ffffff; }
+        .lab-summary-right { display: inline-flex; align-items: center; gap: 12px; }
+        .lab-summary-total { text-align: right; min-width: 102px; }
+        .lab-summary-total .k { display: block; font-size: 10px; color: #9aa0a8; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 1px; }
+        .lab-summary-total .v { font-size: 20px; font-weight: 700; color: #374151; line-height: 1.1; }
+        .lab-collapse-btn { width: 34px; height: 34px; border-radius: 999px; border: 1px solid #d7dbe2; background: #fff; color: #8b95a3; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all .2s ease; }
+        .lab-collapse-btn:hover { border-color: #c5ccd7; color: #64748b; }
+        .lab-collapse-btn.expanded { background: #ee8866; border-color: #ee8866; color: #fff; }
+        .lab-collapse-btn i { font-size: 12px; transition: transform .2s ease; }
+        .lab-collapse-btn.expanded i { transform: rotate(180deg); }
+        .lab-header-line2 {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 14px;
+            padding: 4px 18px 12px;
+            border-top: none;
+            background: transparent;
+            align-items: center;
+        }
+        .lab-info-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            font-size: 13px;
+            color: #475569;
+            min-width: 0;
+        }
+        .lab-info-icon {
+            color: #8b95a3;
+            font-size: 11px;
+            width: 12px;
+            display: inline-flex;
+            justify-content: center;
+        }
+        .lab-info-item .k {
+            color: #334155;
+            font-weight: 600;
+        }
+        .lab-info-item .v {
+            color: #1f2937;
+        }
+        .lab-header-extra { max-height: 0; overflow: hidden; transition: max-height .25s ease; border-top: 1px solid #e2e4e8; background: #ffffff; }
+        .lab-header-extra.show { max-height: 480px; }
+        .lab-extra-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; padding: 12px 18px 14px; }
+        .lab-extra-card { border: 1px solid #e3e3e3; border-radius: 8px; background: #f7f7f7; padding: 12px; }
+        .lab-extra-title { display: inline-flex; align-items: center; gap: 6px; color: #ef835d; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .02em; margin-bottom: 8px; }
+        .lab-extra-title i { font-size: 12px; }
+        .lab-kv { display: grid; grid-template-columns: 1fr auto 1.3fr; gap: 4px 6px; font-size: 11px; line-height: 1.35; color: #6b7280; }
+        .lab-kv .k { color: #9ca3af; }
+        .lab-kv .sep { color: #9aa3af; }
+        .lab-kv .v { color: #374151; font-weight: 600; }
+        .section { border: 1px solid #dbe2ec; border-left: 3px solid #ee8866; border-radius: 8px; background: #ffffff; padding: 14px; margin-bottom: 12px; }
+        .section-title { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; color: #334155; margin-bottom: 10px; }
+        .section-title i { color: #ee8866; font-size: 13px; }
+        .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 8px; }
+        .toolbar label { font-size: 13px; }
+        .toolbar input[type="checkbox"] { accent-color: #ee8866; }
+        .lab-count { font-size: 13px; font-weight: 700; color: #334155; }
+        .table-wrap { border: 1px solid #dde5ef; border-radius: 8px; overflow: auto; max-height: 48vh; background: #fff; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { position: sticky; top: 0; background: #f3f6fb; z-index: 1; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .02em; color: #64748b; border-bottom: 1px solid #dde5ef; padding: 9px 10px; white-space: nowrap; }
+        td { border-bottom: 1px solid #edf2f7; padding: 8px 10px; color: #334155; vertical-align: middle; }
+        tr:nth-child(even) { background: #fbfcfe; }
+        tr:hover { background: #f6f9fd; }
+        .sample-code { font-weight: 700; color: #0f172a; }
+        .sample-point {
+            min-width: 230px;
+        }
+        .sample-point-main {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: #1f2937;
+            line-height: 1.2;
+        }
+        .sample-point-place {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+        .sample-point-place .k {
+            color: #9ca3af;
+            font-size: 10px;
+            margin-right: 5px;
+        }
+        .sample-point-shared {
+            margin-top: 3px;
+            font-size: 11px;
+            color: #64748b;
+        }
+        .sample-mini-tag {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            border: 1px solid #dbe3ef;
+            background: #f8fafc;
+            color: #475569;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            line-height: 1.2;
+        }
+        .point-terreno-btn {
+            width: 24px;
+            height: 24px;
+            border: 1px solid #dbe3ef;
+            background: #fff;
+            color: #8aa0be;
+            border-radius: 999px;
+            font-size: 11px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all .2s ease;
+        }
+        .point-terreno-btn:hover { border-color: #c4cedc; color: #475569; }
+        .point-terreno-btn.done {
+            border-color: #f0b59c;
+            background: #fff2ec;
+            color: #e67550;
+        }
+        .point-terreno-btn.in-progress {
+            border-color: #f5cf8e;
+            background: #fff8eb;
+            color: #b7791f;
+        }
+        .obs-cell { display: inline-flex; align-items: center; gap: 6px; }
+        .obs-btn { width: 24px; height: 24px; border-radius: 999px; border: 1px solid #dbe3ef; background: #fff; color: #8aa0be; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; font-size: 11px; transition: all .2s ease; }
+        .obs-btn:hover { border-color: #c7d2e3; color: #64748b; }
+        .obs-btn.has-note { border-color: #f0b59c; background: #fff2ec; color: #e67550; }
+        input[type="date"], input[type="time"], input[type="text"], textarea { width: 100%; height: 36px; border: 1px solid #d5dde8; border-radius: 8px; background: #f8fafd; color: #1f2937; font-size: 13px; padding: 8px 10px; outline: none; }
+        textarea { height: auto; min-height: 84px; resize: vertical; }
+        input:focus, textarea:focus { border-color: #f0a48d; box-shadow: 0 0 0 3px rgba(238, 136, 102, 0.12); background: #fff; }
+        .grid-3 { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 12px; }
+        .form-group label { display: block; margin-bottom: 6px; color: #64748b; font-size: 12px; font-weight: 700; }
+        .required { color: #ef835d; }
+        .footer-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
+        .empty { border: 1px dashed #cbd5e1; border-radius: 8px; padding: 16px; background: #fff; color: #64748b; text-align: center; margin-top: 16px; }
+        .toast { position: fixed; right: 20px; bottom: 20px; background: #1f2937; color: #fff; padding: 10px 14px; border-radius: 8px; font-size: 13px; opacity: 0; transform: translateY(10px); transition: all .2s ease; pointer-events: none; z-index: 50; }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.35); display: none; align-items: center; justify-content: center; z-index: 40; }
+        .overlay.show { display: flex; }
+        .mini-modal { width: min(520px, calc(100vw - 32px)); background: #fff; border-radius: 10px; border: 1px solid #e5e7eb; box-shadow: 0 16px 40px rgba(15, 23, 42, 0.22); overflow: hidden; }
+        .mini-head { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-bottom: 1px solid #e5e7eb; font-weight: 700; color: #334155; font-size: 14px; }
+        .mini-body { padding: 14px; }
+        .mini-foot { border-top: 1px solid #e5e7eb; padding: 10px 14px; display: flex; justify-content: flex-end; gap: 8px; }
+        .btn-icon-close { border: none; background: transparent; color: #94a3b8; cursor: pointer; font-size: 16px; }
+        .terrain-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.35);
+            display: none;
+            z-index: 48;
+        }
+        .terrain-overlay.show { display: block; }
+        .terrain-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: min(560px, 94vw);
+            height: 100vh;
+            background: #fff;
+            border-left: 1px solid #dbe2ec;
+            box-shadow: -10px 0 28px rgba(15, 23, 42, 0.15);
+            z-index: 49;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(100%);
+            transition: transform .22s ease;
+            overflow-x: hidden;
+        }
+        .terrain-panel.show { transform: translateX(0); }
+        .terrain-head {
+            padding: 14px 16px;
+            border-bottom: 1px solid #e5e7eb;
+            display: grid;
+            gap: 4px;
+            background: #ffffff;
+        }
+        .terrain-head-title { font-size: 15px; font-weight: 700; color: #1f2937; }
+        .terrain-sub { font-size: 12px; color: #64748b; margin-top: 1px; }
+        .terrain-summary {
+            background: #f3f4f6;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 10px 16px;
+        }
+        .terrain-summary-main {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            font-weight: 700;
+            color: #1f2937;
+            font-size: 25px;
+            line-height: 1.2;
+        }
+        .terrain-chip {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            border: 1px solid #cfd8e5;
+            background: #f8fafc;
+            color: #334155;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 3px 10px;
+            line-height: 1.2;
+        }
+        .terrain-summary-place {
+            margin-top: 4px;
+            font-size: 12px;
+            color: #64748b;
+        }
+        .terrain-summary-place .k { color: #9ca3af; margin-right: 4px; }
+        .terrain-summary-meta {
+            margin-top: 6px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 14px;
+            font-size: 12px;
+            color: #475569;
+        }
+        .terrain-summary-meta .item {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .terrain-summary-meta .item i {
+            color: #8b95a3;
+            font-size: 11px;
+        }
+        .terrain-summary-meta .k {
+            color: #64748b;
+            font-weight: 700;
+        }
+        .terrain-summary-meta .v {
+            color: #1f2937;
+            font-weight: 600;
+        }
+        .terrain-segment {
+            display: inline-flex;
+            border: 1px solid #d5dde8;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #fff;
+        }
+        .terrain-seg-btn {
+            border: none;
+            background: #fff;
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 8px 14px;
+            cursor: pointer;
+            min-width: 110px;
+        }
+        .terrain-seg-btn + .terrain-seg-btn { border-left: 1px solid #d5dde8; }
+        .terrain-seg-btn.active {
+            background: #ef835d;
+            color: #fff;
+        }
+        .terrain-evidence {
+            border: 1px dashed #d5dde8;
+            border-radius: 8px;
+            padding: 10px;
+            background: #f8fafc;
+        }
+        .terrain-evidence-name {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .terrain-evidence-file {
+            margin-top: 8px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 7px 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .terrain-evidence-file.show { display: flex; }
+        .terrain-evidence-meta {
+            min-width: 0;
+            font-size: 12px;
+            color: #475569;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .terrain-evidence-remove {
+            width: 22px;
+            height: 22px;
+            border-radius: 999px;
+            border: 1px solid #d5dde8;
+            background: #fff;
+            color: #94a3b8;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            line-height: 1;
+        }
+        .terrain-evidence-remove:hover {
+            border-color: #f0b59c;
+            color: #e67550;
+            background: #fff2ec;
+        }
+        .terrain-evidence-preview {
+            margin: 8px auto 0;
+            max-height: 140px;
+            max-width: 100%;
+            border-radius: 6px;
+            display: none;
+            border: 1px solid #e2e8f0;
+        }
+        .terrain-steps {
+            display: flex;
+            border-bottom: 1px solid #e5e7eb;
+            background: #fff;
+        }
+        .terrain-step-btn {
+            flex: 1;
+            border: none;
+            background: #fff;
+            color: #9aa0a8;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 12px 10px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+        }
+        .terrain-step-btn .n {
+            width: 22px;
+            height: 22px;
+            border-radius: 999px;
+            background: #eceff3;
+            color: #8b95a3;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        .terrain-step-btn.active {
+            color: #ef835d;
+            border-bottom-color: #ef835d;
+        }
+        .terrain-step-btn.active .n {
+            background: #ef835d;
+            color: #fff;
+        }
+        .terrain-step-btn.completed {
+            color: #15803d;
+            border-bottom-color: #22c55e;
+        }
+        .terrain-step-btn.completed .n {
+            background: #22c55e;
+            color: #fff;
+        }
+        .terrain-step-btn.locked {
+            opacity: .55;
+            cursor: not-allowed;
+        }
+        .terrain-body { padding: 16px 18px; overflow-y: auto; overflow-x: hidden; display: grid; gap: 14px; background: #fbfcfe; }
+        .terrain-foot {
+            border-top: 1px solid #e5e7eb;
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            background: #fff;
+        }
+        .terrain-foot-left,
+        .terrain-foot-right {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .terrain-btn {
+            min-width: 104px;
+            height: 38px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 0 16px;
+        }
+        .terrain-btn-cancel {
+            background: #e5e7eb;
+            color: #374151;
+            border-color: #e5e7eb;
+        }
+        .terrain-btn-cancel:hover { background: #dfe3e8; }
+        .terrain-btn-primary {
+            background: #ef8a62;
+            color: #fff;
+            border-color: #ef8a62;
+        }
+        .terrain-btn-primary:hover { background: #e57d55; border-color: #e57d55; }
+        .terrain-btn-secondary {
+            background: #fff;
+            color: #64748b;
+            border-color: #d5dde8;
+        }
+        .terrain-btn-secondary:hover { border-color: #c6d1df; color: #475569; }
+        .terrain-pane { display: grid; gap: 14px; min-width: 0; }
+        .terrain-body .form-group label { margin-bottom: 7px; }
+        .terrain-evidence {
+            border: 1px dashed #cfd8e6;
+            border-radius: 10px;
+            padding: 12px;
+            background: #f8fafc;
+        }
+        .terrain-upload-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid #d5dde8;
+            background: #fff;
+            color: #475569;
+            border-radius: 8px;
+            padding: 7px 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .terrain-upload-btn:hover { border-color: #c0ccdd; color: #334155; }
+        .terrain-evidence input[type="file"] { display: none; }
+        .terrain-evidence-help {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 6px;
+        }
+        .terrain-param-head {
+            display: grid;
+            margin-bottom: 10px;
+            gap: 8px;
+        }
+        .terrain-param-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .terrain-param-picker {
+            position: relative;
+            min-width: 260px;
+            max-width: 340px;
+            flex: 1 1 260px;
+        }
+        .terrain-param-trigger {
+            width: 100%;
+            border: 1px solid #d5dde8;
+            background: #fff;
+            color: #475569;
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .terrain-param-trigger .placeholder { color: #94a3b8; font-weight: 500; }
+        .terrain-param-trigger .count { color: #334155; font-weight: 700; }
+        .terrain-param-menu {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: calc(100% + 6px);
+            background: #fff;
+            border: 1px solid #d5dde8;
+            border-radius: 10px;
+            box-shadow: 0 10px 24px rgba(15,23,42,.12);
+            padding: 8px;
+            display: none;
+            z-index: 30;
+            max-height: 240px;
+            overflow: auto;
+        }
+        .terrain-param-menu.show { display: block; }
+        .terrain-param-opt {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 6px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #334155;
+        }
+        .terrain-param-opt:hover { background: #f8fafc; }
+        .terrain-param-empty {
+            font-size: 12px;
+            color: #94a3b8;
+            padding: 8px 6px;
+        }
+        .terrain-param-add {
+            border: 1px solid #d5dde8;
+            background: #fff;
+            color: #475569;
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .terrain-param-add:hover { border-color: #c0ccdd; color: #334155; }
+        .terrain-param-rows { display: grid; gap: 8px; }
+        .terrain-param-row {
+            display: grid;
+            grid-template-columns: minmax(220px, 1fr) minmax(130px, .65fr) 30px;
+            gap: 8px;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            background: #fff;
+            padding: 10px 10px;
+        }
+        .terrain-param-row > * { min-width: 0; }
+        .terrain-replica-head {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .terrain-replica-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border-radius: 999px;
+            border: 1px solid #d5dde8;
+            background: #f8fafc;
+            color: #334155;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            line-height: 1.2;
+            text-transform: none;
+            cursor: pointer;
+            transition: all .15s ease;
+        }
+        .terrain-replica-badge.active { background: #ef835d; border-color: #ef835d; color: #fff; }
+        .terrain-replica-badge.done { border-color: #22c55e; color: #15803d; background: #f0fdf4; }
+        .terrain-replica-badge.active.done { background: #ef835d; border-color: #ef835d; color: #fff; }
+        .terrain-replica-badge i { font-size: 11px; }
+        .terrain-replica-sub {
+            font-size: 11px;
+            color: #94a3b8;
+        }
+        .terrain-replica-tools {
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .terrain-copy-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid #d5dde8;
+            background: #fff;
+            color: #475569;
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .terrain-copy-btn:hover { border-color: #c0ccdd; color: #334155; }
+        .terrain-copy-btn:disabled {
+            opacity: .55;
+            cursor: not-allowed;
+            background: #f8fafc;
+            color: #94a3b8;
+        }
+        .terrain-param-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: #334155;
+            line-height: 1.2;
+        }
+        .terrain-param-unit {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 3px;
+            line-height: 1.1;
+        }
+        .terrain-param-remove {
+            width: 24px;
+            height: 24px;
+            border-radius: 999px;
+            border: 1px solid #d5dde8;
+            background: #fff;
+            color: #94a3b8;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            line-height: 1;
+        }
+        .terrain-param-remove:hover {
+            border-color: #f0b59c;
+            color: #e67550;
+            background: #fff2ec;
+        }
+        @media (max-width: 980px) {
+            .sidebar { display: none; }
+            .lab-summary-code { font-size: 16px; }
+            .grid-3 { grid-template-columns: 1fr; }
+            .header { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .lab-extra-grid { grid-template-columns: 1fr; }
+            .lab-header-line2 { gap: 8px 10px; }
+            .lab-info-item { font-size: 12px; }
+            .terrain-param-row { grid-template-columns: 1fr; }
+            .terrain-param-picker { min-width: 0; max-width: 100%; width: 100%; }
+            .header-project-info { width: 100%; flex-wrap: wrap; margin-left: 0; }
+            .header-project-info .info-label.cliente,
+            .header-project-info .info-label.ol,
+            .header-project-info .info-label.proyecto { min-width: 0; max-width: 100%; flex: 1 1 220px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo-section">
+            <a href="#" class="logo">SGS</a>
+        </div>
+        <div class="user-info">
+            <div class="user-icon"><i class="fa-regular fa-user"></i></div>
+            <div class="user-details">
+                <div class="user-name">VIVIANA LOPEZ</div>
+                <div class="user-version">Versión 1.0.2</div>
+            </div>
+        </div>
+        <select class="company-select">
+            <option>SGS CHILE</option>
+        </select>
+        <nav class="menu">
+            <a href="#" class="menu-item"><span class="menu-icon"><i class="fa-solid fa-house"></i></span><span>INICIO</span></a>
+            <a href="#" class="menu-item"><span class="menu-icon"><i class="fa-regular fa-file-lines"></i></span><span>DOCUMENTOS</span></a>
+            <a href="#" class="menu-item"><span class="menu-icon"><i class="fa-regular fa-pen-to-square"></i></span><span>INFORME DE TERRENO</span></a>
+            <a href="#" class="menu-item"><span class="menu-icon"><i class="fa-solid fa-list-check"></i></span><span>LISTADO OL</span></a>
+            <a href="#" class="menu-item active"><span class="menu-icon"><i class="fa-regular fa-rectangle-list"></i></span><span>LISTADO OI</span></a>
+            <a href="gestion-proyectos.html" class="menu-item"><span class="menu-icon"><i class="fa-regular fa-building"></i></span><span>PROYECTOS</span></a>
+            <a href="#" class="menu-item"><span class="menu-icon"><i class="fa-regular fa-calendar-days"></i></span><span>CALENDARIO</span></a>
+            <a href="#" class="menu-item"><span class="menu-icon"><i class="fa-solid fa-box-archive"></i></span><span>PREPARACIÓN DE MATERIALES</span></a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <div class="header-left">
+                <button type="button" class="btn-volver" onclick="volverFicha()"><i class="fa-solid fa-arrow-left"></i>Volver</button>
+                <h1>Enviar muestras a laboratorio</h1>
+            </div>
+            <div class="header-project-info">
+                <div class="info-label cliente">
+                    <span class="label-title">Cliente</span>
+                    <span class="label-value" id="topCliente">-</span>
+                </div>
+                <div class="info-label ol">
+                    <span class="label-title">OL</span>
+                    <span class="label-value small" id="topOl">-</span>
+                </div>
+                <div class="info-label proyecto">
+                    <span class="label-title">Proyecto</span>
+                    <span class="label-value" id="topProyecto">-</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="page">
+
+                <div id="contenidoLab" style="display:none;">
+            <div class="lab-header">
+                <div class="lab-summary-main">
+                    <div class="lab-summary-left">
+                        <span class="lab-summary-label inline">Orden de inspección #</span>
+                        <span class="lab-summary-code" id="labHeadCodigo">XXX</span>
+                        <span class="lab-pill state" id="labHeadEstado">Pendiente</span>
+                        <span class="lab-pill" id="labHeadTipo">Muestreo y Medición</span>
+                        <span class="lab-pill" id="labHeadComposicion">Puntual</span>
+                    </div>
+                    <div class="lab-summary-right">
+                        <div class="lab-summary-total">
+                            <span class="k">Total muestras</span>
+                            <span class="v" id="labHeadTotalMuestras">0</span>
+                        </div>
+                        <button type="button" class="lab-collapse-btn" id="labCollapseBtn" onclick="toggleLabHeaderExtra()" title="Ver mas detalle">
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="lab-header-line2">
+                    <span class="lab-info-item"><span class="lab-info-icon"><i class="fa-solid fa-calendar-check"></i></span><span class="k">Fecha programada:</span> <span class="v" id="labHeadRecepcion">-</span></span>
+                    <span class="lab-info-item"><span class="lab-info-icon"><i class="fa-solid fa-layer-group"></i></span><span class="k">Matriz:</span> <span class="v" id="labHeadMatriz">-</span></span>
+                    <span class="lab-info-item"><span class="lab-info-icon"><i class="fa-solid fa-clipboard-list"></i></span><span class="k">Plan:</span> <span class="v" id="labHeadPlan">-</span></span>
+                    <span class="lab-info-item"><span class="lab-info-icon"><i class="fa-solid fa-user-tie"></i></span><span class="k">Inspector:</span> <span class="v" id="labHeadInspector">-</span></span>
+                </div>
+                <div class="lab-header-extra" id="labHeaderExtra">
+                    <div class="lab-extra-grid">
+                        <div class="lab-extra-card">
+                            <div class="lab-extra-title"><i class="fa-solid fa-building"></i> Datos de la Orden de Inspeccion</div>
+                            <div class="lab-kv">
+                                <span class="k">Cliente</span><span class="sep">:</span><span class="v" id="exCliente">-</span>
+                                <span class="k">OL</span><span class="sep">:</span><span class="v" id="exOl">-</span>
+                                <span class="k">Fecha Programada</span><span class="sep">:</span><span class="v" id="exRecepcion">-</span>
+                                <span class="k">Matriz</span><span class="sep">:</span><span class="v" id="exMatriz">-</span>
+                                <span class="k">Plan</span><span class="sep">:</span><span class="v" id="exPlan">-</span>
+                            </div>
+                        </div>
+                        <div class="lab-extra-card">
+                            <div class="lab-extra-title"><i class="fa-solid fa-user"></i> Contacto</div>
+                            <div class="lab-kv">
+                                <span class="k">Nombre</span><span class="sep">:</span><span class="v" id="exContactoNombre">-</span>
+                                <span class="k">Telefono</span><span class="sep">:</span><span class="v" id="exContactoTelefono">-</span>
+                                <span class="k">Email</span><span class="sep">:</span><span class="v" id="exContactoEmail">-</span>
+                                <span class="k">Supervisor</span><span class="sep">:</span><span class="v" id="exSupervisor">-</span>
+                                <span class="k">Inspector</span><span class="sep">:</span><span class="v" id="exInspector">-</span>
+                            </div>
+                        </div>
+                        <div class="lab-extra-card">
+                            <div class="lab-extra-title"><i class="fa-solid fa-clipboard-check"></i> Proyecto ETFA</div>
+                            <div class="lab-kv">
+                                <span class="k">Proyecto Actividad o Fuente</span><span class="sep">:</span><span class="v" id="exEtfaProyecto">-</span>
+                                <span class="k">Instrumento de Gestion Ambiental</span><span class="sep">:</span><span class="v" id="exEtfaIga">-</span>
+                                <span class="k">Titular</span><span class="sep">:</span><span class="v" id="exEtfaTitular">-</span>
+                                <span class="k">Rut titular</span><span class="sep">:</span><span class="v" id="exEtfaRutTitular">-</span>
+                                <span class="k">Representante Legal</span><span class="sep">:</span><span class="v" id="exEtfaRepLegal">-</span>
+                                <span class="k">Rut RRLL</span><span class="sep">:</span><span class="v" id="exEtfaRutRrll">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title"><i class="fa-solid fa-vials"></i>Detalle de muestras</div>
+                <div class="toolbar">
+                    <label><input type="checkbox" id="labCheckAll" onchange="toggleLabTodas(this.checked)"> Confirmar todas</label>
+                    <div class="lab-count" id="labConfirmCount">0 / 0 confirmadas</div>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:52px;">OK</th>
+                                <th>Identificacion de la muestra</th>
+                                <th>Punto / Estacion de muestreo</th>
+                                <th>Obs punto</th>
+                                <th>Fecha muestreo</th>
+                                <th>Hora muestreo</th>
+                                <th style="width:44px;">Terreno</th>
+                            </tr>
+                        </thead>
+                        <tbody id="labMuestrasBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title"><i class="fa-solid fa-truck-fast"></i>Datos de envío y transporte</div>
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label>Responsable de Muestreo <span class="required">*</span></label>
+                        <input type="text" id="labRespMuestreo" placeholder="Nombre responsable">
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha Transporte <span class="required">*</span></label>
+                        <input type="date" id="labFechaTransporte">
+                    </div>
+                    <div class="form-group">
+                        <label>Hora Transporte <span class="required">*</span></label>
+                        <input type="time" id="labHoraTransporte">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top:10px;">
+                    <label>Observaciones de terreno</label>
+                    <textarea id="labObsTerreno" placeholder="Observaciones relevantes del muestreo y transporte..."></textarea>
+                </div>
+            </div>
+
+            <div class="footer-actions">
+                <button type="button" class="btn btn-secondary" onclick="volverFicha()">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="guardarEnvioLaboratorio()">Confirmar envío</button>
+            </div>
+        </div>
+
+                <div class="empty" id="emptyLab">No se encontró una OI para enviar a laboratorio. Vuelva a la ficha y seleccione una orden.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="obsOverlay">
+        <div class="mini-modal">
+            <div class="mini-head">
+                <span id="obsTitulo">Observación del punto</span>
+                <button type="button" class="btn-icon-close" onclick="cerrarObsModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="mini-body">
+                <textarea id="obsTexto" rows="5" placeholder="Ingrese observación para este punto..."></textarea>
+            </div>
+            <div class="mini-foot">
+                <button type="button" class="btn btn-secondary" onclick="cerrarObsModal()">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="guardarObsModal()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="terrain-overlay" id="terrainOverlay" onclick="cerrarPanelTerreno()"></div>
+    <div class="terrain-panel" id="terrainPanel">
+        <div class="terrain-head">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+                <div class="terrain-head-title">Registro de inspeccion de muestreo</div>
+                <button type="button" class="btn-icon-close" onclick="cerrarPanelTerreno()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+        </div>
+        <div class="terrain-summary">
+            <div class="terrain-summary-main">
+                <span id="terrainResumenPunto">EST-01</span>
+                <span class="terrain-chip" id="terrainResumenEstrato">Estrato S (Superficie)</span>
+                <span class="terrain-chip" id="terrainResumenReplica">Replicas A</span>
+            </div>
+            <div class="terrain-summary-place"><span class="k">Lugar de muestreo:</span><span id="terrainResumenLugar">-</span></div>
+            <div class="terrain-summary-meta">
+                <span class="item"><i class="fa-solid fa-layer-group"></i><span class="k">Matriz:</span><span class="v" id="terrainResumenMatriz">-</span></span>
+                <span class="item"><i class="fa-solid fa-location-dot"></i><span class="k">Punto:</span><span class="v" id="terrainResumenPuntoMeta">-</span></span>
+            </div>
+        </div>
+
+        <div class="terrain-steps">
+            <button type="button" class="terrain-step-btn active" id="terrainStepBtn1" onclick="setTerrenoStep(1)">
+                <span class="n">1</span> Validacion del punto
+            </button>
+            <button type="button" class="terrain-step-btn" id="terrainStepBtn2" onclick="irTerrenoStep2()">
+                <span class="n">2</span> Registro de Terreno
+            </button>
+        </div>
+
+        <div class="terrain-body">
+            <div id="terrainStep1" class="terrain-pane">
+                <div class="grid-3" style="grid-template-columns:1fr 1fr;">
+                    <div class="form-group">
+                        <label>Fecha inicio/validacion</label>
+                        <input type="date" id="terrenoValFecha">
+                    </div>
+                    <div class="form-group">
+                        <label>Hora inicio/validacion</label>
+                        <input type="time" id="terrenoValHora">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Evidencia de visita al punto</label>
+                    <div class="terrain-evidence">
+                        <input type="file" id="terrenoValEvidencia" accept="image/*" onchange="onChangeTerrenoEvidencia(this.files)">
+                        <label for="terrenoValEvidencia" class="terrain-upload-btn" id="terrenoUploadBtn"><i class="fa-solid fa-camera"></i> Subir imagen</label>
+                        <div class="terrain-evidence-help" id="terrenoValEvidenciaHelp">Formato sugerido: JPG o PNG</div>
+                        <div class="terrain-evidence-name" id="terrenoValEvidenciaNombre">Sin archivo seleccionado</div>
+                        <div class="terrain-evidence-file" id="terrenoValEvidenciaFile">
+                            <div class="terrain-evidence-meta" id="terrenoValEvidenciaMeta">-</div>
+                            <button type="button" class="terrain-evidence-remove" onclick="quitarTerrenoEvidencia()" title="Quitar imagen">✕</button>
+                        </div>
+                        <img id="terrenoValEvidenciaPreview" class="terrain-evidence-preview" alt="Evidencia punto">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Estado del punto</label>
+                    <div class="terrain-segment">
+                        <button type="button" class="terrain-seg-btn" id="btnEstadoOptimo" onclick="setTerrenoEstadoPunto('optimo')">Optimo</button>
+                        <button type="button" class="terrain-seg-btn" id="btnEstadoNoOptimo" onclick="setTerrenoEstadoPunto('no_optimo')">No optimo</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Observacion de validacion</label>
+                    <textarea id="terrenoValObs" rows="3" placeholder="Observaciones de la validacion inicial del punto..."></textarea>
+                </div>
+            </div>
+
+            <div id="terrainStep2" class="terrain-pane" style="display:none;">
+                <div class="form-group">
+                    <label>Registro por replica</label>
+                    <div class="terrain-replica-head" id="terrenoReplicaHead"></div>
+                    <div class="terrain-replica-sub">Seleccione la replica activa y complete sus datos. Horas, parametros, observacion e imagen son independientes por replica.</div>
+                    <div class="terrain-replica-tools">
+                        <button type="button" class="terrain-copy-btn" id="btnCopyReplicaA" onclick="copiarDatosDesdeReplicaA()"><i class="fa-solid fa-copy"></i>Copiar datos de Replica A</button>
+                    </div>
+                </div>
+                <div class="grid-3" style="grid-template-columns:1fr 1fr;">
+                    <div class="form-group">
+                        <label>Hora inicio</label>
+                        <input type="time" id="terrenoHoraInicio" onchange="setTerrenoReplicaHoraActiva('horaInicio', this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label>Hora termino</label>
+                        <input type="time" id="terrenoHoraFin" onchange="setTerrenoReplicaHoraActiva('horaFin', this.value)">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="terrain-param-head">
+                        <label style="margin:0;">Parámetros en terreno</label>
+                        <div class="terrain-param-actions">
+                            <div class="terrain-param-picker">
+                                <button type="button" class="terrain-param-trigger" id="terrenoParamTrigger" onclick="toggleTerrenoParamMenu()">
+                                    <span class="placeholder" id="terrenoParamTriggerText">Seleccionar parámetros...</span>
+                                    <span class="count" id="terrenoParamTriggerCount"></span>
+                                </button>
+                                <div class="terrain-param-menu" id="terrenoParamMenu"></div>
+                            </div>
+                            <button type="button" class="terrain-param-add" onclick="agregarTerrenoParametro()"><i class="fa-solid fa-plus"></i>Agregar parámetro</button>
+                        </div>
+                    </div>
+                    <div class="terrain-param-rows" id="terrenoParametrosRows"></div>
+                </div>
+                <div class="form-group">
+                    <label>Observacion del punto</label>
+                    <textarea id="terrenoObs" rows="4" placeholder="Detalle de la inspeccion realizada en terreno..." oninput="actualizarTerrenoObservacion(this.value)"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Imagen adicional de registro en terreno (opcional)</label>
+                    <div class="terrain-evidence">
+                        <input type="file" id="terrenoRegEvidencia" accept="image/*" onchange="onChangeTerrenoRegEvidencia(this.files)">
+                        <label for="terrenoRegEvidencia" class="terrain-upload-btn" id="terrenoRegUploadBtn"><i class="fa-solid fa-camera"></i> Subir imagen</label>
+                        <div class="terrain-evidence-help" id="terrenoRegEvidenciaHelp">Formato sugerido: JPG o PNG</div>
+                        <div class="terrain-evidence-name" id="terrenoRegEvidenciaNombre">Sin archivo seleccionado</div>
+                        <div class="terrain-evidence-file" id="terrenoRegEvidenciaFile">
+                            <div class="terrain-evidence-meta" id="terrenoRegEvidenciaMeta">-</div>
+                            <button type="button" class="terrain-evidence-remove" onclick="quitarTerrenoRegEvidencia()" title="Quitar imagen">✕</button>
+                        </div>
+                        <img id="terrenoRegEvidenciaPreview" class="terrain-evidence-preview" alt="Evidencia registro terreno">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="terrain-foot">
+            <div class="terrain-foot-left">
+                <button type="button" class="terrain-btn terrain-btn-cancel" onclick="cerrarPanelTerreno()">Cancelar</button>
+            </div>
+            <div class="terrain-foot-right">
+                <button type="button" class="terrain-btn terrain-btn-secondary" id="terrainBtnBack" onclick="setTerrenoStep(1)" style="display:none;">Anterior</button>
+                <button type="button" class="terrain-btn terrain-btn-primary" id="terrainBtnNext" onclick="irTerrenoStep2()">Siguiente</button>
+                <button type="button" class="terrain-btn terrain-btn-primary" id="terrainBtnSave" onclick="guardarPanelTerreno()" style="display:none;">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const OI_STATE_STORAGE_KEY = 'sgs_fp_ordenes_v1';
+        const LAB_NAV_STORAGE_KEY = 'sgs_lab_nav_v1';
+        const oiEstadoLabels = { 'pendiente': 'Pendiente', 'programada': 'Programada', 'ejecutada': 'Ejecutada', 'cancelada': 'Cancelada' };
+        const oiTipoLabels = { 'muestreo_medicion': 'Muestreo y Medición', 'medicion': 'Solo Medición' };
+        const oiComposicionLabels = { 'puntual': 'Puntual', 'compuesta': 'Compuesta' };
+        const telefonosContacto = {
+            'Viviana López': '+56 9 8765 4321',
+            'Carlos Mendoza': '+56 9 7654 3210',
+            'María González': '+56 9 6543 2109',
+            'Pedro Sánchez': '+56 9 5432 1098',
+            'Ana Rodríguez': '+56 9 4321 0987',
+            'Jorge Alegría': '+56 9 3210 9876',
+            'Yessenia Gajardo': '+56 9 2109 8765',
+            'Cynthia Ocaranza': '+56 9 1098 7654'
+        };
+        const correosContacto = {
+            'Viviana López': 'vlopez@sgs.com',
+            'Carlos Mendoza': 'cmendoza@sgs.com',
+            'María González': 'mgonzalez@sgs.com',
+            'Pedro Sánchez': 'psanchez@sgs.com',
+            'Ana Rodríguez': 'arodriguez@sgs.com',
+            'Jorge Alegría': 'jalegria@sgs.com',
+            'Yessenia Gajardo': 'ygajardo@sgs.com',
+            'Cynthia Ocaranza': 'cocaranza@sgs.com'
+        };
+        const rutTitularPorCliente = {
+            'Corp Nacional del Cobre de Chile': '61.704.000-K',
+            'Engie Energía Chile': '96.988.310-9',
+            'Minera Los Andes SpA': '76.003.885-7',
+            'Lundin Mining': '76.214.332-1',
+            'BHP Billiton': '96.636.520-7',
+            'Antofagasta Minerals': '96.790.240-3',
+            'Teck Resources': '96.846.530-9'
+        };
+        const rutRrllPorContacto = {
+            'Viviana López': '16.905.805-9',
+            'Carlos Mendoza': '15.102.334-6',
+            'María González': '14.331.887-2',
+            'Pedro Sánchez': '12.889.451-0',
+            'Ana Rodríguez': '17.220.118-4',
+            'Jorge Alegría': '13.443.992-1',
+            'Yessenia Gajardo': '18.332.777-5',
+            'Cynthia Ocaranza': '19.551.802-3'
+        };
+        const lugarPorPunto = {
+            'EST-01': 'Descarga principal',
+            'EST-02': 'Canal norte',
+            'EST-03': 'Canal sur',
+            'EST-04': 'Poza decantacion',
+            'EST-05': 'Bocatoma este',
+            'EST-06': 'Bocatoma oeste',
+            'EST-07': 'Quebrada interna',
+            'EST-08': 'Vertedero secundario',
+            'EST-09': 'Punto puente',
+            'EST-10': 'Salida planta',
+            'EST-11': 'Aguas arriba control 1',
+            'EST-12': 'Aguas arriba control 2',
+            'EST-13': 'Rompeolas norte',
+            'EST-14': 'Rompeolas sur',
+            'EST-15': 'Boyarin central',
+            'EST-16': 'Canal de navegacion',
+            'EST-17': 'Frente terminal',
+            'EST-18': 'Zona fondeo',
+            'EST-19': 'Exterior bahia',
+            'EST-20': 'Control referencia costa'
+        };
+        const terrenoParametrosCatalogo = [
+            { nombre: 'pH', unidad: 'pH', metodo: 'PI A&S-1 / IGEN-2.2 / pH-metro' },
+            { nombre: 'Turbiedad', unidad: 'NTU', metodo: 'PI A&S-2 / IGEN-2.4 / medidor de turbidez' },
+            { nombre: 'Conductividad', unidad: 'uS/cm', metodo: 'PI A&S-2 / IGEN-2.5 / multiparametro' },
+            { nombre: 'Oxigeno disuelto', unidad: 'mg/L', metodo: 'PI A&S-2 / IGEN-2.5 / multiparametro' },
+            { nombre: 'Temperatura', unidad: 'C', metodo: 'PI A&S-2 / IGEN-2.5 / multiparametro' },
+            { nombre: 'Potencial redox', unidad: 'mV', metodo: 'PI A&S-1 / IGEN-2.2 / potenciometro' },
+            { nombre: 'Cloro libre', unidad: 'mg/L', metodo: 'PI A&S-1 / IGEN-2.3 / medidor de cloro' },
+            { nombre: 'Saturacion de oxigeno', unidad: '%', metodo: 'PI A&S-2 / Uso CTDO' },
+            { nombre: 'Densidad', unidad: 'kg/m3', metodo: 'PI A&S-2 / Uso CTDO' },
+            { nombre: 'Salinidad', unidad: 'PSU', metodo: 'PI A&S-2 / Uso CTDO' },
+            { nombre: 'Cloro total', unidad: 'mg/L', metodo: 'IGEN-2.3 / medidor de cloro libre y total' },
+            { nombre: 'Transparencia', unidad: 'm', metodo: 'IAS-1.5 / Uso de disco Secchi' }
+        ];
+
+        let ordenesInspeccion = [];
+        let navData = null;
+        let oiIndex = -1;
+        let labMuestrasDetalladas = [];
+        let labMuestrasConfirmadas = new Set();
+        let labMuestrasFecha = {};
+        let labMuestrasHora = {};
+        let labInspeccionPorGrupo = {};
+        let obsSampleIdActual = '';
+        let terrainGrupoActualKey = '';
+        let terrainGrupoActualLabel = '';
+        let terrainSampleActualId = '';
+        let terrainStepActual = 1;
+        let terrainStep1Completed = false;
+        let terrainEstadoPuntoActual = '';
+        let terrainReplicasActual = [];
+        let terrainReplicaDetalleActual = {};
+        let terrainReplicaActiva = '';
+        let terrainParametrosActual = [];
+        let terrainParamSeleccionados = new Set();
+        let terrainEvidenciaNombreActual = '';
+        let terrainEvidenciaSizeActual = 0;
+        let terrainEvidenciaDataActual = '';
+        let terrainRegEvidenciaNombreActual = '';
+        let terrainRegEvidenciaSizeActual = 0;
+        let terrainRegEvidenciaDataActual = '';
+        let labHeaderExpanded = false;
+        let labOiContext = { codigo: '-', fecha: '-', matriz: '-', plan: '-', inspector: '-' };
+
+        function esc(v) {
+            return String(v || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function formatearFecha(fechaStr) {
+            if (!fechaStr || !fechaStr.includes('-')) return '-';
+            const [y, m, d] = fechaStr.split('-');
+            return `${d}/${m}/${y}`;
+        }
+
+        function getEstratoLabel(estrato, idx) {
+            const s = String(estrato || '').trim().toUpperCase();
+            if (s) {
+                const match = s.match(/[A-Z]/);
+                if (match) return match[0];
+            }
+            return String.fromCharCode(83 + idx);
+        }
+
+        function getReplicaLabel(idx) {
+            const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            return alphabet[idx] || `R${idx + 1}`;
+        }
+
+        function getEstratosArray(estratos) {
+            if (Array.isArray(estratos) && estratos.length) return estratos;
+            if (estratos !== null && estratos !== undefined && estratos !== '') return [estratos];
+            return ['S'];
+        }
+
+        function getEstratoDescripcion(estrato) {
+            const v = String(estrato || '').trim().toUpperCase();
+            if (v === 'S') return 'Superficie';
+            if (v === 'M') return 'Medio';
+            return '';
+        }
+
+        function getTerrenoGrupoKey(punto, estrato) {
+            const p = String(punto || '').trim().toUpperCase();
+            const e = String(estrato || '').trim().toUpperCase();
+            return `${p}__${e}`;
+        }
+
+        function getTerrenoGrupoKeyFromMuestra(muestra) {
+            if (!muestra || typeof muestra !== 'object') return '';
+            return getTerrenoGrupoKey(muestra.punto, muestra.estrato);
+        }
+
+        function getMuestrasPorGrupo(grupoKey) {
+            if (!grupoKey) return [];
+            return labMuestrasDetalladas.filter(m => getTerrenoGrupoKeyFromMuestra(m) === grupoKey);
+        }
+
+        function getReplicaResumen(grupoMuestras) {
+            if (!Array.isArray(grupoMuestras) || !grupoMuestras.length) return 'Replicas -';
+            const replicas = Array.from(new Set(grupoMuestras.map(m => String(m.replica || '').trim()).filter(Boolean)));
+            if (!replicas.length) return 'Replicas -';
+            if (replicas.length === 1) return `Replica ${replicas[0]}`;
+            return `Replicas ${replicas.join(', ')}`;
+        }
+
+        function getReplicaResumenByMuestra(muestra) {
+            const grupoKey = getTerrenoGrupoKeyFromMuestra(muestra);
+            return getReplicaResumen(getMuestrasPorGrupo(grupoKey));
+        }
+
+        function getReplicaCountByMuestra(muestra) {
+            const grupoKey = getTerrenoGrupoKeyFromMuestra(muestra);
+            return getMuestrasPorGrupo(grupoKey).length;
+        }
+
+        function isTerrenoValoresCompletos(parametros) {
+            if (!Array.isArray(parametros) || !parametros.length) return false;
+            return parametros.every(p => p && String(p.valor || '').trim());
+        }
+
+        function cloneTerrenoParametros(parametros) {
+            const base = Array.isArray(parametros) ? parametros : [];
+            return base.map(p => ({ nombre: p.nombre, valor: p.valor || '' }));
+        }
+
+        function getTerrenoReplicaDetalle(replica) {
+            const r = String(replica || '').trim().toUpperCase();
+            if (!r) return null;
+            if (!terrainReplicaDetalleActual[r]) {
+                terrainReplicaDetalleActual[r] = {
+                    horaInicio: '',
+                    horaFin: '',
+                    parametros: cloneTerrenoParametros(getTerrenoParametrosDefault()),
+                    observacion: '',
+                    registroImagenNombre: '',
+                    registroImagenSize: 0,
+                    registroImagenData: ''
+                };
+            }
+            return terrainReplicaDetalleActual[r];
+        }
+
+        function setTerrenoReplicaHora(replica, campo, valor) {
+            const d = getTerrenoReplicaDetalle(replica);
+            if (!d) return;
+            if (campo === 'horaInicio' || campo === 'horaFin') {
+                d[campo] = String(valor || '').trim();
+            }
+        }
+
+        function syncTerrenoReplicaInputsFromData() {
+            const inIni = document.getElementById('terrenoHoraInicio');
+            const inFin = document.getElementById('terrenoHoraFin');
+            const disabled = !terrainReplicaActiva;
+            const d = getTerrenoReplicaDetalle(terrainReplicaActiva) || {};
+            if (inIni) {
+                inIni.disabled = disabled;
+                inIni.value = disabled ? '' : (d.horaInicio || '');
+            }
+            if (inFin) {
+                inFin.disabled = disabled;
+                inFin.value = disabled ? '' : (d.horaFin || '');
+            }
+        }
+
+        function persistTerrenoReplicaActiva() {
+            if (!terrainReplicaActiva) return;
+            const d = getTerrenoReplicaDetalle(terrainReplicaActiva);
+            if (!d) return;
+            const inIni = document.getElementById('terrenoHoraInicio');
+            const inFin = document.getElementById('terrenoHoraFin');
+            const obs = document.getElementById('terrenoObs');
+            d.horaInicio = inIni ? String(inIni.value || '').trim() : (d.horaInicio || '');
+            d.horaFin = inFin ? String(inFin.value || '').trim() : (d.horaFin || '');
+            d.parametros = cloneTerrenoParametros(terrainParametrosActual);
+            d.observacion = obs ? String(obs.value || '').trim() : (d.observacion || '');
+            d.registroImagenNombre = terrainRegEvidenciaNombreActual || '';
+            d.registroImagenSize = Number(terrainRegEvidenciaSizeActual || 0);
+            d.registroImagenData = terrainRegEvidenciaDataActual || '';
+        }
+
+        function loadTerrenoReplicaActiva() {
+            const d = getTerrenoReplicaDetalle(terrainReplicaActiva);
+            terrainParametrosActual = cloneTerrenoParametros(d && d.parametros && d.parametros.length ? d.parametros : getTerrenoParametrosDefault());
+            terrainParamSeleccionados = new Set();
+            renderTerrenoParametros();
+            syncTerrenoReplicaInputsFromData();
+            const obs = document.getElementById('terrenoObs');
+            if (obs) obs.value = d ? (d.observacion || '') : '';
+            terrainRegEvidenciaNombreActual = d ? (d.registroImagenNombre || '') : '';
+            terrainRegEvidenciaSizeActual = Number(d && d.registroImagenSize ? d.registroImagenSize : 0);
+            terrainRegEvidenciaDataActual = d ? (d.registroImagenData || '') : '';
+            const regInput = document.getElementById('terrenoRegEvidencia');
+            if (regInput) regInput.value = '';
+            syncTerrenoRegEvidenciaUI();
+        }
+
+        function setTerrenoReplicaActiva(replica) {
+            const r = String(replica || '').trim().toUpperCase();
+            if (!r) return;
+            if (!terrainReplicasActual.includes(r)) return;
+            if (terrainReplicaActiva && terrainReplicaActiva !== r) persistTerrenoReplicaActiva();
+            terrainReplicaActiva = r;
+            loadTerrenoReplicaActiva();
+            renderTerrenoReplicaSelector();
+        }
+
+        function setTerrenoReplicaHoraActiva(campo, valor) {
+            if (!terrainReplicaActiva) return;
+            setTerrenoReplicaHora(terrainReplicaActiva, campo, valor);
+            renderTerrenoReplicaSelector();
+        }
+
+        function syncTerrenoCopyFromAButton() {
+            const btn = document.getElementById('btnCopyReplicaA');
+            if (!btn) return;
+            const hasA = terrainReplicasActual.includes('A');
+            const canCopy = hasA && !!terrainReplicaActiva && terrainReplicaActiva !== 'A';
+            btn.style.display = hasA ? 'inline-flex' : 'none';
+            btn.disabled = !canCopy;
+            btn.title = canCopy ? 'Copiar todos los datos de la Replica A a la replica seleccionada' : 'Seleccione una replica distinta de A';
+        }
+
+        function copiarDatosDesdeReplicaA() {
+            if (!terrainReplicaActiva || terrainReplicaActiva === 'A') return;
+            if (!terrainReplicasActual.includes('A')) return;
+            const source = getTerrenoReplicaDetalle('A');
+            const target = getTerrenoReplicaDetalle(terrainReplicaActiva);
+            if (!source || !target) return;
+            target.horaInicio = source.horaInicio || '';
+            target.horaFin = source.horaFin || '';
+            target.parametros = cloneTerrenoParametros(source.parametros && source.parametros.length ? source.parametros : getTerrenoParametrosDefault());
+            target.observacion = source.observacion || '';
+            target.registroImagenNombre = source.registroImagenNombre || '';
+            target.registroImagenSize = Number(source.registroImagenSize || 0);
+            target.registroImagenData = source.registroImagenData || '';
+            loadTerrenoReplicaActiva();
+            renderTerrenoReplicaSelector();
+            showToast(`Datos copiados desde Replica A a Replica ${terrainReplicaActiva}`);
+        }
+
+        function renderTerrenoReplicaSelector() {
+            const head = document.getElementById('terrenoReplicaHead');
+            if (!head) return;
+            if (!terrainReplicasActual.length) {
+                head.innerHTML = '<span class="terrain-replica-sub">No hay replicas para este punto.</span>';
+                terrainReplicaActiva = '';
+                syncTerrenoReplicaInputsFromData();
+                syncTerrenoCopyFromAButton();
+                return;
+            }
+            const requiereCargaActiva = (!terrainReplicaActiva || !terrainReplicasActual.includes(terrainReplicaActiva));
+            if (requiereCargaActiva) terrainReplicaActiva = terrainReplicasActual[0];
+            head.innerHTML = terrainReplicasActual.map(rep => {
+                const data = getTerrenoReplicaDetalle(rep) || {};
+                const done = !!((data.horaInicio || '').trim() && (data.horaFin || '').trim() && isTerrenoValoresCompletos(data.parametros));
+                return `<button type="button" class="terrain-replica-badge ${terrainReplicaActiva === rep ? 'active' : ''} ${done ? 'done' : ''}" data-replica="${esc(rep)}" onclick="setTerrenoReplicaActiva('${esc(rep)}')">${done ? '<i class="fa-solid fa-circle-check"></i>' : ''} Replica ${esc(rep)}</button>`;
+            }).join('');
+            if (requiereCargaActiva) loadTerrenoReplicaActiva();
+            syncTerrenoCopyFromAButton();
+        }
+
+        function getTerrenoParametroByNombre(nombre) {
+            return terrenoParametrosCatalogo.find(p => p.nombre === nombre) || null;
+        }
+
+        function getTerrenoParametrosDefault() {
+            return terrenoParametrosCatalogo.slice(0, 4).map(p => ({ nombre: p.nombre, valor: '' }));
+        }
+
+        function renderTerrenoParamNuevoOptions() {
+            const menu = document.getElementById('terrenoParamMenu');
+            const triggerText = document.getElementById('terrenoParamTriggerText');
+            const triggerCount = document.getElementById('terrenoParamTriggerCount');
+            if (!menu || !triggerText || !triggerCount) return;
+            const usados = new Set((terrainParametrosActual || []).map(p => p.nombre));
+            const disponibles = terrenoParametrosCatalogo.filter(p => !usados.has(p.nombre));
+            terrainParamSeleccionados.forEach(n => {
+                if (!disponibles.some(p => p.nombre === n)) terrainParamSeleccionados.delete(n);
+            });
+
+            if (!disponibles.length) {
+                menu.innerHTML = '<div class="terrain-param-empty">Sin parámetros disponibles</div>';
+                triggerText.textContent = 'Sin parámetros disponibles';
+                triggerCount.textContent = '';
+                return;
+            }
+            menu.innerHTML = disponibles.map(p => `
+                <label class="terrain-param-opt">
+                    <input type="checkbox" ${terrainParamSeleccionados.has(p.nombre) ? 'checked' : ''} onchange="toggleTerrenoParamSeleccion('${esc(p.nombre)}', this.checked)">
+                    <span>${esc(p.nombre)}</span>
+                </label>
+            `).join('');
+            const count = terrainParamSeleccionados.size;
+            triggerText.textContent = count ? 'Parámetros seleccionados' : 'Seleccionar parámetros...';
+            triggerText.className = count ? '' : 'placeholder';
+            triggerCount.textContent = count ? `${count}` : '';
+        }
+
+        function toggleTerrenoParamMenu() {
+            const menu = document.getElementById('terrenoParamMenu');
+            if (!menu) return;
+            menu.classList.toggle('show');
+        }
+
+        function closeTerrenoParamMenu() {
+            const menu = document.getElementById('terrenoParamMenu');
+            if (menu) menu.classList.remove('show');
+        }
+
+        function toggleTerrenoParamSeleccion(nombre, checked) {
+            const n = String(nombre || '');
+            if (!n) return;
+            if (checked) terrainParamSeleccionados.add(n);
+            else terrainParamSeleccionados.delete(n);
+            renderTerrenoParamNuevoOptions();
+        }
+
+        function renderTerrenoParametros() {
+            const wrap = document.getElementById('terrenoParametrosRows');
+            if (!wrap) return;
+            if (!Array.isArray(terrainParametrosActual) || !terrainParametrosActual.length) {
+                terrainParametrosActual = getTerrenoParametrosDefault();
+            }
+            renderTerrenoParamNuevoOptions();
+            wrap.innerHTML = terrainParametrosActual.map((row, idx) => {
+                const info = getTerrenoParametroByNombre(row.nombre) || { unidad: '-', metodo: '-' };
+                return `
+                    <div class="terrain-param-row">
+                        <div>
+                            <div class="terrain-param-name">${esc(row.nombre || '-')}</div>
+                            <div class="terrain-param-unit">Unidad: ${esc(info.unidad || '-')}</div>
+                        </div>
+                        <input type="text" value="${esc(row.valor || '')}" placeholder="Valor" onchange="actualizarTerrenoParametroValor(${idx}, this.value)">
+                        <button type="button" class="terrain-param-remove" onclick="quitarTerrenoParametro(${idx})" title="Quitar">✕</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function agregarTerrenoParametro() {
+            if (!terrainParamSeleccionados.size) {
+                alert('Seleccione al menos un parámetro para agregar');
+                return;
+            }
+            terrainParamSeleccionados.forEach(nombre => {
+                if (!terrainParametrosActual.some(p => p.nombre === nombre)) {
+                    terrainParametrosActual.push({ nombre, valor: '' });
+                }
+            });
+            terrainParamSeleccionados = new Set();
+            renderTerrenoParametros();
+            persistTerrenoReplicaActiva();
+            renderTerrenoReplicaSelector();
+            closeTerrenoParamMenu();
+        }
+
+        function quitarTerrenoParametro(idx) {
+            terrainParametrosActual.splice(idx, 1);
+            renderTerrenoParametros();
+            persistTerrenoReplicaActiva();
+            renderTerrenoReplicaSelector();
+        }
+
+        function actualizarTerrenoParametroValor(idx, valor) {
+            if (!terrainParametrosActual[idx]) return;
+            terrainParametrosActual[idx].valor = (valor || '').trim();
+            persistTerrenoReplicaActiva();
+            renderTerrenoReplicaSelector();
+        }
+
+        function actualizarTerrenoObservacion(valor) {
+            const d = getTerrenoReplicaDetalle(terrainReplicaActiva);
+            if (!d) return;
+            d.observacion = String(valor || '').trim();
+            renderTerrenoReplicaSelector();
+        }
+
+        function resolverLugarPunto(punto, lugarDirecto) {
+            const directo = String(lugarDirecto || '').trim();
+            if (directo) return directo;
+            const key = String(punto || '').trim().toUpperCase();
+            return lugarPorPunto[key] || '';
+        }
+
+        function toFechaHoraISO(fecha, hora) {
+            if (!fecha || !hora) return '';
+            return `${fecha}T${hora}`;
+        }
+
+        function splitFechaHora(fechaHora) {
+            if (!fechaHora || typeof fechaHora !== 'string') return { fecha: '', hora: '' };
+            const [fecha, horaRaw] = fechaHora.split('T');
+            if (!fecha || !horaRaw) return { fecha: '', hora: '' };
+            return { fecha, hora: horaRaw.slice(0, 5) };
+        }
+
+        function showToast(message) {
+            const el = document.getElementById('toast');
+            el.textContent = message;
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 2200);
+        }
+
+        function setText(id, value) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = value;
+        }
+
+        function getBackUrl() {
+            const from = (navData && navData.from) ? navData.from : 'ficha-proyecto-inicial.html';
+            const p = (navData && navData.proyecto) ? navData.proyecto : {};
+            const tab = (navData && navData.tab) ? navData.tab : 'listado-oi';
+            const params = new URLSearchParams();
+            if (p.proyecto) params.set('proyecto', p.proyecto);
+            if (p.cliente) params.set('cliente', p.cliente);
+            if (p.ol) params.set('ol', p.ol);
+            if (p.responsable) params.set('responsable', p.responsable);
+            if (p.nombre) params.set('nombre', p.nombre);
+            params.set('tab', tab);
+            const qs = params.toString();
+            return qs ? `${from}?${qs}` : from;
+        }
+
+        function volverFicha() {
+            window.location.href = getBackUrl();
+        }
+
+        function toggleLabHeaderExtra(forceState) {
+            const extra = document.getElementById('labHeaderExtra');
+            const btn = document.getElementById('labCollapseBtn');
+            if (!extra || !btn) return;
+            if (typeof forceState === 'boolean') labHeaderExpanded = forceState;
+            else labHeaderExpanded = !labHeaderExpanded;
+            extra.classList.toggle('show', labHeaderExpanded);
+            btn.classList.toggle('expanded', labHeaderExpanded);
+            btn.title = labHeaderExpanded ? 'Ocultar detalle' : 'Ver mas detalle';
+        }
+
+        function grupoTieneInspeccion(grupoKey) {
+            const d = labInspeccionPorGrupo[grupoKey];
+            if (!d) return false;
+            return !!(
+                (d.valFecha && String(d.valFecha).trim()) ||
+                (d.valHora && String(d.valHora).trim()) ||
+                (d.estadoPunto && String(d.estadoPunto).trim()) ||
+                (d.evidenciaNombre && String(d.evidenciaNombre).trim()) ||
+                (d.valObs && String(d.valObs).trim()) ||
+                (Array.isArray(d.parametros) && d.parametros.some(p => p && (p.valor && String(p.valor).trim()))) ||
+                (d.horaInicio && String(d.horaInicio).trim()) ||
+                (d.horaFin && String(d.horaFin).trim()) ||
+                (d.observacion && String(d.observacion).trim()) ||
+                (d.registroImagenNombre && String(d.registroImagenNombre).trim())
+            );
+        }
+
+        function getReplicaDetalleDesdeMuestra(muestra) {
+            const groupKey = getTerrenoGrupoKeyFromMuestra(muestra);
+            const d = labInspeccionPorGrupo[groupKey];
+            if (!d || typeof d !== 'object') return null;
+            const rep = String((muestra && muestra.replica) || '').trim().toUpperCase();
+            if (!rep) return null;
+            if (d.replicas && typeof d.replicas === 'object' && d.replicas[rep] && typeof d.replicas[rep] === 'object') {
+                return d.replicas[rep];
+            }
+            return {
+                horaInicio: d.horaInicio || '',
+                horaFin: d.horaFin || '',
+                parametros: Array.isArray(d.parametros) ? d.parametros : [],
+                observacion: d.observacion || '',
+                registroImagenNombre: d.registroImagenNombre || '',
+                registroImagenSize: Number(d.registroImagenSize || 0),
+                registroImagenData: d.registroImagenData || ''
+            };
+        }
+
+        function replicaTieneInspeccion(muestra) {
+            const rd = getReplicaDetalleDesdeMuestra(muestra);
+            if (!rd) return false;
+            return !!(
+                (rd.horaInicio && String(rd.horaInicio).trim()) ||
+                (rd.horaFin && String(rd.horaFin).trim()) ||
+                (Array.isArray(rd.parametros) && rd.parametros.some(p => p && String(p.valor || '').trim())) ||
+                (rd.observacion && String(rd.observacion).trim()) ||
+                (rd.registroImagenNombre && String(rd.registroImagenNombre).trim())
+            );
+        }
+
+        function replicaRegistroFinalizado(muestra) {
+            const groupKey = getTerrenoGrupoKeyFromMuestra(muestra);
+            const dGrupo = labInspeccionPorGrupo[groupKey];
+            if (!isTerrenoStep1Completo(dGrupo)) return false;
+            const rd = getReplicaDetalleDesdeMuestra(muestra);
+            if (!rd) return false;
+            const okHoras = !!((rd.horaInicio && String(rd.horaInicio).trim()) && (rd.horaFin && String(rd.horaFin).trim()));
+            const okParams = isTerrenoValoresCompletos(Array.isArray(rd.parametros) ? rd.parametros : []);
+            return okHoras && okParams;
+        }
+
+        function isTerrenoStep1Completo(data) {
+            if (!data || typeof data !== 'object') return false;
+            return !!(
+                (data.valFecha && String(data.valFecha).trim()) &&
+                (data.valHora && String(data.valHora).trim()) &&
+                (data.evidenciaNombre && String(data.evidenciaNombre).trim()) &&
+                (data.estadoPunto && String(data.estadoPunto).trim())
+            );
+        }
+
+        function setTerrenoStep(step) {
+            if (step === 2 && !terrainStep1Completed) return;
+            terrainStepActual = step === 2 ? 2 : 1;
+            const s1 = document.getElementById('terrainStep1');
+            const s2 = document.getElementById('terrainStep2');
+            const b1 = document.getElementById('terrainStepBtn1');
+            const b2 = document.getElementById('terrainStepBtn2');
+            const btnBack = document.getElementById('terrainBtnBack');
+            const btnNext = document.getElementById('terrainBtnNext');
+            const btnSave = document.getElementById('terrainBtnSave');
+            if (!s1 || !s2 || !b1 || !b2 || !btnBack || !btnNext || !btnSave) return;
+            s1.style.display = terrainStepActual === 1 ? '' : 'none';
+            s2.style.display = terrainStepActual === 2 ? '' : 'none';
+            b1.classList.toggle('active', terrainStepActual === 1);
+            b2.classList.toggle('active', terrainStepActual === 2);
+            b1.classList.toggle('completed', terrainStep1Completed);
+            b2.classList.toggle('locked', !terrainStep1Completed);
+            btnBack.style.display = terrainStepActual === 2 ? '' : 'none';
+            btnNext.style.display = terrainStepActual === 1 ? '' : 'none';
+            btnSave.style.display = terrainStepActual === 2 ? '' : 'none';
+        }
+
+        function setTerrenoEstadoPunto(estado) {
+            if (estado === 'optimo' || estado === 'no_optimo') terrainEstadoPuntoActual = estado;
+            else terrainEstadoPuntoActual = '';
+            const b1 = document.getElementById('btnEstadoOptimo');
+            const b2 = document.getElementById('btnEstadoNoOptimo');
+            if (!b1 || !b2) return;
+            b1.classList.toggle('active', terrainEstadoPuntoActual === 'optimo');
+            b2.classList.toggle('active', terrainEstadoPuntoActual === 'no_optimo');
+        }
+
+        function onChangeTerrenoEvidencia(files) {
+            const nameEl = document.getElementById('terrenoValEvidenciaNombre');
+            const img = document.getElementById('terrenoValEvidenciaPreview');
+            if (!files || !files.length) {
+                quitarTerrenoEvidencia();
+                return;
+            }
+            const f = files[0];
+            terrainEvidenciaNombreActual = f.name || 'evidencia';
+            terrainEvidenciaSizeActual = Number(f.size || 0);
+            if (nameEl) nameEl.textContent = terrainEvidenciaNombreActual;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                terrainEvidenciaDataActual = String(ev.target && ev.target.result ? ev.target.result : '');
+                syncTerrenoEvidenciaUI();
+            };
+            reader.readAsDataURL(f);
+            syncTerrenoEvidenciaUI();
+        }
+
+        function formatBytes(size) {
+            const n = Number(size || 0);
+            if (n <= 0) return '0 KB';
+            if (n < 1024) return `${n} B`;
+            if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
+            return `${(n / (1024 * 1024)).toFixed(2)} MB`;
+        }
+
+        function syncTerrenoEvidenciaUI() {
+            const input = document.getElementById('terrenoValEvidencia');
+            const uploadBtn = document.getElementById('terrenoUploadBtn');
+            const nameEl = document.getElementById('terrenoValEvidenciaNombre');
+            const helpEl = document.getElementById('terrenoValEvidenciaHelp');
+            const metaWrap = document.getElementById('terrenoValEvidenciaFile');
+            const metaTxt = document.getElementById('terrenoValEvidenciaMeta');
+            const img = document.getElementById('terrenoValEvidenciaPreview');
+            const hasFile = !!terrainEvidenciaNombreActual;
+
+            if (uploadBtn) uploadBtn.style.display = hasFile ? 'none' : 'inline-flex';
+            if (helpEl) helpEl.style.display = hasFile ? 'none' : 'block';
+            if (nameEl) nameEl.textContent = hasFile ? '' : 'Sin archivo seleccionado';
+            if (metaWrap) metaWrap.classList.toggle('show', hasFile);
+            if (metaTxt && hasFile) metaTxt.textContent = `${terrainEvidenciaNombreActual} · ${formatBytes(terrainEvidenciaSizeActual)}`;
+            if (img) {
+                if (terrainEvidenciaDataActual) {
+                    img.src = terrainEvidenciaDataActual;
+                    img.style.display = 'block';
+                } else {
+                    img.src = '';
+                    img.style.display = 'none';
+                }
+            }
+            if (!hasFile && input) input.value = '';
+        }
+
+        function quitarTerrenoEvidencia() {
+            terrainEvidenciaNombreActual = '';
+            terrainEvidenciaSizeActual = 0;
+            terrainEvidenciaDataActual = '';
+            syncTerrenoEvidenciaUI();
+        }
+
+        function onChangeTerrenoRegEvidencia(files) {
+            if (!files || !files.length) {
+                quitarTerrenoRegEvidencia();
+                return;
+            }
+            const f = files[0];
+            terrainRegEvidenciaNombreActual = f.name || 'evidencia';
+            terrainRegEvidenciaSizeActual = Number(f.size || 0);
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                terrainRegEvidenciaDataActual = String(ev.target && ev.target.result ? ev.target.result : '');
+                syncTerrenoRegEvidenciaUI();
+                persistTerrenoReplicaActiva();
+                renderTerrenoReplicaSelector();
+            };
+            reader.readAsDataURL(f);
+            syncTerrenoRegEvidenciaUI();
+            persistTerrenoReplicaActiva();
+            renderTerrenoReplicaSelector();
+        }
+
+        function syncTerrenoRegEvidenciaUI() {
+            const input = document.getElementById('terrenoRegEvidencia');
+            const uploadBtn = document.getElementById('terrenoRegUploadBtn');
+            const helpEl = document.getElementById('terrenoRegEvidenciaHelp');
+            const nameEl = document.getElementById('terrenoRegEvidenciaNombre');
+            const metaWrap = document.getElementById('terrenoRegEvidenciaFile');
+            const metaTxt = document.getElementById('terrenoRegEvidenciaMeta');
+            const img = document.getElementById('terrenoRegEvidenciaPreview');
+            const hasFile = !!terrainRegEvidenciaNombreActual;
+
+            if (uploadBtn) uploadBtn.style.display = hasFile ? 'none' : 'inline-flex';
+            if (helpEl) helpEl.style.display = hasFile ? 'none' : 'block';
+            if (nameEl) nameEl.textContent = hasFile ? '' : 'Sin archivo seleccionado';
+            if (metaWrap) metaWrap.classList.toggle('show', hasFile);
+            if (metaTxt && hasFile) metaTxt.textContent = `${terrainRegEvidenciaNombreActual} · ${formatBytes(terrainRegEvidenciaSizeActual)}`;
+            if (img) {
+                if (terrainRegEvidenciaDataActual) {
+                    img.src = terrainRegEvidenciaDataActual;
+                    img.style.display = 'block';
+                } else {
+                    img.src = '';
+                    img.style.display = 'none';
+                }
+            }
+            if (!hasFile && input) input.value = '';
+        }
+
+        function quitarTerrenoRegEvidencia() {
+            terrainRegEvidenciaNombreActual = '';
+            terrainRegEvidenciaSizeActual = 0;
+            terrainRegEvidenciaDataActual = '';
+            syncTerrenoRegEvidenciaUI();
+            persistTerrenoReplicaActiva();
+            renderTerrenoReplicaSelector();
+        }
+
+        function irTerrenoStep2() {
+            const valFecha = document.getElementById('terrenoValFecha').value || '';
+            const valHora = document.getElementById('terrenoValHora').value || '';
+            if (!valFecha || !valHora) {
+                alert('Complete fecha y hora de inicio/validacion para continuar');
+                return;
+            }
+            if (!terrainEvidenciaNombreActual) {
+                alert('Adjunte una imagen de evidencia del punto para continuar');
+                return;
+            }
+            if (!terrainEstadoPuntoActual) {
+                alert('Seleccione el estado del punto para continuar');
+                return;
+            }
+            terrainStep1Completed = true;
+            setTerrenoStep(2);
+        }
+
+        function abrirPanelTerreno(sampleId) {
+            const sid = String(sampleId || '').trim();
+            if (!sid) return;
+            const muestraRef = labMuestrasDetalladas.find(m => m.id === sid);
+            if (!muestraRef) return;
+            terrainSampleActualId = sid;
+            const point = String(muestraRef.punto || '').trim();
+            const estrato = String(muestraRef.estrato || '').trim().toUpperCase();
+            const grupoKey = getTerrenoGrupoKey(point, estrato);
+            const grupoMuestras = getMuestrasPorGrupo(grupoKey);
+            terrainGrupoActualKey = grupoKey;
+            terrainGrupoActualLabel = `${point} · Estrato ${estrato}`;
+            const d = labInspeccionPorGrupo[grupoKey] || {};
+            terrainStep1Completed = isTerrenoStep1Completo(d);
+            const estratoDesc = getEstratoDescripcion(muestraRef.estrato);
+            document.getElementById('terrainResumenPunto').textContent = point || '-';
+            document.getElementById('terrainResumenEstrato').textContent = `Estrato ${muestraRef.estrato}${estratoDesc ? ` (${estratoDesc})` : ''}`;
+            document.getElementById('terrainResumenReplica').textContent = getReplicaResumen(grupoMuestras);
+            document.getElementById('terrainResumenLugar').textContent = muestraRef.lugar || 'Sin lugar de muestreo';
+            document.getElementById('terrainResumenMatriz').textContent = labOiContext.matriz || '-';
+            document.getElementById('terrainResumenPuntoMeta').textContent = point || '-';
+            document.getElementById('terrenoValFecha').value = d.valFecha || '';
+            document.getElementById('terrenoValHora').value = d.valHora || '';
+            terrainEstadoPuntoActual = d.estadoPunto || '';
+            setTerrenoEstadoPunto(terrainEstadoPuntoActual || '');
+            document.getElementById('terrenoValObs').value = d.valObs || '';
+            terrainEvidenciaNombreActual = d.evidenciaNombre || '';
+            terrainEvidenciaSizeActual = Number(d.evidenciaSize || 0);
+            terrainEvidenciaDataActual = d.evidenciaData || '';
+            document.getElementById('terrenoValEvidencia').value = '';
+            syncTerrenoEvidenciaUI();
+            terrainReplicasActual = Array.from(new Set(grupoMuestras.map(m => String(m.replica || '').trim()).filter(Boolean)));
+            terrainReplicaDetalleActual = {};
+            terrainReplicaActiva = '';
+            const detallePrevio = (d.replicas && typeof d.replicas === 'object') ? d.replicas : {};
+            const parametrosBase = Array.isArray(d.parametros) && d.parametros.length
+                ? cloneTerrenoParametros(d.parametros)
+                : cloneTerrenoParametros(getTerrenoParametrosDefault());
+            const observacionBase = d.observacion || '';
+            const regNombreBase = d.registroImagenNombre || '';
+            const regSizeBase = Number(d.registroImagenSize || 0);
+            const regDataBase = d.registroImagenData || '';
+            terrainReplicasActual.forEach(rep => {
+                const prev = (detallePrevio[rep] && typeof detallePrevio[rep] === 'object') ? detallePrevio[rep] : {};
+                terrainReplicaDetalleActual[rep] = {
+                    horaInicio: prev.horaInicio || d.horaInicio || '',
+                    horaFin: prev.horaFin || d.horaFin || '',
+                    parametros: cloneTerrenoParametros(Array.isArray(prev.parametros) && prev.parametros.length ? prev.parametros : parametrosBase),
+                    observacion: prev.observacion || observacionBase,
+                    registroImagenNombre: prev.registroImagenNombre || regNombreBase,
+                    registroImagenSize: Number(prev.registroImagenSize || regSizeBase),
+                    registroImagenData: prev.registroImagenData || regDataBase
+                };
+            });
+            renderTerrenoReplicaSelector();
+            if (!document.getElementById('terrenoValFecha').value) {
+                const hoy = new Date();
+                const yyyy = hoy.getFullYear();
+                const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+                const dd = String(hoy.getDate()).padStart(2, '0');
+                document.getElementById('terrenoValFecha').value = `${yyyy}-${mm}-${dd}`;
+            }
+            setTerrenoStep(1);
+            document.getElementById('terrainOverlay').classList.add('show');
+            document.getElementById('terrainPanel').classList.add('show');
+        }
+
+        function cerrarPanelTerreno() {
+            terrainGrupoActualKey = '';
+            terrainGrupoActualLabel = '';
+            terrainSampleActualId = '';
+            terrainReplicasActual = [];
+            terrainReplicaDetalleActual = {};
+            terrainReplicaActiva = '';
+            document.getElementById('terrainPanel').classList.remove('show');
+            document.getElementById('terrainOverlay').classList.remove('show');
+        }
+
+        function guardarPanelTerreno() {
+            if (!terrainGrupoActualKey) return;
+            const valFecha = document.getElementById('terrenoValFecha').value || '';
+            const valHora = document.getElementById('terrenoValHora').value || '';
+            if (!valFecha || !valHora) {
+                alert('Complete fecha y hora de validacion del punto');
+                setTerrenoStep(1);
+                return;
+            }
+            if (!terrainEvidenciaNombreActual) {
+                alert('Adjunte una imagen de evidencia del punto');
+                setTerrenoStep(1);
+                return;
+            }
+            if (!terrainEstadoPuntoActual) {
+                alert('Seleccione estado del punto');
+                setTerrenoStep(1);
+                return;
+            }
+            terrainStep1Completed = true;
+            persistTerrenoReplicaActiva();
+            const replicasPayload = {};
+            terrainReplicasActual.forEach(rep => {
+                const rd = getTerrenoReplicaDetalle(rep) || {};
+                replicasPayload[rep] = {
+                    horaInicio: rd.horaInicio || '',
+                    horaFin: rd.horaFin || '',
+                    parametros: cloneTerrenoParametros(rd.parametros && rd.parametros.length ? rd.parametros : getTerrenoParametrosDefault()),
+                    observacion: rd.observacion || '',
+                    registroImagenNombre: rd.registroImagenNombre || '',
+                    registroImagenSize: Number(rd.registroImagenSize || 0),
+                    registroImagenData: rd.registroImagenData || ''
+                };
+            });
+            const replicaBase = terrainReplicasActual[0] || '';
+            const horaInicioBase = replicaBase && replicasPayload[replicaBase] ? (replicasPayload[replicaBase].horaInicio || '') : '';
+            const horaFinBase = replicaBase && replicasPayload[replicaBase] ? (replicasPayload[replicaBase].horaFin || '') : '';
+            const parametrosBase = replicaBase && replicasPayload[replicaBase] ? cloneTerrenoParametros(replicasPayload[replicaBase].parametros) : cloneTerrenoParametros(getTerrenoParametrosDefault());
+            const observacionBase = replicaBase && replicasPayload[replicaBase] ? (replicasPayload[replicaBase].observacion || '') : '';
+            const regNombreBase = replicaBase && replicasPayload[replicaBase] ? (replicasPayload[replicaBase].registroImagenNombre || '') : '';
+            const regSizeBase = replicaBase && replicasPayload[replicaBase] ? Number(replicasPayload[replicaBase].registroImagenSize || 0) : 0;
+            const regDataBase = replicaBase && replicasPayload[replicaBase] ? (replicasPayload[replicaBase].registroImagenData || '') : '';
+            labInspeccionPorGrupo[terrainGrupoActualKey] = {
+                valFecha: valFecha,
+                valHora: valHora,
+                estadoPunto: terrainEstadoPuntoActual,
+                evidenciaNombre: terrainEvidenciaNombreActual,
+                evidenciaSize: terrainEvidenciaSizeActual,
+                evidenciaData: terrainEvidenciaDataActual,
+                valObs: (document.getElementById('terrenoValObs').value || '').trim(),
+                parametros: parametrosBase,
+                replicas: replicasPayload,
+                horaInicio: horaInicioBase,
+                horaFin: horaFinBase,
+                observacion: observacionBase,
+                registroImagenNombre: regNombreBase,
+                registroImagenSize: regSizeBase,
+                registroImagenData: regDataBase
+            };
+            cerrarPanelTerreno();
+            renderLabMuestras();
+            showToast(`Registro en terreno guardado para ${terrainGrupoActualLabel}`);
+        }
+
+        function generarMuestrasDetalladasDesdeOI(oi) {
+            const muestras = [];
+            (oi.puntos || []).forEach(p => {
+                const estratos = getEstratosArray(p.estratos);
+                const replicas = Math.max(1, parseInt(p.replicas, 10) || 1);
+                estratos.forEach((estrato, idxEstrato) => {
+                    const estratoLabel = getEstratoLabel(estrato, idxEstrato);
+                    for (let r = 0; r < replicas; r++) {
+                        const replicaLabel = getReplicaLabel(r);
+                        const codigo = `${p.punto}-${estratoLabel}-${replicaLabel}`;
+                        muestras.push({
+                            id: codigo,
+                            codigo,
+                            punto: p.punto || '-',
+                            lugar: resolverLugarPunto(p.punto, p.lugar),
+                            estrato: estratoLabel,
+                            replica: replicaLabel,
+                            observacionPunto: p.observacion || ''
+                        });
+                    }
+                });
+            });
+            return muestras;
+        }
+
+        function cargarContexto() {
+            try {
+                const raw = sessionStorage.getItem(OI_STATE_STORAGE_KEY);
+                const parsed = raw ? JSON.parse(raw) : [];
+                ordenesInspeccion = Array.isArray(parsed) ? parsed : [];
+            } catch (e) {
+                ordenesInspeccion = [];
+            }
+
+            try {
+                const navRaw = sessionStorage.getItem(LAB_NAV_STORAGE_KEY);
+                navData = navRaw ? JSON.parse(navRaw) : null;
+            } catch (e) {
+                navData = null;
+            }
+
+            const params = new URLSearchParams(window.location.search);
+            const idxParam = parseInt(params.get('oi'), 10);
+            if (!Number.isNaN(idxParam)) oiIndex = idxParam;
+            else if (navData && Number.isInteger(navData.oiIdx)) oiIndex = navData.oiIdx;
+
+            if (!Number.isInteger(oiIndex) || oiIndex < 0 || oiIndex >= ordenesInspeccion.length) {
+                document.getElementById('emptyLab').style.display = 'block';
+                document.getElementById('contenidoLab').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('emptyLab').style.display = 'none';
+            document.getElementById('contenidoLab').style.display = 'block';
+            inicializarPantalla(ordenesInspeccion[oiIndex]);
+        }
+
+        function inicializarPantalla(oi) {
+            const guardado = oi.labIngreso || {};
+            const fallbackFechaHora = guardado.fechaHoraMuestreo || '';
+            const muestrasGuardadas = Array.isArray(guardado.muestras) ? guardado.muestras : [];
+
+            labMuestrasDetalladas = generarMuestrasDetalladasDesdeOI(oi);
+            labMuestrasFecha = {};
+            labMuestrasHora = {};
+            labInspeccionPorGrupo = (guardado.inspeccionGrupos && typeof guardado.inspeccionGrupos === 'object')
+                ? JSON.parse(JSON.stringify(guardado.inspeccionGrupos))
+                : ((guardado.inspeccionPuntos && typeof guardado.inspeccionPuntos === 'object')
+                    ? JSON.parse(JSON.stringify(guardado.inspeccionPuntos))
+                    : {});
+            const gruposNormalizados = {};
+            Object.entries(labInspeccionPorGrupo || {}).forEach(([k, v]) => {
+                const key = String(k || '').trim();
+                if (!key) return;
+                if (key.includes('__')) {
+                    gruposNormalizados[key] = v;
+                    return;
+                }
+                const puntoKey = key.toUpperCase();
+                const estratosPunto = Array.from(new Set(
+                    labMuestrasDetalladas
+                        .filter(m => String(m.punto || '').trim().toUpperCase() === puntoKey)
+                        .map(m => String(m.estrato || '').trim().toUpperCase())
+                        .filter(Boolean)
+                ));
+                if (!estratosPunto.length) return;
+                estratosPunto.forEach(estrato => {
+                    gruposNormalizados[getTerrenoGrupoKey(puntoKey, estrato)] = JSON.parse(JSON.stringify(v || {}));
+                });
+            });
+            labInspeccionPorGrupo = gruposNormalizados;
+            labMuestrasDetalladas.forEach(m => {
+                const mg = muestrasGuardadas.find(x => x.id === m.id);
+                if (mg && typeof mg.observacionPunto === 'string') m.observacionPunto = mg.observacionPunto;
+                const fechaHora = (mg && (mg.fechaHoraMuestreo || toFechaHoraISO(mg.fechaMuestreo, mg.horaMuestreo)))
+                    ? (mg.fechaHoraMuestreo || toFechaHoraISO(mg.fechaMuestreo, mg.horaMuestreo))
+                    : fallbackFechaHora;
+                const split = splitFechaHora(fechaHora);
+                labMuestrasFecha[m.id] = split.fecha;
+                labMuestrasHora[m.id] = split.hora;
+            });
+
+            const confirmadasPrevias = Array.isArray(guardado.muestrasConfirmadas) ? guardado.muestrasConfirmadas : [];
+            labMuestrasConfirmadas = new Set(confirmadasPrevias.length ? confirmadasPrevias : labMuestrasDetalladas.map(m => m.id));
+
+            const inspectoresTxt = (oi.usuarios || [])
+                .filter(u => u.tipo === 'inspector' || /inspector/i.test(u.rol || ''))
+                .map(u => u.nombre)
+                .join(', ') || 'Sin asignar';
+            const supervisoresTxt = (oi.usuarios || [])
+                .filter(u => u.tipo === 'supervisor' || /supervisor/i.test(u.rol || ''))
+                .map(u => u.nombre)
+                .join(', ') || 'Sin asignar';
+
+            const matrizTxt = oi.matriz || (oi.puntos[0] && oi.puntos[0].matriz) || '-';
+            const planTxt = oi.plan || ((oi.puntos || []).map(p => p.plan).filter(Boolean)[0] || '-');
+            const laboratorios = Array.from(new Set((oi.puntos || []).map(p => p.laboratorio).filter(Boolean)));
+            const laboratorioTxt = laboratorios.length > 1 ? 'Mixto' : (laboratorios[0] || '-');
+            const estadoTxt = oiEstadoLabels[oi.estado] || oi.estado || 'Pendiente';
+            const tipoTxt = oiTipoLabels[oi.tipo] || 'Muestreo y Medición';
+            const composicionTxt = oiComposicionLabels[oi.composicion] || 'Puntual';
+            const clienteTxt = navData && navData.proyecto && navData.proyecto.cliente ? navData.proyecto.cliente : '-';
+            const olTxt = navData && navData.proyecto && navData.proyecto.ol ? navData.proyecto.ol : '-';
+            const contactoTxt = navData && navData.proyecto && navData.proyecto.responsable ? navData.proyecto.responsable : '';
+
+            setText('labHeadCodigo', oi.codigo || 'XXX');
+            setText('labHeadEstado', estadoTxt);
+            setText('labHeadTipo', tipoTxt);
+            setText('labHeadComposicion', composicionTxt);
+            setText('topCliente', clienteTxt);
+            setText('topOl', olTxt);
+            setText('topProyecto', (navData && navData.proyecto && navData.proyecto.nombre) ? navData.proyecto.nombre : '-');
+            setText('labHeadRecepcion', formatearFecha(oi.fecha));
+            setText('labHeadMatriz', matrizTxt);
+            setText('labHeadPlan', planTxt);
+            setText('labHeadInspector', inspectoresTxt);
+            labOiContext = {
+                codigo: oi.codigo || '-',
+                fecha: formatearFecha(oi.fecha),
+                matriz: matrizTxt,
+                plan: planTxt,
+                inspector: inspectoresTxt
+            };
+            document.getElementById('labRespMuestreo').value = guardado.responsableMuestreo || contactoTxt;
+            document.getElementById('labFechaTransporte').value = guardado.fechaTransporte || '';
+            document.getElementById('labHoraTransporte').value = guardado.horaTransporte || '';
+            document.getElementById('labObsTerreno').value = guardado.observacionesTerreno || '';
+
+            const contactoNombre = contactoTxt || '-';
+            const telefono = telefonosContacto[contactoNombre] || '-';
+            const email = correosContacto[contactoNombre] || '-';
+            const usaEtfa = (oi.puntos || []).some(p => !!p.etfa);
+
+            document.getElementById('exCliente').textContent = clienteTxt;
+            document.getElementById('exOl').textContent = olTxt;
+            document.getElementById('exRecepcion').textContent = formatearFecha(oi.fecha);
+            document.getElementById('exMatriz').textContent = matrizTxt;
+            document.getElementById('exPlan').textContent = planTxt;
+
+            document.getElementById('exContactoNombre').textContent = contactoNombre;
+            document.getElementById('exContactoTelefono').textContent = telefono;
+            document.getElementById('exContactoEmail').textContent = email;
+            document.getElementById('exSupervisor').textContent = supervisoresTxt;
+            document.getElementById('exInspector').textContent = inspectoresTxt;
+
+            document.getElementById('exEtfaProyecto').textContent = (navData && navData.proyecto && navData.proyecto.nombre) ? navData.proyecto.nombre : 'Proyecto sin nombre';
+            document.getElementById('exEtfaIga').textContent = usaEtfa ? 'RCA: N° 010-2012' : 'No aplica';
+            document.getElementById('exEtfaTitular').textContent = clienteTxt;
+            document.getElementById('exEtfaRutTitular').textContent = rutTitularPorCliente[clienteTxt] || '-';
+            document.getElementById('exEtfaRepLegal').textContent = contactoNombre;
+            document.getElementById('exEtfaRutRrll').textContent = rutRrllPorContacto[contactoNombre] || '-';
+
+            toggleLabHeaderExtra(false);
+
+            renderLabMuestras();
+        }
+
+        function renderLabMuestras() {
+            const body = document.getElementById('labMuestrasBody');
+            const count = document.getElementById('labConfirmCount');
+            const chkAll = document.getElementById('labCheckAll');
+            const totalHead = document.getElementById('labHeadTotalMuestras');
+
+            if (!labMuestrasDetalladas.length) {
+                body.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#94a3b8;">No hay muestras para esta OI</td></tr>';
+                count.textContent = '0 / 0 confirmadas';
+                chkAll.checked = false;
+                totalHead.textContent = '0';
+                return;
+            }
+
+            body.innerHTML = labMuestrasDetalladas.map(m => `
+                <tr>
+                    <td><input type="checkbox" ${labMuestrasConfirmadas.has(m.id) ? 'checked' : ''} onchange="toggleLabMuestra('${esc(m.id)}', this.checked)"></td>
+                    <td class="sample-code">${esc(m.codigo)}</td>
+                    <td class="sample-point">
+                        <div class="sample-point-main">
+                            <span>${esc(m.punto)}</span>
+                            <span class="sample-mini-tag">Estrato ${esc(m.estrato)}${m.estrato === 'S' ? ' (Superficie)' : (m.estrato === 'M' ? ' (Medio)' : '')}</span>
+                            <span class="sample-mini-tag">Replica ${esc(m.replica)}</span>
+                        </div>
+                        <div class="sample-point-place"><span class="k">Lugar de muestreo:</span>${esc(m.lugar || 'Sin lugar de muestreo')}</div>
+                        ${getReplicaCountByMuestra(m) > 1 ? `<div class="sample-point-shared"><i class="fa-solid fa-link"></i> Registro terreno independiente por replica: ${esc(getReplicaResumenByMuestra(m))}</div>` : ''}
+                    </td>
+                    <td>
+                        <div class="obs-cell">
+                            <button type="button" class="obs-btn ${m.observacionPunto ? 'has-note' : ''}" onclick="abrirObsModal('${esc(m.id)}')" title="${m.observacionPunto ? 'Editar comentario' : 'Agregar comentario'}"><i class="fa-solid fa-comment-dots"></i></button>
+                        </div>
+                    </td>
+                    <td><input type="date" value="${esc(labMuestrasFecha[m.id] || '')}" onchange="setLabMuestraFecha('${esc(m.id)}', this.value)"></td>
+                    <td><input type="time" value="${esc(labMuestrasHora[m.id] || '')}" onchange="setLabMuestraHora('${esc(m.id)}', this.value)"></td>
+                    <td>
+                        <button type="button" class="point-terreno-btn ${replicaRegistroFinalizado(m) ? 'done' : (replicaTieneInspeccion(m) ? 'in-progress' : '')}" onclick="abrirPanelTerreno('${esc(m.id)}')" title="${replicaRegistroFinalizado(m) ? 'Registro terreno finalizado' : (replicaTieneInspeccion(m) ? 'Registro terreno en progreso' : 'Registro terreno pendiente')}"><i class="fa-solid fa-clipboard-check"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+
+            const total = labMuestrasDetalladas.length;
+            const ok = labMuestrasConfirmadas.size;
+            count.textContent = `${ok} / ${total} confirmadas`;
+            chkAll.checked = total > 0 && ok === total;
+            totalHead.textContent = String(total);
+        }
+
+        function setLabMuestraFecha(sampleId, value) { labMuestrasFecha[sampleId] = value || ''; }
+        function setLabMuestraHora(sampleId, value) { labMuestrasHora[sampleId] = value || ''; }
+
+        function toggleLabMuestra(sampleId, checked) {
+            if (checked) labMuestrasConfirmadas.add(sampleId);
+            else labMuestrasConfirmadas.delete(sampleId);
+            renderLabMuestras();
+        }
+
+        function toggleLabTodas(checked) {
+            if (checked) labMuestrasConfirmadas = new Set(labMuestrasDetalladas.map(m => m.id));
+            else labMuestrasConfirmadas = new Set();
+            renderLabMuestras();
+        }
+
+        function abrirObsModal(sampleId) {
+            const m = labMuestrasDetalladas.find(x => x.id === sampleId);
+            if (!m) return;
+            obsSampleIdActual = sampleId;
+            document.getElementById('obsTitulo').textContent = `${m.punto}${m.lugar ? ` · ${m.lugar}` : ''}`;
+            document.getElementById('obsTexto').value = m.observacionPunto || '';
+            document.getElementById('obsOverlay').classList.add('show');
+        }
+
+        function cerrarObsModal() {
+            document.getElementById('obsOverlay').classList.remove('show');
+            obsSampleIdActual = '';
+        }
+
+        function guardarObsModal() {
+            const m = labMuestrasDetalladas.find(x => x.id === obsSampleIdActual);
+            if (!m) return;
+            m.observacionPunto = (document.getElementById('obsTexto').value || '').trim();
+            cerrarObsModal();
+            renderLabMuestras();
+        }
+
+        function guardarEnvioLaboratorio() {
+            if (oiIndex < 0 || oiIndex >= ordenesInspeccion.length) return;
+            const oi = ordenesInspeccion[oiIndex];
+            const responsable = (document.getElementById('labRespMuestreo').value || '').trim();
+            const fechaTransporte = document.getElementById('labFechaTransporte').value;
+            const horaTransporte = document.getElementById('labHoraTransporte').value;
+            const observacionesTerreno = (document.getElementById('labObsTerreno').value || '').trim();
+
+            if (!responsable || !fechaTransporte || !horaTransporte) {
+                alert('Complete responsable, fecha y hora de transporte');
+                return;
+            }
+            if (!labMuestrasConfirmadas.size) {
+                alert('Debe confirmar al menos una muestra');
+                return;
+            }
+
+            const faltantes = labMuestrasDetalladas
+                .filter(m => labMuestrasConfirmadas.has(m.id) && (!labMuestrasFecha[m.id] || !labMuestrasHora[m.id]))
+                .map(m => m.codigo);
+
+            if (faltantes.length) {
+                alert(`Complete fecha y hora de muestreo en: ${faltantes.slice(0, 3).join(', ')}${faltantes.length > 3 ? '...' : ''}`);
+                return;
+            }
+
+            const muestras = labMuestrasDetalladas.map(m => ({
+                id: m.id,
+                codigo: m.codigo,
+                punto: m.punto,
+                lugar: m.lugar,
+                estrato: m.estrato,
+                replica: m.replica,
+                observacionPunto: m.observacionPunto || '',
+                confirmada: labMuestrasConfirmadas.has(m.id),
+                fechaMuestreo: labMuestrasFecha[m.id] || '',
+                horaMuestreo: labMuestrasHora[m.id] || '',
+                fechaHoraMuestreo: toFechaHoraISO(labMuestrasFecha[m.id], labMuestrasHora[m.id])
+            }));
+
+            oi.labIngreso = {
+                responsableMuestreo: responsable,
+                fechaTransporte,
+                horaTransporte,
+                observacionesTerreno,
+                muestrasConfirmadas: Array.from(labMuestrasConfirmadas),
+                muestras,
+                inspeccionGrupos: labInspeccionPorGrupo,
+                inspeccionPuntos: labInspeccionPorGrupo,
+                totalMuestras: labMuestrasDetalladas.length,
+                fechaHoraMuestreo: ''
+            };
+
+            try {
+                sessionStorage.setItem(OI_STATE_STORAGE_KEY, JSON.stringify(ordenesInspeccion));
+            } catch (e) {
+                // noop
+            }
+
+            showToast(`Muestras preparadas para laboratorio (${oi.labIngreso.muestrasConfirmadas.length})`);
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.terrain-param-picker')) {
+                closeTerrenoParamMenu();
+            }
+        });
+
+        cargarContexto();
+    </script>
+</body>
+</html>

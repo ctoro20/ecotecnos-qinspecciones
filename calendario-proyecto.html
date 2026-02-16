@@ -1,0 +1,4568 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGS - Calendario de Inspectores</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            height: 100vh;
+        }
+
+        body.assignment-locked .sidebar,
+        body.assignment-locked .header,
+        body.assignment-locked .tabs,
+        body.assignment-locked .calendar-controls,
+        body.assignment-locked .legend,
+        body.assignment-locked .inspectors-panel,
+        body.assignment-locked .muestreo-panel {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .assignment-lock-overlay {
+            display: none;
+            position: fixed;
+            top: 90px;
+            left: 210px;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.08);
+            z-index: 900;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 8px;
+            pointer-events: none;
+        }
+
+        .assignment-lock-overlay.show {
+            display: flex;
+        }
+
+        .assignment-lock-message {
+            background: #fff;
+            border: 1px solid #e3e3e3;
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 12px;
+            color: #333;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 210px;
+            background: #3a3a3a;
+            color: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-section {
+            padding: 20px;
+            border-bottom: 1px solid #555;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 36px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .user-info {
+            padding: 15px;
+            border-bottom: 1px solid #555;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            border: 2px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .user-version {
+            font-size: 10px;
+            color: #999;
+        }
+
+        .company-select {
+            margin: 15px;
+            padding: 8px;
+            background: white;
+            border: 1px solid #555;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        .menu {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #ccc;
+            text-decoration: none;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .menu-item:hover {
+            background: #4a4a4a;
+        }
+
+        .menu-item.active {
+            background: #555;
+            color: #ff6633;
+        }
+
+        .menu-icon {
+            width: 20px;
+            height: 20px;
+            font-size: 16px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            background: white;
+            border-bottom: 1px solid #ddd;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #333;
+            margin: 0;
+        }
+
+        .header-project-info {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .header-project-info .info-label {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 6px 14px;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .header-project-info .info-label .label-title {
+            font-size: 10px;
+            font-weight: bold;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .header-project-info .info-label .label-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            margin-top: 2px;
+        }
+
+        .content {
+            flex: 1;
+            overflow: auto;
+            background: #f5f5f5;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Tabs de navegación */
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            padding: 10px 20px;
+            border: none;
+            background: #f0f0f0;
+            color: #666;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .tab-button:hover {
+            background: #e0e0e0;
+        }
+
+        .tab-button.active {
+            background: #ee8866;
+            color: white;
+        }
+
+        /* Workspace Layout - Inspectores + Calendario + Muestreo */
+        .workspace {
+            display: flex;
+            gap: 15px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .calendar-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        /* Calendar Controls */
+        .calendar-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .view-filters {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .filter-label {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .filter-btn {
+            padding: 8px 20px;
+            border: 1px solid #999;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active {
+            background: #666;
+            color: white;
+            border-color: #666;
+        }
+
+        .filter-btn:hover:not(.active) {
+            background: #f0f0f0;
+        }
+
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .month-display {
+            font-size: 24px;
+            font-weight: normal;
+            color: #333;
+            min-width: 200px;
+            text-align: center;
+        }
+
+        .nav-btn {
+            padding: 8px 12px;
+            border: 1px solid #999;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .today-btn {
+            padding: 8px 16px;
+            border: 1px solid #999;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        /* Inspector Filter */
+        .inspector-filter {
+            margin-bottom: 20px;
+        }
+
+        .filter-dropdown {
+            padding: 10px 15px;
+            border: 1px solid #999;
+            background: white;
+            border-radius: 20px;
+            font-size: 13px;
+            min-width: 200px;
+            cursor: pointer;
+        }
+
+        .calendar-card {
+            background: #fff;
+            border: 1px solid #e3e3e3;
+            border-radius: 12px;
+            padding: 10px 12px 12px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+        }
+
+        .calendar-card .calendar-controls {
+            margin-bottom: 12px;
+        }
+
+        .calendar-card .legend {
+            margin-bottom: 16px;
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.etfa {
+            background: #4CAF50;
+        }
+
+        .legend-dot.medicion {
+            background: #2196F3;
+        }
+
+        .legend-dot.no-autorizado {
+            background: #ff0000;
+        }
+
+        /* Calendar Grid */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: #ddd;
+            border: 1px solid #ddd;
+        }
+
+        .day-header {
+            background: white;
+            padding: 10px;
+            font-size: 11px;
+            font-weight: bold;
+            color: #666;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .day-cell {
+            background: white;
+            min-height: 120px;
+            padding: 5px;
+            position: relative;
+        }
+
+        .day-number {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 5px;
+        }
+
+        .assignment {
+            background: #2c2c2c;
+            color: white;
+            padding: 5px 7px;
+            margin-bottom: 3px;
+            font-size: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .assignment:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        /* OI con inspector asignado */
+        .assignment.assigned {
+            background: #ff6633;
+        }
+
+        /* Indicador ETFA */
+        .assignment.etfa {
+            border-left: 3px solid #4CAF50;
+        }
+
+        /* Número de OI destacado */
+        .assignment .oi-number {
+            font-weight: bold;
+            font-size: 11px;
+            margin-bottom: 2px;
+        }
+
+        /* Puntos de muestreo */
+        .assignment .puntos {
+            font-size: 9px;
+            opacity: 0.9;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+
+        /* Iniciales del inspector */
+        .assignment .inspector-badge {
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            background: rgba(255,255,255,0.25);
+            color: white;
+            font-size: 8px;
+            font-weight: bold;
+            padding: 2px 4px;
+            border-radius: 3px;
+            line-height: 1;
+        }
+
+        /* Contador de puntos */
+        .assignment .puntos-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 1px 4px;
+            border-radius: 8px;
+            font-size: 8px;
+            margin-left: 4px;
+        }
+
+        /* Drag and Drop Styles */
+        .assignment.dragging {
+            opacity: 0.5;
+            transform: rotate(3deg);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .day-cell.drag-over {
+            background: #e3f2fd;
+            border: 2px dashed #2196F3;
+        }
+
+        .assignment {
+            cursor: grab;
+        }
+
+        .assignment:active {
+            cursor: grabbing;
+        }
+
+        /* Inspectors Panel */
+        .inspectors-panel {
+            width: 220px;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .inspectors-header {
+            padding: 15px;
+            background: #fff;
+            border-bottom: 1px solid #ddd;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .inspectors-actions {
+            padding: 10px 15px;
+            background: #fff;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .inspectors-clear-btn {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 6px;
+            border: 1px solid #bbb;
+            background: #f5f5f5;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .inspectors-clear-btn:hover {
+            background: #eee;
+        }
+
+        .inspectors-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .inspector-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .inspector-card.unassigned {
+            background: #f3f3f3;
+            border-color: #cfcfcf;
+        }
+
+        .inspector-card:hover {
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+            background: #f5f5f5;
+        }
+
+        .inspector-card.selected {
+            border: 2px solid #ff6633;
+            background: #fff5f0;
+        }
+
+        .inspector-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .inspector-name {
+            font-size: 13px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .inspector-role {
+            font-size: 11px;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .inspector-counter {
+            background: #ff6633;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 10px;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .inspector-counter.unassigned {
+            background: #9e9e9e;
+        }
+
+        .inspector-counter.zero {
+            background: #ccc;
+            color: #666;
+        }
+
+        /* Inspector Menu */
+        .inspector-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 100;
+            margin-top: 5px;
+        }
+
+        .inspector-menu.show {
+            display: block;
+        }
+
+        .inspector-menu-item {
+            padding: 10px 12px;
+            font-size: 12px;
+            color: #333;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+        }
+
+        .inspector-menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .inspector-menu-item:hover {
+            background: #f5f5f5;
+        }
+
+        .inspector-menu-item.active {
+            background: #fff5f0;
+            color: #ff6633;
+        }
+
+        /* Assignment mode */
+        .assignment-mode-banner {
+            display: none;
+            background: #ff6633;
+            color: white;
+            padding: 10px 15px;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .assignment-mode-banner.show {
+            display: block;
+        }
+
+        .assignment-mode-banner button {
+            background: white;
+            color: #ff6633;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 15px;
+            margin-left: 10px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        /* Selectable assignments */
+        .assignment.selectable {
+            cursor: pointer;
+        }
+
+        .assignment.selectable:hover {
+            outline: 2px dashed #ff6633;
+            outline-offset: 1px;
+        }
+
+        /* Tarjetas en proceso de asignación (pendientes de confirmar) */
+        .assignment.pending-assign {
+            background: #ffaa80;
+            border: 2px solid #555;
+        }
+
+        /* Tarjetas ya confirmadas/asignadas */
+        .assignment.assigned {
+            background: #ff6633;
+        }
+
+        /* Filtered out assignments */
+        .assignment.filtered-out {
+            opacity: 0.3;
+        }
+
+        .assignment.blocked {
+            opacity: 0.3;
+        }
+
+        /* Floating Assignment Bar */
+        .assignment-floating-bar {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 210px;
+            right: 0;
+            background: white;
+            border-top: 3px solid #ff6633;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+            padding: 15px 30px;
+            z-index: 1000;
+            animation: slideUp 0.3s ease;
+        }
+
+        .assignment-floating-bar.show {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .floating-bar-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .floating-bar-inspector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .floating-bar-inspector-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ff6633;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .floating-bar-inspector-name {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .floating-bar-inspector-label {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .floating-bar-counter {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: #fff5f0;
+            border-radius: 8px;
+            border: 1px solid #ffcdb8;
+        }
+
+        .counter-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ff6633;
+        }
+
+        .counter-label {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.3;
+        }
+
+        .floating-bar-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .floating-bar-btn {
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .floating-bar-btn.cancel {
+            background: white;
+            border: 2px solid #999;
+            color: #666;
+        }
+
+        .floating-bar-btn.cancel:hover {
+            background: #f5f5f5;
+            border-color: #666;
+        }
+
+        .floating-bar-btn.confirm {
+            background: #ff6633;
+            border: 2px solid #ff6633;
+            color: white;
+        }
+
+        .floating-bar-btn.confirm:hover {
+            background: #e55a2b;
+            border-color: #e55a2b;
+        }
+
+        .floating-bar-btn.confirm:disabled {
+            background: #ccc;
+            border-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Modal/Popup Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 85vh;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid #ddd;
+            position: relative;
+        }
+
+        .modal-header h2 {
+            font-size: 13px;
+            color: #333;
+            margin-bottom: 4px;
+            padding-right: 30px;
+            line-height: 1.2;
+        }
+
+        .modal-header-content {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 8px;
+            align-items: center;
+            padding-right: 36px;
+        }
+
+        .modal-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            justify-self: center;
+        }
+
+        .modal-title-block {
+            min-width: 0;
+            text-align: left;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            line-height: 1;
+            z-index: 2;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        .modal-date {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            margin: 2px 0 0;
+        }
+
+        .modal-contact {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            line-height: 1.3;
+            margin-bottom: 4px;
+            flex-wrap: wrap;
+            flex-direction: column;
+        }
+
+        .modal-badge {
+            display: inline-block;
+            background: #666;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 11px;
+            margin-top: 4px;
+            white-space: nowrap;
+        }
+
+        .modal-badge-wrap {
+            display: flex;
+            justify-content: flex-end;
+            justify-self: end;
+        }
+
+        .modal-tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .modal-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            background: #f5f5f5;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            color: #666;
+            transition: all 0.2s;
+        }
+
+        .modal-tab.active {
+            background: white;
+            color: #ff6633;
+            border-bottom: 2px solid #ff6633;
+        }
+
+        .modal-tab:hover:not(.active) {
+            background: #eee;
+        }
+
+        .modal-body {
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .modal-section {
+            margin-bottom: 20px;
+        }
+
+        .modal-section-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .modal-roles-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .modal-role-tag {
+            background: #f5f5f5;
+            padding: 6px 10px;
+            border-radius: 999px;
+            text-align: left;
+            color: #666;
+            font-size: 12px;
+            line-height: 1.3;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-role-tag.assigned {
+            background: #fff5f0;
+            color: #ff6633;
+            font-weight: bold;
+        }
+
+        .role-icon {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #999;
+            position: relative;
+            flex: 0 0 14px;
+        }
+
+        .role-icon::before {
+            content: '';
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #fff;
+            top: 2px;
+            left: 4px;
+        }
+
+        .role-icon::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 5px;
+            border-radius: 6px 6px 2px 2px;
+            background: #fff;
+            bottom: 2px;
+            left: 2px;
+        }
+
+        .role-icon.coordinator {
+            background: #4caf50;
+        }
+
+        .role-icon.supervisor {
+            background: #2196f3;
+        }
+
+        .role-icon.inspector {
+            background: #ff6633;
+        }
+
+        /* Listado de puntos de muestra */
+        .muestra-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .muestra-item:last-child {
+            border-bottom: none;
+        }
+
+        .muestra-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .muestra-label {
+            font-size: 12px;
+            color: #999;
+            width: 100px;
+        }
+
+        .muestra-value {
+            font-size: 12px;
+            color: #333;
+            text-align: right;
+            flex: 1;
+        }
+
+        .muestra-nombre {
+            font-weight: bold;
+            color: #333;
+            font-size: 13px;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        /* Tabla de muestras detalle */
+        .muestras-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        .muestras-table th {
+            background: #f5f5f5;
+            padding: 10px 8px;
+            text-align: left;
+            font-weight: bold;
+            color: #666;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .muestras-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #eee;
+            color: #333;
+        }
+
+        .muestras-table .plan-list {
+            list-style: disc;
+            margin: 0;
+            padding-left: 15px;
+        }
+
+        .muestras-table .etfa-link {
+            color: #ff6633;
+            text-decoration: none;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .status-programado {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .status-en-proceso {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .status-recepcionado {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .modal-btn {
+            padding: 10px 30px;
+            border-radius: 5px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-btn.secondary {
+            background: #333;
+            color: white;
+            border: none;
+        }
+
+        .modal-btn.secondary:hover {
+            background: #444;
+        }
+
+        .modal-btn.primary {
+            background: #ff6633;
+            color: white;
+            border: none;
+        }
+
+        .modal-btn.primary:hover {
+            background: #e55a2b;
+        }
+
+        /* Panel de Puntos de Muestreo */
+        .muestreo-panel {
+            width: 280px;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: width 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .muestreo-panel.collapsed {
+            width: 40px;
+        }
+
+        .muestreo-panel.collapsed .muestreo-content {
+            display: none;
+        }
+
+        .muestreo-panel.collapsed .muestreo-header-title,
+        .muestreo-panel.collapsed .muestreo-header-count {
+            display: none;
+        }
+
+        .muestreo-header {
+            padding: 12px 15px;
+            background: #fff;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .muestreo-header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .muestreo-header-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            white-space: nowrap;
+        }
+
+        .muestreo-header-count {
+            background: #ff6633;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .muestreo-toggle-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            color: #666;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .muestreo-toggle-btn:hover {
+            color: #333;
+        }
+
+        .muestreo-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .muestreo-search {
+            padding: 10px 12px;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+        }
+
+        .muestreo-search input {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        .muestreo-filters {
+            padding: 8px 12px;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .muestreo-filter-chip {
+            padding: 4px 10px;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            font-size: 11px;
+            cursor: pointer;
+            background: #fff;
+            color: #666;
+            transition: all 0.2s;
+        }
+
+        .muestreo-filter-chip:hover {
+            background: #f5f5f5;
+        }
+
+        .muestreo-filter-chip.active {
+            background: #333;
+            color: white;
+            border-color: #333;
+        }
+
+        .muestreo-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .muestreo-group {
+            margin-bottom: 15px;
+        }
+
+        .muestreo-group-title {
+            font-size: 11px;
+            font-weight: bold;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            padding: 0 4px;
+        }
+
+        .muestreo-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            cursor: grab;
+            transition: all 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .muestreo-card:hover {
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+            border-color: #bbb;
+        }
+
+        .muestreo-card:active {
+            cursor: grabbing;
+        }
+
+        .muestreo-card.dragging {
+            opacity: 0.5;
+            transform: rotate(2deg);
+        }
+
+        .muestreo-card:focus,
+        .muestreo-card:focus-visible,
+        .muestreo-card[draggable]:focus {
+            outline: none;
+            border-color: #ddd;
+        }
+
+        /* Selección múltiple de puntos */
+        .muestreo-card.selected {
+            background: #fff3e0;
+            border-color: #ff6633;
+            box-shadow: 0 0 0 2px rgba(255, 102, 51, 0.2);
+        }
+
+        .muestreo-card .select-checkbox {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .muestreo-card .select-checkbox:hover {
+            border-color: #ff6633;
+        }
+
+        .muestreo-card.selected .select-checkbox {
+            background: #ff6633;
+            border-color: #ff6633;
+        }
+
+        .muestreo-card.selected .select-checkbox::after {
+            content: '✓';
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .muestreo-card {
+            position: relative;
+            padding-left: 32px;
+        }
+
+        /* Barra de selección */
+        .muestreo-selection-bar {
+            display: none;
+            background: #ff6633;
+            color: white;
+            padding: 10px 12px;
+            font-size: 12px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .muestreo-selection-bar.show {
+            display: flex;
+        }
+
+        .muestreo-selection-bar .selection-count {
+            font-weight: bold;
+        }
+
+        .muestreo-selection-bar .selection-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .muestreo-selection-bar button {
+            background: white;
+            color: #ff6633;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .muestreo-selection-bar button:hover {
+            background: #f5f5f5;
+        }
+
+        .muestreo-selection-bar button.clear-btn {
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .muestreo-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 6px;
+        }
+
+        .muestreo-card-code {
+            font-size: 13px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .muestreo-card-matriz {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .muestreo-card-matriz.agua {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .muestreo-card-matriz.suelo {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .muestreo-card-matriz.aire {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .muestreo-card-matriz.sedimento {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+
+        .muestreo-card-name {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .muestreo-card-meta {
+            display: flex;
+            gap: 8px;
+            font-size: 10px;
+            color: #999;
+        }
+
+        .muestreo-card-meta span {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .muestreo-card-status {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 4px;
+        }
+
+        .muestreo-card-status.pendiente {
+            background: #ff9800;
+        }
+
+        .muestreo-card-status.programado {
+            background: #4caf50;
+        }
+
+        .muestreo-card-status.sin-programar {
+            background: #9e9e9e;
+        }
+
+        /* Indicador de drop en calendario */
+        .day-cell.drop-target {
+            background: #fff5f0;
+            border: 2px dashed #ff6633;
+        }
+
+        .day-cell.drop-target::after {
+            content: 'Soltar aquí';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 11px;
+            color: #ff6633;
+            font-weight: bold;
+            pointer-events: none;
+        }
+
+        /* Modal Crear OI */
+        .crear-oi-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .crear-oi-modal.show {
+            display: flex;
+        }
+
+        .crear-oi-content {
+            background: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 520px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        .crear-oi-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .crear-oi-header h3 {
+            font-size: 16px;
+            color: #333;
+            margin: 0;
+        }
+
+        .crear-oi-close {
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            color: #999;
+            line-height: 1;
+        }
+
+        .crear-oi-close:hover {
+            color: #333;
+        }
+
+        .crear-oi-body {
+            padding: 20px;
+        }
+
+        .crear-oi-info {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+        }
+
+        .crear-oi-info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+
+        .crear-oi-info-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .crear-oi-info-label {
+            color: #666;
+        }
+
+        .crear-oi-info-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .crear-oi-field {
+            margin-bottom: 16px;
+        }
+
+        .crear-oi-field label {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 6px;
+        }
+
+        .crear-oi-field select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 13px;
+            background: white;
+        }
+
+        .crear-oi-field select:focus {
+            outline: none;
+            border-color: #ff6633;
+        }
+
+        .crear-oi-toggle-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .crear-oi-toggle {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: #fff;
+            cursor: pointer;
+            text-align: center;
+            font-size: 13px;
+            color: #666;
+            transition: all 0.2s;
+        }
+
+        .crear-oi-toggle:hover {
+            background: #f5f5f5;
+        }
+
+        .crear-oi-toggle.active {
+            background: #333;
+            color: white;
+            border-color: #333;
+        }
+
+        .crear-oi-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .crear-oi-btn {
+            padding: 10px 25px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .crear-oi-btn.cancel {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            color: #666;
+        }
+
+        .crear-oi-btn.cancel:hover {
+            background: #eee;
+        }
+
+        .crear-oi-btn.confirm {
+            background: #ff6633;
+            border: 1px solid #ff6633;
+            color: white;
+        }
+
+        .crear-oi-btn.confirm:hover {
+            background: #e55a2b;
+        }
+
+        /* Layout compacto de campos */
+        .crear-oi-fields-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .crear-oi-fields-row .crear-oi-field {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .crear-oi-fields-row .crear-oi-field.small {
+            flex: 0 0 auto;
+        }
+
+        /* Toggle compacto para Tipo y ETFA */
+        .crear-oi-toggle-compact {
+            display: flex;
+            gap: 6px;
+        }
+
+        .crear-oi-toggle-compact .crear-oi-toggle {
+            padding: 8px 12px;
+            font-size: 12px;
+        }
+
+        .crear-oi-toggle-etfa {
+            min-width: 70px;
+        }
+
+        /* Sección de Recurrencia tipo Outlook */
+        .crear-oi-recurrencia {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .crear-oi-recurrencia-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+
+        .crear-oi-recurrencia-header input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .crear-oi-recurrencia-header label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .crear-oi-recurrencia-header label .icon {
+            font-size: 16px;
+        }
+
+        .crear-oi-recurrencia-options {
+            display: none;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .crear-oi-recurrencia-options.show {
+            display: block;
+        }
+
+        .recurrencia-tipo {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .recurrencia-tipo-btn {
+            padding: 8px 14px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .recurrencia-tipo-btn:hover {
+            background: #f5f5f5;
+        }
+
+        .recurrencia-tipo-btn.active {
+            background: #ee8866;
+            color: white;
+            border-color: #ee8866;
+        }
+
+        .recurrencia-config {
+            margin-top: 12px;
+        }
+
+        .recurrencia-config-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 13px;
+            flex-wrap: wrap;
+        }
+
+        .recurrencia-config-row label {
+            color: #666;
+            min-width: 80px;
+        }
+
+        .recurrencia-config-row input[type="number"] {
+            width: 60px;
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .recurrencia-config-row input[type="date"] {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .recurrencia-config-row select {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .recurrencia-dias-semana {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .recurrencia-dia-btn {
+            width: 36px;
+            height: 36px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .recurrencia-dia-btn:hover {
+            background: #f5f5f5;
+        }
+
+        .recurrencia-dia-btn.active {
+            background: #ee8866;
+            color: white;
+            border-color: #ee8866;
+        }
+
+        .recurrencia-fin {
+            margin-top: 15px;
+            padding-top: 12px;
+            border-top: 1px dashed #ddd;
+        }
+
+        .recurrencia-fin-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .recurrencia-fin-option input[type="radio"] {
+            margin: 0;
+        }
+
+        .recurrencia-preview {
+            margin-top: 12px;
+            padding: 10px 12px;
+            background: #e8f4fd;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #1976d2;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .recurrencia-preview .icon {
+            font-size: 16px;
+        }
+
+        .recurrencia-preview-text {
+            flex: 1;
+        }
+
+        .recurrencia-preview-count {
+            font-weight: 600;
+            background: #1976d2;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo-section">
+            <a href="#" class="logo">SGS</a>
+        </div>
+        
+        <div class="user-info">
+            <div class="user-icon">👤</div>
+            <div class="user-details">
+                <div class="user-name">VIVIANA LOPEZ</div>
+                <div class="user-version">Versión 1.0.2</div>
+            </div>
+        </div>
+
+        <select class="company-select">
+            <option>SGS CHILE</option>
+        </select>
+
+        <nav class="menu">
+            <a href="#" class="menu-item">
+                <span class="menu-icon">🏠</span>
+                <span>INICIO</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">📄</span>
+                <span>DOCUMENTOS</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">📝</span>
+                <span>INFORME DE TERRENO</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">📋</span>
+                <span>LISTADO OL</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">📋</span>
+                <span>LISTADO OI</span>
+            </a>
+            <a href="proyectos.html" class="menu-item active">
+                <span class="menu-icon">🏱</span>
+                <span>PROYECTOS</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">📅</span>
+                <span>CALENDARIO</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <a href="proyectos.html" style="padding: 10px 20px; background-color: #ddd; color: #666; border: none; border-radius: 6px; cursor: pointer; text-decoration: none; font-size: 14px; font-weight: 500;">← Volver</a>
+                <h1 style="margin: 0;">Ficha del Proyecto</h1>
+            </div>
+            <div class="header-project-info">
+                <div class="info-label">
+                    <span class="label-title">Cliente</span>
+                    <span class="label-value">Corp Nacional del Cobre de Chile</span>
+                </div>
+                <div class="info-label">
+                    <span class="label-title">OL</span>
+                    <span class="label-value">801598</span>
+                </div>
+                <div class="info-label">
+                    <span class="label-title">Proyecto</span>
+                    <span class="label-value">Chuquicamata</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Tabs de navegación principal -->
+            <div class="tabs">
+                <a href="ficha-proyecto.html" class="tab-button">📋 Ficha ambiental</a>
+                <a href="ficha-proyecto.html#repositorio" class="tab-button">📁 Repositorio Documental</a>
+                <a href="ficha-proyecto.html#informes" class="tab-button">📊 Informes de Terreno</a>
+                <span class="tab-button active">📅 Calendario</span>
+            </div>
+
+            <!-- Workspace: Inspectores + Calendario + Muestreo -->
+            <div class="workspace">
+                <!-- Panel de Inspectores -->
+                <div class="inspectors-panel">
+                    <div class="inspectors-header">Inspectores</div>
+                    <div class="inspectors-actions">
+                        <button class="inspectors-clear-btn" type="button" id="clearInspectorFilter">Limpiar filtro</button>
+                    </div>
+                    <div class="assignment-mode-banner" id="assignmentBanner">
+                        Modo asignación activo
+                        <button onclick="exitAssignmentMode()">Cancelar</button>
+                    </div>
+                    <div class="inspectors-list" id="inspectorsList">
+                        <div class="inspector-card unassigned" data-inspector-id="unassigned">
+                            <div class="inspector-info">
+                                <div>
+                                    <div class="inspector-name">Sin asignar</div>
+                                    <div class="inspector-role">OIs sin inspector</div>
+                                </div>
+                                <div class="inspector-counter unassigned" id="counter-unassigned">0</div>
+                            </div>
+                            <div class="inspector-menu" id="menu-unassigned">
+                                <div class="inspector-menu-item" data-action="filter">Filtrar OIs sin asignar</div>
+                                <div class="inspector-menu-item" data-action="assign">Desasignar OIs</div>
+                            </div>
+                        </div>
+                        <div class="inspector-card" data-inspector-id="1">
+                            <div class="inspector-info">
+                                <div>
+                                    <div class="inspector-name">Carlos Mendoza</div>
+                                    <div class="inspector-role">Inspector Senior</div>
+                                </div>
+                                <div class="inspector-counter zero" id="counter-1">0</div>
+                            </div>
+                            <div class="inspector-menu" id="menu-1">
+                                <div class="inspector-menu-item" data-action="filter">Filtrar OIs asignadas</div>
+                                <div class="inspector-menu-item" data-action="assign">Asignar OIs</div>
+                                <div class="inspector-menu-item" data-action="remove">Desasignar OIs</div>
+                                <div class="inspector-menu-item" data-action="reassign">Reasignar OIs</div>
+                            </div>
+                        </div>
+                        <div class="inspector-card" data-inspector-id="2">
+                            <div class="inspector-info">
+                                <div>
+                                    <div class="inspector-name">María González</div>
+                                    <div class="inspector-role">Inspector Junior</div>
+                                </div>
+                                <div class="inspector-counter zero" id="counter-2">0</div>
+                            </div>
+                            <div class="inspector-menu" id="menu-2">
+                                <div class="inspector-menu-item" data-action="filter">Filtrar OIs asignadas</div>
+                                <div class="inspector-menu-item" data-action="assign">Asignar OIs</div>
+                                <div class="inspector-menu-item" data-action="remove">Desasignar OIs</div>
+                                <div class="inspector-menu-item" data-action="reassign">Reasignar OIs</div>
+                            </div>
+                        </div>
+                        <div class="inspector-card" data-inspector-id="3">
+                            <div class="inspector-info">
+                                <div>
+                                    <div class="inspector-name">Pedro Sánchez</div>
+                                    <div class="inspector-role">Inspector Senior</div>
+                                </div>
+                                <div class="inspector-counter zero" id="counter-3">0</div>
+                            </div>
+                            <div class="inspector-menu" id="menu-3">
+                                <div class="inspector-menu-item" data-action="filter">Filtrar OIs asignadas</div>
+                                <div class="inspector-menu-item" data-action="assign">Asignar OIs</div>
+                                <div class="inspector-menu-item" data-action="remove">Desasignar OIs</div>
+                                <div class="inspector-menu-item" data-action="reassign">Reasignar OIs</div>
+                            </div>
+                        </div>
+                        <div class="inspector-card" data-inspector-id="4">
+                            <div class="inspector-info">
+                                <div>
+                                    <div class="inspector-name">Ana Rodríguez</div>
+                                    <div class="inspector-role">Inspector Junior</div>
+                                </div>
+                                <div class="inspector-counter zero" id="counter-4">0</div>
+                            </div>
+                            <div class="inspector-menu" id="menu-4">
+                                <div class="inspector-menu-item" data-action="filter">Filtrar OIs asignadas</div>
+                                <div class="inspector-menu-item" data-action="assign">Asignar OIs</div>
+                                <div class="inspector-menu-item" data-action="remove">Desasignar OIs</div>
+                                <div class="inspector-menu-item" data-action="reassign">Reasignar OIs</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Área del Calendario -->
+                <div class="calendar-area">
+                    <div class="calendar-card">
+                <div class="calendar-controls">
+                    <div class="view-filters">
+                        <button class="filter-btn active">Mes</button>
+                        <button class="filter-btn">Semana</button>
+                        <button class="filter-btn">Día</button>
+                    </div>
+
+                    <div class="calendar-nav">
+                        <button class="today-btn">Hoy</button>
+                        <button class="nav-btn">«</button>
+                        <button class="nav-btn">‹</button>
+                        <div class="month-display">diciembre 2025</div>
+                        <button class="nav-btn">›</button>
+                        <button class="nav-btn">»</button>
+                    </div>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-dot etfa"></div>
+                        <span>ETFA</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot medicion"></div>
+                        <span>Solo medición</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot no-autorizado"></div>
+                        <span>Plan ETFA no autorizado</span>
+                    </div>
+                    </div>
+
+                    <div class="calendar-grid" id="calendar">
+                        <div class="day-header">LUNES</div>
+                        <div class="day-header">MARTES</div>
+                        <div class="day-header">MIÉRCOLES</div>
+                        <div class="day-header">JUEVES</div>
+                        <div class="day-header">VIERNES</div>
+                        <div class="day-header">SÁBADO</div>
+                        <div class="day-header">DOMINGO</div>
+                    </div>
+                    </div>
+                </div><!-- Fin calendar-area -->
+
+                <!-- Panel de Puntos de Muestreo -->
+                <div class="muestreo-panel" id="muestreoPanel">
+                    <div class="muestreo-header">
+                        <div class="muestreo-header-left">
+                            <span class="muestreo-header-title">Puntos de Muestreo</span>
+                            <span class="muestreo-header-count" id="muestreoCount">12</span>
+                        </div>
+                        <button class="muestreo-toggle-btn" id="muestreoToggle" title="Colapsar panel">◀</button>
+                    </div>
+                    <div class="muestreo-content">
+                        <div class="muestreo-search">
+                            <input type="text" id="muestreoSearch" placeholder="Buscar punto de muestreo...">
+                        </div>
+                        <div class="muestreo-filters">
+                            <button class="muestreo-filter-chip active" data-filter="todos">Todos</button>
+                            <button class="muestreo-filter-chip" data-filter="agua">Agua</button>
+                            <button class="muestreo-filter-chip" data-filter="suelo">Suelo</button>
+                            <button class="muestreo-filter-chip" data-filter="aire">Aire</button>
+                        </div>
+                        <div class="muestreo-selection-bar" id="muestreoSelectionBar">
+                            <span class="selection-count"><span id="selectedCount">0</span> seleccionados</span>
+                            <div class="selection-actions">
+                                <button class="clear-btn" id="clearSelectionBtn">Limpiar</button>
+                            </div>
+                        </div>
+                        <div class="muestreo-list" id="muestreoList">
+                            <!-- Puntos de muestreo se generan dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+            </div><!-- Fin workspace -->
+        </div>
+    </div>
+
+    <!-- Modal OI Detail -->
+    <div class="modal-overlay" id="oiModal">
+        <div class="modal">
+            <div class="modal-header">
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+                <div class="modal-header-content">
+                    <div class="modal-title-block">
+                        <h2 id="modalTitle">CLIENTE / 0/1<br>OL: 800504 / OI: 200419</h2>
+                        <div class="modal-date" id="modalDate">11-12-2024</div>
+                    </div>
+                    <div class="modal-center">
+                        <div class="modal-contact" id="modalContact">
+                            <span>Contacto: Juan Pérez</span>
+                            <span>Teléfono: +56 9 1234 5678</span>
+                        </div>
+                    </div>
+                    <div class="modal-badge-wrap">
+                        <span class="modal-badge" id="modalBadge">Muestreo y Medición</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <!-- Usuarios/Roles asignados -->
+                <div class="modal-section">
+                    <div class="modal-section-title">Usuarios asignados</div>
+                    <div class="modal-roles-list" id="modalRolesList"></div>
+                </div>
+
+                    <table class="muestras-table">
+                        <thead>
+                            <tr>
+                                <th>Punto de muestra</th>
+                                <th>Matriz</th>
+                                <th>Plan</th>
+                                <th>ETFA</th>
+                                <th>TIPO</th>
+                                <th>Estado</th>
+                                <th>Emerg</th>
+                            </tr>
+                        </thead>
+                        <tbody id="muestrasTableBody">
+                            <tr>
+                                <td>PM-001</td>
+                                <td>Agua</td>
+                                <td>Plan A</td>
+                                <td>Si</td>
+                                <td>Puntual</td>
+                                <td><span class="status-badge status-programado">Programado</span></td>
+                                <td>No</td>
+                            </tr>
+                            <tr>
+                                <td>PM-002</td>
+                                <td>Suelo</td>
+                                <td>Plan C</td>
+                                <td>No</td>
+                                <td>Compuesta</td>
+                                <td><span class="status-badge status-en-proceso">En proceso</span></td>
+                                <td>Si</td>
+                            </tr>
+                            <tr>
+                                <td>PM-003</td>
+                                <td>Aire</td>
+                                <td>Plan D</td>
+                                <td>Si</td>
+                                <td>Puntual</td>
+                                <td><span class="status-badge status-recepcionado">Recepcionado</span></td>
+                                <td>No</td>
+                            </tr>
+                        </tbody>
+                    </table>
+            </div>
+
+            <div class="modal-footer">
+                <button class="modal-btn secondary" onclick="closeModal()">Cerrar</button>
+                <button class="modal-btn primary">Editar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Crear OI -->
+    <div class="crear-oi-modal" id="crearOiModal">
+        <div class="crear-oi-content">
+            <div class="crear-oi-header">
+                <h3>Crear Orden de Inspección</h3>
+                <button class="crear-oi-close" onclick="cerrarCrearOiModal()">&times;</button>
+            </div>
+            <div class="crear-oi-body">
+                <div class="crear-oi-info">
+                    <div class="crear-oi-info-row">
+                        <span class="crear-oi-info-label">Punto de Muestreo:</span>
+                        <span class="crear-oi-info-value" id="crearOiPunto">PM-001</span>
+                    </div>
+                    <div class="crear-oi-info-row">
+                        <span class="crear-oi-info-label">Nombre:</span>
+                        <span class="crear-oi-info-value" id="crearOiNombre">Pozo Monitoreo Norte</span>
+                    </div>
+                    <div class="crear-oi-info-row">
+                        <span class="crear-oi-info-label">Matriz:</span>
+                        <span class="crear-oi-info-value" id="crearOiMatriz">Agua</span>
+                    </div>
+                    <div class="crear-oi-info-row">
+                        <span class="crear-oi-info-label">Fecha Programada:</span>
+                        <span class="crear-oi-info-value" id="crearOiFecha">15-12-2025</span>
+                    </div>
+                </div>
+
+                <!-- Destino: dropdown simple para Nueva OI o asociar a existente -->
+                <div class="crear-oi-field" id="crearOiDestinoSection">
+                    <label for="crearOiDestino">Destino</label>
+                    <select id="crearOiDestino">
+                        <option value="nueva">+ Nueva OI</option>
+                        <!-- OIs existentes se agregan dinámicamente -->
+                    </select>
+                </div>
+
+                <!-- Plan -->
+                <div class="crear-oi-field">
+                    <label for="crearOiPlan">Plan</label>
+                    <select id="crearOiPlan">
+                        <option value="">Seleccione...</option>
+                        <option value="plan-aguas">Plan Aguas Subterráneas</option>
+                        <option value="plan-riles">Plan RILES</option>
+                        <option value="plan-suelos">Plan Suelos</option>
+                        <option value="plan-emisiones">Plan Emisiones</option>
+                        <option value="plan-sedimentos">Plan Sedimentos</option>
+                        <option value="plan-monitoreo-a">Plan Monitoreo A</option>
+                        <option value="plan-monitoreo-b">Plan Monitoreo B</option>
+                    </select>
+                </div>
+
+                <!-- Tipo y ETFA en una fila -->
+                <div class="crear-oi-fields-row">
+                    <div class="crear-oi-field">
+                        <label>Tipo</label>
+                        <div class="crear-oi-toggle-compact">
+                            <button type="button" class="crear-oi-toggle active" data-tipo="puntual">Puntual</button>
+                            <button type="button" class="crear-oi-toggle" data-tipo="compuesta">Compuesta</button>
+                        </div>
+                    </div>
+                    <div class="crear-oi-field small">
+                        <label>&nbsp;</label>
+                        <div class="crear-oi-toggle-compact">
+                            <button type="button" class="crear-oi-toggle crear-oi-toggle-etfa" id="crearOiEtfaBtn" data-etfa="false">ETFA</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección de Recurrencia -->
+                <div class="crear-oi-recurrencia">
+                    <div class="crear-oi-recurrencia-header">
+                        <input type="checkbox" id="recurrenciaCheck">
+                        <label for="recurrenciaCheck">
+                            <span class="icon">🔄</span>
+                            Programar recurrencia
+                        </label>
+                    </div>
+
+                    <div class="crear-oi-recurrencia-options" id="recurrenciaOptions">
+                        <!-- Tipo de recurrencia -->
+                        <div class="recurrencia-tipo">
+                            <button type="button" class="recurrencia-tipo-btn active" data-tipo="diario">Diario</button>
+                            <button type="button" class="recurrencia-tipo-btn" data-tipo="semanal">Semanal</button>
+                            <button type="button" class="recurrencia-tipo-btn" data-tipo="personalizado">Cada X días</button>
+                        </div>
+
+                        <!-- Configuración según tipo -->
+                        <div class="recurrencia-config" id="recurrenciaConfig">
+                            <!-- Diario: sin opciones adicionales -->
+                            <div class="recurrencia-config-diario" id="configDiario">
+                                <div class="recurrencia-config-row">
+                                    <span>Se programará todos los días</span>
+                                </div>
+                            </div>
+
+                            <!-- Semanal: selección de días -->
+                            <div class="recurrencia-config-semanal" id="configSemanal" style="display: none;">
+                                <div class="recurrencia-config-row">
+                                    <label>Repetir los:</label>
+                                </div>
+                                <div class="recurrencia-dias-semana">
+                                    <button type="button" class="recurrencia-dia-btn" data-dia="1">Lu</button>
+                                    <button type="button" class="recurrencia-dia-btn" data-dia="2">Ma</button>
+                                    <button type="button" class="recurrencia-dia-btn" data-dia="3">Mi</button>
+                                    <button type="button" class="recurrencia-dia-btn" data-dia="4">Ju</button>
+                                    <button type="button" class="recurrencia-dia-btn" data-dia="5">Vi</button>
+                                    <button type="button" class="recurrencia-dia-btn" data-dia="6">Sa</button>
+                                    <button type="button" class="recurrencia-dia-btn" data-dia="0">Do</button>
+                                </div>
+                            </div>
+
+                            <!-- Personalizado: cada X días -->
+                            <div class="recurrencia-config-personalizado" id="configPersonalizado" style="display: none;">
+                                <div class="recurrencia-config-row">
+                                    <label>Cada</label>
+                                    <input type="number" id="recurrenciaIntervalo" value="2" min="2" max="30">
+                                    <span>días</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fecha de fin -->
+                        <div class="recurrencia-fin">
+                            <div class="recurrencia-fin-option">
+                                <input type="radio" name="recurrenciaFin" id="finHasta" value="hasta" checked>
+                                <label for="finHasta">Hasta el</label>
+                                <input type="date" id="recurrenciaFechaFin">
+                            </div>
+                            <div class="recurrencia-fin-option">
+                                <input type="radio" name="recurrenciaFin" id="finOcurrencias" value="ocurrencias">
+                                <label for="finOcurrencias">Después de</label>
+                                <input type="number" id="recurrenciaOcurrencias" value="5" min="2" max="31">
+                                <span>ocurrencias</span>
+                            </div>
+                        </div>
+
+                        <!-- Preview -->
+                        <div class="recurrencia-preview" id="recurrenciaPreview">
+                            <span class="icon">📅</span>
+                            <span class="recurrencia-preview-text" id="recurrenciaPreviewText">Se crearán OIs para los días seleccionados</span>
+                            <span class="recurrencia-preview-count" id="recurrenciaPreviewCount">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="crear-oi-footer">
+                <button class="crear-oi-btn cancel" onclick="cerrarCrearOiModal()">Cancelar</button>
+                <button class="crear-oi-btn confirm" id="crearOiConfirmBtn" onclick="confirmarCrearOi()">Crear OI</button>
+            </div>
+        </div>
+    </div>
+
+        <div class="assignment-lock-overlay" id="assignmentLockOverlay">
+        <div class="assignment-lock-message" id="assignmentLockMessage">Modo asignación activo</div>
+        </div>
+
+    <!-- Floating Assignment Bar -->
+        <div class="assignment-floating-bar" id="floatingBar">
+        <div class="floating-bar-info">
+            <div class="floating-bar-inspector">
+                <div class="floating-bar-inspector-icon" id="floatingBarInitials">CM</div>
+                <div>
+                    <div class="floating-bar-inspector-label" id="floatingBarLabel">Asignando a:</div>
+                    <div class="floating-bar-inspector-name" id="floatingBarName">Carlos Mendoza</div>
+                </div>
+            </div>
+            <div class="floating-bar-counter">
+                <div class="counter-number" id="floatingBarCounter">0</div>
+                <div class="counter-label">OIs<br>seleccionadas</div>
+            </div>
+        </div>
+        <div class="floating-bar-actions">
+            <button class="floating-bar-btn cancel" onclick="cancelAssignment()">Cancelar</button>
+            <button class="floating-bar-btn confirm" id="confirmBtn" onclick="confirmAssignment()">Confirmar</button>
+        </div>
+    </div>
+
+    <script>
+        // Datos del calendario (inicialmente vacío)
+        const assignments = {};
+
+        function generateCalendar() {
+            const calendar = document.getElementById('calendar');
+            const daysInMonth = 31;
+            const startDay = 1; // Lunes (0=domingo, 1=lunes, etc.)
+
+            // Agregar celdas vacías para los días anteriores al 1
+            for (let i = 0; i < startDay; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'day-cell';
+                calendar.appendChild(emptyCell);
+            }
+
+            // Generar días del mes
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayCell = document.createElement('div');
+                dayCell.className = 'day-cell';
+                dayCell.dataset.day = day;
+                
+                const dayNumber = document.createElement('div');
+                dayNumber.className = 'day-number';
+                dayNumber.textContent = day;
+                dayCell.appendChild(dayNumber);
+
+                // Agregar asignaciones si existen para este día
+                if (assignments[day]) {
+                    assignments[day].forEach((assignment, index) => {
+                        const assignmentDiv = document.createElement('div');
+                        assignmentDiv.className = 'assignment';
+
+                        // Si tiene ETFA, agregar indicador
+                        if (assignment.esEtfa) {
+                            assignmentDiv.classList.add('etfa');
+                        }
+
+                        // Si tiene inspector asignado, marcar como assigned
+                        if (assignment.inspectorId) {
+                            assignmentDiv.classList.add('assigned');
+                            assignmentDiv.dataset.inspectorId = assignment.inspectorId;
+                        }
+
+                        // Generar HTML de la tarjeta
+                        assignmentDiv.innerHTML = generarHTMLTarjetaOI(
+                            assignment.oiCode,
+                            assignment.puntosMuestreo || [],
+                            assignment.inspectorId
+                        );
+
+                        // Hacer la tarjeta draggable
+                        assignmentDiv.draggable = true;
+                        assignmentDiv.dataset.day = day;
+                        assignmentDiv.dataset.index = index;
+                        assignmentDiv.dataset.oiCode = assignment.oiCode;
+
+                        dayCell.appendChild(assignmentDiv);
+                    });
+                }
+
+                calendar.appendChild(dayCell);
+            }
+        }
+
+        // Generar el calendario al cargar la página
+        generateCalendar();
+
+        // Funcionalidad de los botones de navegación
+        document.querySelectorAll('.nav-btn, .today-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                console.log('Navegación de calendario:', this.textContent);
+            });
+        });
+
+        // Funcionalidad de filtros de vista
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                console.log('Vista cambiada a:', this.textContent);
+            });
+        });
+
+        // ==========================================
+        // Drag and Drop Functionality
+        // ==========================================
+        let draggedElement = null;
+        let sourceDay = null;
+        let sourceIndex = null;
+
+        // Event delegation para drag events en assignments
+        document.getElementById('calendar').addEventListener('dragstart', function(e) {
+            if (e.target.classList.contains('assignment')) {
+                if (assignmentMode) {
+                    e.preventDefault();
+                    return;
+                }
+                draggedElement = e.target;
+                sourceDay = parseInt(e.target.dataset.day);
+                sourceIndex = parseInt(e.target.dataset.index);
+
+                e.target.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', '');
+            }
+        });
+
+        document.getElementById('calendar').addEventListener('dragend', function(e) {
+            if (e.target.classList.contains('assignment')) {
+                e.target.classList.remove('dragging');
+                draggedElement = null;
+
+                // Remover clase drag-over de todas las celdas
+                document.querySelectorAll('.day-cell').forEach(cell => {
+                    cell.classList.remove('drag-over');
+                });
+            }
+        });
+
+        // Eventos para las celdas del calendario
+        document.getElementById('calendar').addEventListener('dragover', function(e) {
+            if (assignmentMode) return;
+            const dayCell = e.target.closest('.day-cell');
+            if (dayCell && dayCell.dataset.day) {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                dayCell.classList.add('drag-over');
+            }
+        });
+
+        document.getElementById('calendar').addEventListener('dragleave', function(e) {
+            const dayCell = e.target.closest('.day-cell');
+            if (dayCell) {
+                // Verificar si realmente salimos de la celda
+                const relatedTarget = e.relatedTarget;
+                if (!dayCell.contains(relatedTarget)) {
+                    dayCell.classList.remove('drag-over');
+                }
+            }
+        });
+
+        document.getElementById('calendar').addEventListener('drop', function(e) {
+            e.preventDefault();
+            if (assignmentMode) return;
+            const dayCell = e.target.closest('.day-cell');
+
+            if (dayCell && dayCell.dataset.day && draggedElement) {
+                const targetDay = parseInt(dayCell.dataset.day);
+
+                // No hacer nada si es el mismo día
+                if (targetDay === sourceDay) {
+                    dayCell.classList.remove('drag-over');
+                    return;
+                }
+
+                // Mover el assignment en los datos
+                const assignmentToMove = assignments[sourceDay][sourceIndex];
+
+                // Remover del día origen
+                assignments[sourceDay].splice(sourceIndex, 1);
+                if (assignments[sourceDay].length === 0) {
+                    delete assignments[sourceDay];
+                }
+
+                // Agregar al día destino
+                if (!assignments[targetDay]) {
+                    assignments[targetDay] = [];
+                }
+                assignments[targetDay].push(assignmentToMove);
+
+                // Actualizar el DOM - mover el elemento
+                draggedElement.dataset.day = targetDay;
+                draggedElement.dataset.index = assignments[targetDay].length - 1;
+                dayCell.appendChild(draggedElement);
+
+                // Actualizar los índices de los elementos restantes en el día origen
+                document.querySelectorAll(`.assignment[data-day="${sourceDay}"]`).forEach((el, idx) => {
+                    el.dataset.index = idx;
+                });
+
+                dayCell.classList.remove('drag-over');
+
+                console.log(`Tarea movida del día ${sourceDay} al día ${targetDay}`);
+            }
+        });
+
+        // ==========================================
+        // Inspector Menu & Assignment Functionality
+        // ==========================================
+        let selectedInspectorId = null;
+        let selectedInspectorName = null;
+        let assignmentMode = false;
+        let assignmentModeType = null;
+        let currentFilter = null;
+        let pendingAssignments = []; // Tarjetas pendientes de confirmar
+
+        function getInspectorIdsFromElement(assignmentEl) {
+            if (assignmentEl.dataset.inspectorIds) {
+                return assignmentEl.dataset.inspectorIds.split(',').map(id => id.trim()).filter(Boolean);
+            }
+            if (assignmentEl.dataset.inspectorId) {
+                return [assignmentEl.dataset.inspectorId];
+            }
+            return [];
+        }
+
+        // Mapeo de inspectores a iniciales
+        const inspectorIniciales = {
+            '1': 'CM', // Carlos Mendoza
+            '2': 'MG', // María González
+            '3': 'PS', // Pedro Sánchez
+            '4': 'AR'  // Ana Rodríguez
+        };
+
+        function setInspectorIdsOnElement(assignmentEl, ids) {
+            // Actualizar badge de inspector
+            let badge = assignmentEl.querySelector('.inspector-badge');
+
+            if (ids.length > 0) {
+                assignmentEl.dataset.inspectorIds = ids.join(',');
+                assignmentEl.dataset.inspectorId = ids[0];
+                assignmentEl.classList.add('assigned');
+
+                // Agregar o actualizar badge de iniciales
+                const iniciales = inspectorIniciales[ids[0]] || '??';
+                if (!badge) {
+                    badge = document.createElement('span');
+                    badge.className = 'inspector-badge';
+                    assignmentEl.appendChild(badge);
+                }
+                badge.textContent = iniciales;
+            } else {
+                delete assignmentEl.dataset.inspectorIds;
+                delete assignmentEl.dataset.inspectorId;
+                assignmentEl.classList.remove('assigned');
+
+                // Remover badge
+                if (badge) {
+                    badge.remove();
+                }
+            }
+
+            // También actualizar los datos en assignments
+            const day = parseInt(assignmentEl.dataset.day);
+            const index = parseInt(assignmentEl.dataset.index);
+            if (assignments[day] && assignments[day][index]) {
+                assignments[day][index].inspectorId = ids.length > 0 ? ids[0] : null;
+            }
+        }
+
+        // Mostrar/ocultar menú al hacer clic en inspector
+        document.querySelectorAll('.inspector-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                if (e.target.classList.contains('inspector-menu-item')) return;
+
+                const inspectorId = this.dataset.inspectorId;
+                const menu = this.querySelector('.inspector-menu');
+
+                // Cerrar otros menús
+                document.querySelectorAll('.inspector-menu').forEach(m => {
+                    if (m !== menu) m.classList.remove('show');
+                });
+
+                // Toggle menú actual
+                menu.classList.toggle('show');
+            });
+        });
+
+        // Manejar acciones del menú
+        document.querySelectorAll('.inspector-menu-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const action = this.dataset.action;
+                const card = this.closest('.inspector-card');
+                const inspectorId = card.dataset.inspectorId;
+                const inspectorName = card.querySelector('.inspector-name').textContent;
+
+                // Cerrar menú
+                this.closest('.inspector-menu').classList.remove('show');
+
+                switch(action) {
+                    case 'filter':
+                        filterByInspector(inspectorId, inspectorName);
+                        break;
+                    case 'assign':
+                        if (inspectorId === 'unassigned') {
+                            enterUnassignMode();
+                        } else {
+                            enterAssignmentMode(inspectorId, inspectorName);
+                        }
+                        break;
+                    case 'remove':
+                        if (inspectorId !== 'unassigned') {
+                            enterRemoveInspectorMode(inspectorId, inspectorName);
+                        }
+                        break;
+                    case 'reassign':
+                        if (inspectorId !== 'unassigned') {
+                            enterReassignMode(inspectorId, inspectorName);
+                        }
+                        break;
+                }
+            });
+        });
+
+        // Filtrar por inspector
+        function filterByInspector(inspectorId, inspectorName) {
+            currentFilter = inspectorId;
+
+            // Marcar inspector como seleccionado
+            document.querySelectorAll('.inspector-card').forEach(c => c.classList.remove('selected'));
+            document.querySelector(`[data-inspector-id="${inspectorId}"]`).classList.add('selected');
+
+            // Filtrar tarjetas
+            document.querySelectorAll('.assignment').forEach(assignment => {
+                const inspectorIds = getInspectorIdsFromElement(assignment);
+                const shouldShow = inspectorId === 'unassigned'
+                    ? inspectorIds.length === 0
+                    : inspectorIds.includes(inspectorId);
+                assignment.classList.toggle('filtered-out', !shouldShow);
+            });
+
+            console.log(`Filtrando por inspector: ${inspectorName}`);
+        }
+
+        // Quitar filtro
+        function clearFilter() {
+            currentFilter = null;
+            document.querySelectorAll('.inspector-card').forEach(c => c.classList.remove('selected'));
+            document.querySelectorAll('.assignment').forEach(a => a.classList.remove('filtered-out'));
+            console.log('Filtro eliminado');
+        }
+
+        const clearInspectorFilterBtn = document.getElementById('clearInspectorFilter');
+        if (clearInspectorFilterBtn) {
+            clearInspectorFilterBtn.addEventListener('click', function() {
+                if (!assignmentMode) {
+                    clearFilter();
+                }
+            });
+        }
+
+        // Obtener iniciales del nombre
+        function getInitials(name) {
+            return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+        }
+
+        // Actualizar contador en la barra flotante
+        function updateFloatingBarCounter() {
+            const count = pendingAssignments.length;
+            document.getElementById('floatingBarCounter').textContent = count;
+            document.getElementById('confirmBtn').disabled = count === 0;
+        }
+
+        // Actualizar contadores de OIs en las tarjetas de inspectores
+        function updateInspectorCounters() {
+            // Contar OIs asignadas a cada inspector
+            const counts = { '1': 0, '2': 0, '3': 0, '4': 0, 'unassigned': 0 };
+
+            document.querySelectorAll('.assignment').forEach(assignment => {
+                const inspectorIds = getInspectorIdsFromElement(assignment);
+                if (inspectorIds.length > 0) {
+                    inspectorIds.forEach(id => {
+                        if (counts.hasOwnProperty(id)) {
+                            counts[id]++;
+                        }
+                    });
+                } else {
+                    counts.unassigned++;
+                }
+            });
+
+            // Actualizar los contadores en el DOM
+            Object.keys(counts).forEach(id => {
+                const counterEl = document.getElementById(`counter-${id}`);
+                if (counterEl) {
+                    counterEl.textContent = counts[id];
+                    if (counts[id] === 0) {
+                        counterEl.classList.add('zero');
+                    } else {
+                        counterEl.classList.remove('zero');
+                    }
+                }
+            });
+        }
+
+        // Entrar en modo asignación
+        function enterAssignmentMode(inspectorId, inspectorName) {
+            assignmentMode = true;
+            assignmentModeType = 'assign';
+            selectedInspectorId = inspectorId;
+            selectedInspectorName = inspectorName;
+            pendingAssignments = [];
+            document.body.classList.add('assignment-locked');
+            document.getElementById('assignmentLockOverlay').classList.add('show');
+            document.getElementById('assignmentLockMessage').textContent = 'Modo asignación activo';
+            document.getElementById('floatingBarLabel').textContent = 'Asignando a:';
+
+            // Mostrar barra flotante
+            document.getElementById('floatingBar').classList.add('show');
+            document.getElementById('floatingBarName').textContent = inspectorName;
+            document.getElementById('floatingBarInitials').textContent = getInitials(inspectorName);
+            updateFloatingBarCounter();
+
+            // Ocultar banner pequeño
+            document.getElementById('assignmentBanner').classList.remove('show');
+
+            // Marcar inspector
+            document.querySelectorAll('.inspector-card').forEach(c => c.classList.remove('selected'));
+            document.querySelector(`[data-inspector-id="${inspectorId}"]`).classList.add('selected');
+
+            // Marcar tarjetas que no tienen este inspector como seleccionables
+            document.querySelectorAll('.assignment').forEach(assignment => {
+                const inspectorIds = getInspectorIdsFromElement(assignment);
+                if (inspectorIds.includes(inspectorId)) {
+                    assignment.classList.remove('selectable');
+                    assignment.classList.add('blocked');
+                } else {
+                    assignment.classList.remove('blocked');
+                    assignment.classList.add('selectable');
+                }
+            });
+
+            console.log(`Modo asignación activado para: ${inspectorName}`);
+        }
+
+        function enterReassignMode(inspectorId, inspectorName) {
+            assignmentMode = true;
+            assignmentModeType = 'reassign';
+            selectedInspectorId = inspectorId;
+            selectedInspectorName = inspectorName;
+            pendingAssignments = [];
+            document.body.classList.add('assignment-locked');
+            document.getElementById('assignmentLockOverlay').classList.add('show');
+            document.getElementById('assignmentLockMessage').textContent = 'Modo reasignación activo';
+            document.getElementById('floatingBarLabel').textContent = 'Reasignando a:';
+
+            document.getElementById('floatingBar').classList.add('show');
+            document.getElementById('floatingBarName').textContent = inspectorName;
+            document.getElementById('floatingBarInitials').textContent = getInitials(inspectorName);
+            updateFloatingBarCounter();
+
+            document.getElementById('assignmentBanner').classList.remove('show');
+
+            document.querySelectorAll('.inspector-card').forEach(c => c.classList.remove('selected'));
+            document.querySelector(`[data-inspector-id="${inspectorId}"]`).classList.add('selected');
+
+            document.querySelectorAll('.assignment').forEach(assignment => {
+                const inspectorIds = getInspectorIdsFromElement(assignment);
+                const isOnlySelected = inspectorIds.length === 1 && inspectorIds[0] === inspectorId;
+                if (isOnlySelected) {
+                    assignment.classList.remove('selectable');
+                    assignment.classList.add('blocked');
+                } else {
+                    assignment.classList.remove('blocked');
+                    assignment.classList.add('selectable');
+                }
+            });
+
+            console.log(`Modo reasignación activado para: ${inspectorName}`);
+        }
+
+        function enterRemoveInspectorMode(inspectorId, inspectorName) {
+            assignmentMode = true;
+            assignmentModeType = 'remove';
+            selectedInspectorId = inspectorId;
+            selectedInspectorName = inspectorName;
+            pendingAssignments = [];
+            document.body.classList.add('assignment-locked');
+            document.getElementById('assignmentLockOverlay').classList.add('show');
+            document.getElementById('assignmentLockMessage').textContent = 'Modo desasignación activo';
+            document.getElementById('floatingBarLabel').textContent = 'Desasignando a:';
+
+            document.getElementById('floatingBar').classList.add('show');
+            document.getElementById('floatingBarName').textContent = inspectorName;
+            document.getElementById('floatingBarInitials').textContent = getInitials(inspectorName);
+            updateFloatingBarCounter();
+
+            document.getElementById('assignmentBanner').classList.remove('show');
+
+            document.querySelectorAll('.inspector-card').forEach(c => c.classList.remove('selected'));
+            document.querySelector(`[data-inspector-id="${inspectorId}"]`).classList.add('selected');
+
+            document.querySelectorAll('.assignment').forEach(assignment => {
+                const inspectorIds = getInspectorIdsFromElement(assignment);
+                if (inspectorIds.includes(inspectorId)) {
+                    assignment.classList.add('selectable');
+                    assignment.classList.remove('blocked');
+                } else {
+                    assignment.classList.remove('selectable');
+                    assignment.classList.add('blocked');
+                }
+            });
+
+            console.log(`Modo desasignación activado para: ${inspectorName}`);
+        }
+
+        function enterUnassignMode() {
+            assignmentMode = true;
+            assignmentModeType = 'unassign';
+            selectedInspectorId = null;
+            selectedInspectorName = 'Sin asignar';
+            pendingAssignments = [];
+            document.body.classList.add('assignment-locked');
+            document.getElementById('assignmentLockOverlay').classList.add('show');
+            document.getElementById('assignmentLockMessage').textContent = 'Modo desasignación activo';
+            document.getElementById('floatingBarLabel').textContent = 'Desasignando a:';
+
+            document.getElementById('floatingBar').classList.add('show');
+            document.getElementById('floatingBarName').textContent = selectedInspectorName;
+            document.getElementById('floatingBarInitials').textContent = getInitials(selectedInspectorName);
+            updateFloatingBarCounter();
+
+            document.getElementById('assignmentBanner').classList.remove('show');
+
+            document.querySelectorAll('.inspector-card').forEach(c => c.classList.remove('selected'));
+            document.querySelector('[data-inspector-id="unassigned"]').classList.add('selected');
+
+            document.querySelectorAll('.assignment').forEach(assignment => {
+                const inspectorIds = getInspectorIdsFromElement(assignment);
+                if (inspectorIds.length > 0) {
+                    assignment.classList.add('selectable');
+                    assignment.classList.remove('blocked');
+                } else {
+                    assignment.classList.remove('selectable');
+                    assignment.classList.add('blocked');
+                }
+            });
+
+            console.log('Modo desasignación activado');
+        }
+
+        // Cancelar asignación (deshacer todas las selecciones pendientes)
+        function cancelAssignment() {
+            // Revertir las tarjetas pendientes a su estado original
+            pendingAssignments.forEach(assignment => {
+                assignment.classList.remove('pending-assign');
+                assignment.classList.add('selectable');
+                delete assignment.dataset.tempInspectorId;
+            });
+
+            pendingAssignments = [];
+            exitAssignmentMode();
+        }
+
+        // Confirmar asignación
+        function confirmAssignment() {
+            if (pendingAssignments.length === 0) return;
+
+            if (assignmentModeType === 'unassign') {
+                pendingAssignments.forEach(assignment => {
+                    setInspectorIdsOnElement(assignment, []);
+                    assignment.classList.remove('pending-assign');
+                    assignment.classList.remove('selectable');
+
+                    const day = parseInt(assignment.dataset.day);
+                    const index = parseInt(assignment.dataset.index);
+                    if (assignments[day] && assignments[day][index]) {
+                        delete assignments[day][index].inspectorId;
+                        delete assignments[day][index].inspectorIds;
+                        assignments[day][index].status = 'normal';
+                    }
+                });
+
+                console.log(`${pendingAssignments.length} OIs desasignadas`);
+                updateInspectorCounters();
+                pendingAssignments = [];
+                exitAssignmentMode();
+                return;
+            }
+
+            if (assignmentModeType === 'reassign') {
+                pendingAssignments.forEach(assignment => {
+                    assignment.classList.remove('pending-assign');
+                    assignment.classList.remove('selectable');
+                    assignment.classList.remove('blocked');
+
+                    const day = parseInt(assignment.dataset.day);
+                    const index = parseInt(assignment.dataset.index);
+                    if (assignments[day] && assignments[day][index]) {
+                        assignments[day][index].inspectorIds = [selectedInspectorId];
+                        assignments[day][index].inspectorId = selectedInspectorId;
+                        assignments[day][index].status = 'pending';
+                        setInspectorIdsOnElement(assignment, [selectedInspectorId]);
+                    }
+                });
+
+                console.log(`${pendingAssignments.length} OIs reasignadas a ${selectedInspectorName}`);
+                updateInspectorCounters();
+                pendingAssignments = [];
+                exitAssignmentMode();
+                return;
+            }
+
+            if (assignmentModeType === 'remove') {
+                pendingAssignments.forEach(assignment => {
+                    assignment.classList.remove('pending-assign');
+                    assignment.classList.remove('selectable');
+                    assignment.classList.remove('blocked');
+
+                    const day = parseInt(assignment.dataset.day);
+                    const index = parseInt(assignment.dataset.index);
+                    if (assignments[day] && assignments[day][index]) {
+                        const assignmentData = assignments[day][index];
+                        const ids = Array.isArray(assignmentData.inspectorIds)
+                            ? assignmentData.inspectorIds
+                            : (assignmentData.inspectorId ? [assignmentData.inspectorId] : []);
+                        const filtered = ids.filter(id => id !== selectedInspectorId);
+                        assignmentData.inspectorIds = filtered.length ? filtered : undefined;
+                        assignmentData.inspectorId = filtered.length ? filtered[0] : undefined;
+                        assignmentData.status = 'normal';
+                        setInspectorIdsOnElement(assignment, filtered);
+                    }
+                });
+
+                console.log(`${pendingAssignments.length} OIs desasignadas de ${selectedInspectorName}`);
+                updateInspectorCounters();
+                pendingAssignments = [];
+                exitAssignmentMode();
+                return;
+            }
+
+            // Confirmar todas las asignaciones pendientes
+            pendingAssignments.forEach(assignment => {
+                assignment.classList.remove('pending-assign');
+                assignment.classList.remove('selectable');
+                assignment.classList.remove('blocked');
+
+                // Actualizar datos
+                const day = parseInt(assignment.dataset.day);
+                const index = parseInt(assignment.dataset.index);
+                if (assignments[day] && assignments[day][index]) {
+                    const assignmentData = assignments[day][index];
+                    const ids = Array.isArray(assignmentData.inspectorIds)
+                        ? assignmentData.inspectorIds
+                        : (assignmentData.inspectorId ? [assignmentData.inspectorId] : []);
+                    if (!ids.includes(selectedInspectorId)) {
+                        ids.push(selectedInspectorId);
+                    }
+                    assignmentData.inspectorIds = ids;
+                    assignmentData.inspectorId = ids[0];
+                    assignments[day][index].status = 'pending';
+                    setInspectorIdsOnElement(assignment, ids);
+                }
+            });
+
+            console.log(`${pendingAssignments.length} OIs asignadas a ${selectedInspectorName}`);
+
+            // Actualizar contadores de inspectores
+            updateInspectorCounters();
+
+            pendingAssignments = [];
+            exitAssignmentMode();
+        }
+
+        // Salir del modo asignación
+        function exitAssignmentMode() {
+            assignmentMode = false;
+            assignmentModeType = null;
+            selectedInspectorId = null;
+            selectedInspectorName = null;
+            document.body.classList.remove('assignment-locked');
+            document.getElementById('assignmentLockOverlay').classList.remove('show');
+            document.getElementById('floatingBarLabel').textContent = 'Asignando a:';
+            document.getElementById('assignmentLockMessage').textContent = 'Modo asignación activo';
+
+            document.getElementById('floatingBar').classList.remove('show');
+            document.getElementById('assignmentBanner').classList.remove('show');
+            document.querySelectorAll('.inspector-card').forEach(c => c.classList.remove('selected'));
+            document.querySelectorAll('.assignment').forEach(a => {
+                a.classList.remove('selectable');
+                a.classList.remove('blocked');
+            });
+
+            console.log('Modo asignación desactivado');
+        }
+
+        // Cerrar menús al hacer clic fuera
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.inspector-card')) {
+                document.querySelectorAll('.inspector-menu').forEach(m => m.classList.remove('show'));
+            }
+        });
+
+        // Actualizar contadores al cargar la página
+        updateInspectorCounters();
+
+        // ==========================================
+        // Modal Functionality
+        // ==========================================
+
+        // Datos de ejemplo para el detalle de muestras
+        const oiDetails = {
+            'ANGLO': {
+                contact: 'Roberto Silva',
+                phone: '+56 9 8765 4321',
+                badge: 'ETFA',
+                muestras: [
+                    { nombre: 'PM-001', tipo: 'Agua Subterránea', tipoInforme: 'Estándar', estado: 'Pendiente' },
+                    { nombre: 'PM-002', tipo: 'Suelo', tipoInforme: 'Completo', estado: 'En proceso' }
+                ],
+                tablaDetalle: [
+                    { punto: 'PM-001', matriz: 'Agua', plan: 'Plan Monitoreo A', etfa: true, tipo: 'Puntual', estado: 'Programado', emergencia: 'No' },
+                    { punto: 'PM-002', matriz: 'Suelo', plan: 'Plan Suelo B', etfa: false, tipo: 'Compuesta', estado: 'En proceso', emergencia: 'Si' }
+                ]
+            },
+            'COMPAÑ': {
+                contact: 'María Torres',
+                phone: '+56 9 1234 5678',
+                badge: 'SOLO MEDICIÓN',
+                muestras: [
+                    { nombre: 'PM-100', tipo: 'Aire', tipoInforme: 'Básico', estado: 'Completado' },
+                    { nombre: 'PM-101', tipo: 'Agua', tipoInforme: 'Estándar', estado: 'Pendiente' },
+                    { nombre: 'PM-102', tipo: 'Sedimento', tipoInforme: 'Completo', estado: 'En proceso' }
+                ],
+                tablaDetalle: [
+                    { punto: 'PM-100', matriz: 'Aire', plan: 'Plan Emisiones', etfa: true, tipo: 'Puntual', estado: 'Programado', emergencia: 'No' },
+                    { punto: 'PM-101', matriz: 'Agua', plan: 'Plan Efluentes', etfa: true, tipo: 'Compuesta', estado: 'En proceso', emergencia: 'No' },
+                    { punto: 'PM-102', matriz: 'Sedimento', plan: 'Plan Sedimentos', etfa: false, tipo: 'Puntual', estado: 'Recepcionado', emergencia: 'Si' }
+                ]
+            },
+            'MINERA': {
+                contact: 'Carlos Vega',
+                phone: '+56 9 5555 6666',
+                badge: 'ETFA + MEDICIÓN',
+                muestras: [
+                    { nombre: 'PM-200', tipo: 'Agua Industrial', tipoInforme: 'Completo', estado: 'Pendiente' },
+                    { nombre: 'PM-201', tipo: 'Residuo', tipoInforme: 'Especial', estado: 'Pendiente' }
+                ],
+                tablaDetalle: [
+                    { punto: 'PM-200', matriz: 'Agua', plan: 'Plan RILES', etfa: true, tipo: 'Compuesta', estado: 'En proceso', emergencia: 'No' },
+                    { punto: 'PM-201', matriz: 'Residuo', plan: 'Plan RISES', etfa: false, tipo: 'Puntual', estado: 'Programado', emergencia: 'No' }
+                ]
+            }
+        };
+
+        const inspectorNames = {
+            '1': 'Carlos Mendoza',
+            '2': 'María González',
+            '3': 'Pedro Sánchez',
+            '4': 'Ana Rodríguez'
+        };
+
+        const dayNames = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+        function openModal(assignmentEl) {
+            const company = assignmentEl.querySelector('.company').textContent.split('_')[0].trim();
+            const codeText = assignmentEl.querySelector('.company').textContent;
+            const code = assignmentEl.querySelector('.code').textContent;
+            const day = parseInt(assignmentEl.dataset.day);
+            const inspectorId = assignmentEl.dataset.inspectorId;
+
+            // Obtener datos de la OI
+            const details = oiDetails[company] || oiDetails['ANGLO'];
+
+            // Actualizar título
+            const olOi = code.split(' / ');
+            document.getElementById('modalTitle').innerHTML = `${company} / ${codeText.split('_')[1] || '0/1'}<br>OL: ${olOi[0]} / OI: ${olOi[1] || olOi[0]}`;
+
+            // Actualizar fecha (usando diciembre 2025 como en el calendario)
+            const date = new Date(2025, 11, day); // Diciembre 2025
+            const dd = String(date.getDate()).padStart(2, '0');
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const yyyy = date.getFullYear();
+            document.getElementById('modalDate').textContent = `${dd}-${mm}-${yyyy}`;
+
+            // Actualizar contacto
+            document.getElementById('modalContact').innerHTML = `<span>Contacto: ${details.contact}</span><span>Teléfono: ${details.phone}</span>`;
+
+            // Actualizar badge
+            document.getElementById('modalBadge').textContent = 'Muestreo y Medición';
+
+            // Actualizar roles asignados
+            const modalRolesList = document.getElementById('modalRolesList');
+            const inspectorIds = getInspectorIdsFromElement(assignmentEl);
+            const inspectorsHtml = inspectorIds.length
+                ? inspectorIds.map(id => `
+                    <div class="modal-role-tag assigned">
+                        <span class="role-icon inspector" aria-hidden="true"></span>
+                        Inspector: ${inspectorNames[id] || id}
+                    </div>
+                `).join('')
+                : `
+                    <div class="modal-role-tag">
+                        <span class="role-icon inspector" aria-hidden="true"></span>
+                        Inspector: Sin inspector/es asociado/s
+                    </div>
+                `;
+            modalRolesList.innerHTML = `
+                <div class="modal-role-tag"><span class="role-icon coordinator" aria-hidden="true"></span>Coordinador: Romina Gonzalez Lopez</div>
+                <div class="modal-role-tag"><span class="role-icon supervisor" aria-hidden="true"></span>Supervisor: Jorge Alegria</div>
+                ${inspectorsHtml}
+            `;
+
+            // Actualizar tabla de muestras (Tab Detalle Muestras)
+            const tableBody = document.getElementById('muestrasTableBody');
+            const statusClassMap = {
+                'Programado': 'status-programado',
+                'En proceso': 'status-en-proceso',
+                'Recepcionado': 'status-recepcionado'
+            };
+
+            tableBody.innerHTML = details.tablaDetalle.map(m => `
+                <tr>
+                    <td>${m.punto}</td>
+                    <td>${m.matriz}</td>
+                    <td>${m.plan}</td>
+                    <td>${m.etfa ? 'Si' : 'No'}</td>
+                    <td>${m.tipo}</td>
+                    <td><span class="status-badge ${statusClassMap[m.estado] || ''}">${m.estado}</span></td>
+                    <td>${m.emergencia}</td>
+                </tr>
+            `).join('');
+
+            // Mostrar modal
+            document.getElementById('oiModal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('oiModal').classList.remove('show');
+        }
+
+        function switchTab(tabName) {
+            // Actualizar tabs
+            document.querySelectorAll('.modal-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.tab === tabName);
+            });
+
+            // Actualizar contenido
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.toggle('active', content.id === `tab-${tabName}`);
+            });
+        }
+
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('oiModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Cerrar modal con tecla Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Modificar el click handler existente para abrir modal cuando no está en modo asignación
+        document.getElementById('calendar').addEventListener('click', function(e) {
+            const assignment = e.target.closest('.assignment');
+
+            if (!assignment) return;
+
+            // Si estamos en modo asignación, manejar selección
+            if (assignmentMode) {
+                // Si es seleccionable, marcar como pendiente
+                if (assignment.classList.contains('selectable')) {
+                    assignment.classList.remove('selectable');
+                    assignment.classList.add('pending-assign');
+                    assignment.dataset.tempInspectorId = selectedInspectorId;
+                    pendingAssignments.push(assignment);
+                    updateFloatingBarCounter();
+                    console.log(`OI agregada a la selección`);
+                }
+                // Si ya está pendiente, desmarcar
+                else if (assignment.classList.contains('pending-assign')) {
+                    assignment.classList.remove('pending-assign');
+                    assignment.classList.add('selectable');
+                    delete assignment.dataset.tempInspectorId;
+                    pendingAssignments = pendingAssignments.filter(a => a !== assignment);
+                    updateFloatingBarCounter();
+                    console.log(`OI removida de la selección`);
+                }
+            } else {
+                // Si no estamos en modo asignación, abrir modal
+                openModal(assignment);
+            }
+        }, true);
+
+        // ==========================================
+        // Panel de Puntos de Muestreo
+        // ==========================================
+
+        // Datos de puntos de muestreo del proyecto Chuquicamata
+        const puntosMuestreo = [
+            { id: 'PM-001', codigo: 'PM-001', nombre: 'Pozo Monitoreo Norte', matriz: 'agua', zona: 'Zona A', frecuencia: 'Mensual', plan: 'Plan Aguas Subterráneas' },
+            { id: 'PM-002', codigo: 'PM-002', nombre: 'Pozo Monitoreo Sur', matriz: 'agua', zona: 'Zona A', frecuencia: 'Mensual', plan: 'Plan Aguas Subterráneas' },
+            { id: 'PM-003', codigo: 'PM-003', nombre: 'Efluente Principal', matriz: 'agua', zona: 'Zona B', frecuencia: 'Semanal', plan: 'Plan RILES' },
+            { id: 'PM-004', codigo: 'PM-004', nombre: 'Canal Descarga', matriz: 'agua', zona: 'Zona B', frecuencia: 'Quincenal', plan: 'Plan RILES' },
+            { id: 'PS-001', codigo: 'PS-001', nombre: 'Suelo Área Proceso', matriz: 'suelo', zona: 'Zona A', frecuencia: 'Trimestral', plan: 'Plan Suelos' },
+            { id: 'PS-002', codigo: 'PS-002', nombre: 'Suelo Depósito Relaves', matriz: 'suelo', zona: 'Zona C', frecuencia: 'Trimestral', plan: 'Plan Suelos' },
+            { id: 'PS-003', codigo: 'PS-003', nombre: 'Suelo Perimetral Este', matriz: 'suelo', zona: 'Zona B', frecuencia: 'Semestral', plan: 'Plan Suelos' },
+            { id: 'PA-001', codigo: 'PA-001', nombre: 'Estación Calidad Aire 1', matriz: 'aire', zona: 'Zona A', frecuencia: 'Continuo', plan: 'Plan Emisiones' },
+            { id: 'PA-002', codigo: 'PA-002', nombre: 'Estación Calidad Aire 2', matriz: 'aire', zona: 'Zona B', frecuencia: 'Continuo', plan: 'Plan Emisiones' },
+            { id: 'PA-003', codigo: 'PA-003', nombre: 'Chimenea Principal', matriz: 'aire', zona: 'Zona A', frecuencia: 'Mensual', plan: 'Plan Emisiones' },
+            { id: 'PSD-001', codigo: 'PSD-001', nombre: 'Sedimento Laguna Norte', matriz: 'sedimento', zona: 'Zona C', frecuencia: 'Semestral', plan: 'Plan Sedimentos' },
+            { id: 'PSD-002', codigo: 'PSD-002', nombre: 'Sedimento Canal Sur', matriz: 'sedimento', zona: 'Zona B', frecuencia: 'Semestral', plan: 'Plan Sedimentos' }
+        ];
+
+        let filtroMatrizActual = 'todos';
+        let busquedaActual = '';
+
+        // Renderizar lista de puntos de muestreo
+        // Set para mantener los puntos seleccionados
+        let puntosSeleccionados = new Set();
+
+        function renderMuestreoList() {
+            const list = document.getElementById('muestreoList');
+            const filtered = puntosMuestreo.filter(pm => {
+                const matchMatriz = filtroMatrizActual === 'todos' || pm.matriz === filtroMatrizActual;
+                const matchBusqueda = busquedaActual === '' ||
+                    pm.codigo.toLowerCase().includes(busquedaActual.toLowerCase()) ||
+                    pm.nombre.toLowerCase().includes(busquedaActual.toLowerCase());
+                return matchMatriz && matchBusqueda;
+            });
+
+            // Agrupar por matriz
+            const grupos = {};
+            filtered.forEach(pm => {
+                if (!grupos[pm.matriz]) {
+                    grupos[pm.matriz] = [];
+                }
+                grupos[pm.matriz].push(pm);
+            });
+
+            const matrizLabels = {
+                'agua': 'Agua',
+                'suelo': 'Suelo',
+                'aire': 'Aire',
+                'sedimento': 'Sedimento'
+            };
+
+            let html = '';
+            Object.keys(grupos).forEach(matriz => {
+                html += `<div class="muestreo-group">
+                    <div class="muestreo-group-title">${matrizLabels[matriz] || matriz} (${grupos[matriz].length})</div>`;
+
+                grupos[matriz].forEach(pm => {
+                    const isSelected = puntosSeleccionados.has(pm.id);
+                    html += `
+                    <div class="muestreo-card${isSelected ? ' selected' : ''}" draggable="true" data-punto-id="${pm.id}" data-matriz="${pm.matriz}">
+                        <div class="select-checkbox" data-punto-id="${pm.id}"></div>
+                        <div class="muestreo-card-header">
+                            <span class="muestreo-card-code">${pm.codigo}</span>
+                            <span class="muestreo-card-matriz ${pm.matriz}">${matrizLabels[pm.matriz]}</span>
+                        </div>
+                        <div class="muestreo-card-name">${pm.nombre}</div>
+                        <div class="muestreo-card-meta">
+                            <span><span class="muestreo-card-status sin-programar"></span>${pm.frecuencia}</span>
+                            <span>${pm.zona}</span>
+                        </div>
+                    </div>`;
+                });
+
+                html += '</div>';
+            });
+
+            list.innerHTML = html || '<div style="padding: 20px; text-align: center; color: #999;">No se encontraron puntos de muestreo</div>';
+
+            // Actualizar contador
+            document.getElementById('muestreoCount').textContent = filtered.length;
+
+            // Agregar eventos de drag y selección a las nuevas tarjetas
+            setupMuestreoDragEvents();
+            setupMuestreoSelectionEvents();
+        }
+
+        // Actualizar la barra de selección
+        function updateSelectionBar() {
+            const count = puntosSeleccionados.size;
+            document.getElementById('selectedCount').textContent = count;
+            const bar = document.getElementById('muestreoSelectionBar');
+            if (count > 0) {
+                bar.classList.add('show');
+            } else {
+                bar.classList.remove('show');
+            }
+        }
+
+        // Limpiar selección
+        function clearSelection() {
+            puntosSeleccionados.clear();
+            document.querySelectorAll('.muestreo-card.selected').forEach(card => {
+                card.classList.remove('selected');
+            });
+            updateSelectionBar();
+        }
+
+        // Configurar eventos de selección
+        function setupMuestreoSelectionEvents() {
+            // Click en checkbox para seleccionar/deseleccionar
+            document.querySelectorAll('.muestreo-card .select-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const puntoId = this.dataset.puntoId;
+                    const card = this.closest('.muestreo-card');
+
+                    if (puntosSeleccionados.has(puntoId)) {
+                        puntosSeleccionados.delete(puntoId);
+                        card.classList.remove('selected');
+                    } else {
+                        puntosSeleccionados.add(puntoId);
+                        card.classList.add('selected');
+                    }
+                    updateSelectionBar();
+                });
+            });
+        }
+
+        // Evento para limpiar selección
+        document.getElementById('clearSelectionBtn').addEventListener('click', clearSelection);
+
+        // Configurar eventos de drag para puntos de muestreo
+        function setupMuestreoDragEvents() {
+            document.querySelectorAll('.muestreo-card').forEach(card => {
+                card.addEventListener('dragstart', handleMuestreoDragStart);
+                card.addEventListener('dragend', handleMuestreoDragEnd);
+            });
+        }
+
+        let draggedMuestreo = null;
+        let draggedPuntos = []; // Array de puntos arrastrados (puede ser múltiple)
+
+        function handleMuestreoDragStart(e) {
+            if (assignmentMode) {
+                e.preventDefault();
+                return;
+            }
+            draggedMuestreo = e.target.closest('.muestreo-card');
+            const puntoId = draggedMuestreo.dataset.puntoId;
+
+            // Si el punto actual está seleccionado, arrastrar todos los seleccionados
+            // Si no está seleccionado, arrastrar solo ese punto
+            if (puntosSeleccionados.has(puntoId) && puntosSeleccionados.size > 1) {
+                // Arrastrar todos los seleccionados
+                draggedPuntos = Array.from(puntosSeleccionados);
+                // Marcar todas las tarjetas seleccionadas como dragging
+                document.querySelectorAll('.muestreo-card.selected').forEach(card => {
+                    card.classList.add('dragging');
+                });
+            } else {
+                // Arrastrar solo el punto actual
+                draggedPuntos = [puntoId];
+                draggedMuestreo.classList.add('dragging');
+            }
+
+            e.dataTransfer.effectAllowed = 'copy';
+            e.dataTransfer.setData('text/plain', JSON.stringify(draggedPuntos));
+        }
+
+        function handleMuestreoDragEnd(e) {
+            // Remover clase dragging de todas las tarjetas
+            document.querySelectorAll('.muestreo-card.dragging').forEach(card => {
+                card.classList.remove('dragging');
+            });
+            if (draggedMuestreo) {
+                draggedMuestreo.blur();
+            }
+            draggedMuestreo = null;
+            draggedPuntos = [];
+            document.querySelectorAll('.day-cell').forEach(cell => {
+                cell.classList.remove('drop-target');
+                cell.classList.remove('drag-over');
+            });
+            // Limpiar outlines de todas las OIs
+            document.querySelectorAll('.assignment').forEach(a => {
+                a.style.outline = '';
+                a.style.outlineOffset = '';
+            });
+        }
+
+        // Modificar eventos de drop en el calendario para aceptar puntos de muestreo
+        document.getElementById('calendar').addEventListener('dragover', function(e) {
+            if (assignmentMode) return;
+
+            // Buscar el day-cell, ya sea directamente o a través de un assignment
+            let dayCell = e.target.closest('.day-cell');
+            const targetAssignment = e.target.closest('.assignment');
+
+            // Si está sobre un assignment, obtener su day-cell padre
+            if (targetAssignment && !dayCell) {
+                dayCell = targetAssignment.closest('.day-cell');
+            }
+
+            if (dayCell && dayCell.dataset.day) {
+                e.preventDefault();
+
+                if (draggedMuestreo) {
+                    e.dataTransfer.dropEffect = 'copy';
+                    dayCell.classList.add('drop-target');
+                    // Resaltar la OI si se está sobre ella
+                    if (targetAssignment) {
+                        targetAssignment.style.outline = '2px dashed #ff6633';
+                        targetAssignment.style.outlineOffset = '2px';
+                    }
+                } else if (draggedElement) {
+                    e.dataTransfer.dropEffect = 'move';
+                    dayCell.classList.add('drag-over');
+                }
+            }
+        });
+
+        document.getElementById('calendar').addEventListener('dragleave', function(e) {
+            const dayCell = e.target.closest('.day-cell');
+            const targetAssignment = e.target.closest('.assignment');
+
+            // Remover outline de OI
+            if (targetAssignment) {
+                targetAssignment.style.outline = '';
+                targetAssignment.style.outlineOffset = '';
+            }
+
+            if (dayCell) {
+                const relatedTarget = e.relatedTarget;
+                if (!dayCell.contains(relatedTarget)) {
+                    dayCell.classList.remove('drop-target');
+                    dayCell.classList.remove('drag-over');
+                    // Limpiar outlines de todas las OIs en esta celda
+                    dayCell.querySelectorAll('.assignment').forEach(a => {
+                        a.style.outline = '';
+                        a.style.outlineOffset = '';
+                    });
+                }
+            }
+        });
+
+        // Agregar handler de drop para puntos de muestreo
+        document.getElementById('calendar').addEventListener('drop', function(e) {
+            e.preventDefault();
+            if (assignmentMode) return;
+
+            // Buscar el day-cell, ya sea directamente o a través de un assignment
+            let dayCell = e.target.closest('.day-cell');
+            const targetAssignment = e.target.closest('.assignment');
+
+            // Si se soltó sobre un assignment, obtener su day-cell padre
+            if (targetAssignment && !dayCell) {
+                dayCell = targetAssignment.closest('.day-cell');
+            }
+
+            if (!dayCell || !dayCell.dataset.day) return;
+
+            const targetDay = parseInt(dayCell.dataset.day);
+
+            // Si es un punto de muestreo (o múltiples)
+            if (draggedMuestreo && draggedPuntos.length > 0) {
+                // Obtener todos los puntos a agregar
+                const puntosParaAgregar = draggedPuntos.map(id => puntosMuestreo.find(p => p.id === id)).filter(Boolean);
+
+                if (puntosParaAgregar.length > 0) {
+                    // Si se soltó sobre una OI específica, preseleccionar esa OI
+                    if (targetAssignment) {
+                        const oiIndex = parseInt(targetAssignment.dataset.index);
+                        crearOIDesdePuntosConOI(puntosParaAgregar, targetDay, dayCell, oiIndex);
+                    } else {
+                        crearOIDesdePuntos(puntosParaAgregar, targetDay, dayCell);
+                    }
+                }
+
+                // Limpiar selección después de crear la OI
+                clearSelection();
+
+                // Limpiar estilos visuales
+                dayCell.classList.remove('drop-target');
+                dayCell.classList.remove('drag-over');
+                // Limpiar outlines de OIs
+                dayCell.querySelectorAll('.assignment').forEach(a => {
+                    a.style.outline = '';
+                    a.style.outlineOffset = '';
+                });
+                return;
+            }
+
+            // Si es una OI existente (código original de drag & drop)
+            if (draggedElement) {
+                if (targetDay === sourceDay) {
+                    dayCell.classList.remove('drag-over');
+                    return;
+                }
+
+                const assignmentToMove = assignments[sourceDay][sourceIndex];
+                assignments[sourceDay].splice(sourceIndex, 1);
+                if (assignments[sourceDay].length === 0) {
+                    delete assignments[sourceDay];
+                }
+
+                if (!assignments[targetDay]) {
+                    assignments[targetDay] = [];
+                }
+                assignments[targetDay].push(assignmentToMove);
+
+                draggedElement.dataset.day = targetDay;
+                draggedElement.dataset.index = assignments[targetDay].length - 1;
+                dayCell.appendChild(draggedElement);
+
+                document.querySelectorAll(`.assignment[data-day="${sourceDay}"]`).forEach((el, idx) => {
+                    el.dataset.index = idx;
+                });
+
+                dayCell.classList.remove('drag-over');
+                console.log(`Tarea movida del día ${sourceDay} al día ${targetDay}`);
+            }
+        });
+
+        // ==========================================
+        // Modal Crear OI
+        // ==========================================
+
+        let pendingOiData = null; // Datos pendientes para crear la OI
+        let tipoMuestraSeleccionado = 'puntual';
+        let accionSeleccionada = 'nueva'; // 'nueva' o 'asociar'
+        let oiSeleccionadaParaAsociar = null;
+
+        const matrizLabelsModal = {
+            'agua': 'Agua',
+            'suelo': 'Suelo',
+            'aire': 'Aire',
+            'sedimento': 'Sedimento'
+        };
+
+        // Obtener OIs existentes de un día
+        function getOIsExistentes(dia) {
+            if (!assignments[dia]) return [];
+            return assignments[dia].map((a, index) => ({
+                index: index,
+                company: a.company,
+                code: a.code,
+                puntosMuestreo: a.puntosMuestreo || (a.puntoMuestreo ? [a.puntoMuestreo] : []),
+                plan: a.plan
+            }));
+        }
+
+        // Mostrar modal para crear OI
+        function crearOIDesdePunto(punto, dia, dayCell) {
+            // Guardar datos pendientes
+            pendingOiData = {
+                punto: punto,
+                dia: dia,
+                dayCell: dayCell
+            };
+
+            // Llenar información del modal
+            document.getElementById('crearOiPunto').textContent = punto.codigo;
+            document.getElementById('crearOiNombre').textContent = punto.nombre;
+            document.getElementById('crearOiMatriz').textContent = matrizLabelsModal[punto.matriz] || punto.matriz;
+
+            // Formatear fecha
+            const fecha = new Date(2025, 11, dia);
+            const dd = String(fecha.getDate()).padStart(2, '0');
+            const mm = String(fecha.getMonth() + 1).padStart(2, '0');
+            const yyyy = fecha.getFullYear();
+            document.getElementById('crearOiFecha').textContent = `${dd}-${mm}-${yyyy}`;
+
+            // Verificar si hay OIs existentes en este día
+            const oisExistentes = getOIsExistentes(dia);
+            const destinoSelect = document.getElementById('crearOiDestino');
+            const destinoSection = document.getElementById('crearOiDestinoSection');
+            const confirmBtn = document.getElementById('crearOiConfirmBtn');
+
+            // Limpiar y reconstruir dropdown de destino
+            destinoSelect.innerHTML = '<option value="nueva">+ Nueva OI</option>';
+
+            if (oisExistentes.length > 0) {
+                // Mostrar sección de destino y agregar OIs existentes al dropdown
+                destinoSection.style.display = 'block';
+
+                oisExistentes.forEach((oi, idx) => {
+                    // Obtener el código de la OI del objeto assignments
+                    const oiData = assignments[dia][oi.index];
+                    const oiCode = oiData.oiCode || (oi.code ? oi.code.split('\n')[1] || oi.code.split('\n')[0] : 'Sin código');
+                    const puntosCount = oi.puntosMuestreo ? oi.puntosMuestreo.length : 0;
+                    const puntosText = puntosCount > 0 ? ` (${puntosCount} pts)` : '';
+                    const option = document.createElement('option');
+                    option.value = oi.index;
+                    option.textContent = `OI-${oiCode}${puntosText}`;
+                    destinoSelect.appendChild(option);
+                });
+
+                // Por defecto seleccionar "Nueva OI" cuando hay existentes
+                destinoSelect.value = 'nueva';
+                accionSeleccionada = 'nueva';
+                oiSeleccionadaParaAsociar = null;
+                confirmBtn.textContent = 'Crear OI';
+            } else {
+                // Ocultar sección de destino si no hay OIs
+                destinoSection.style.display = 'none';
+                confirmBtn.textContent = 'Crear OI';
+                accionSeleccionada = 'nueva';
+                oiSeleccionadaParaAsociar = null;
+            }
+
+            // Reset campos
+            document.getElementById('crearOiPlan').value = '';
+            tipoMuestraSeleccionado = 'puntual';
+            document.querySelectorAll('.crear-oi-toggle[data-tipo]').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tipo === 'puntual');
+            });
+            // Reset ETFA button
+            const etfaBtn = document.getElementById('crearOiEtfaBtn');
+            if (etfaBtn) {
+                etfaBtn.classList.remove('active');
+                etfaBtn.dataset.etfa = 'false';
+            }
+
+            // Inicializar recurrencia
+            inicializarRecurrencia(dia);
+
+            // Mostrar modal
+            document.getElementById('crearOiModal').classList.add('show');
+
+            // Actualizar preview de recurrencia después de un pequeño delay
+            setTimeout(() => actualizarPreviewRecurrencia(), 100);
+        }
+
+        // Mostrar modal con OI preseleccionada (cuando se suelta sobre una OI existente)
+        function crearOIDesdePuntoConOI(punto, dia, dayCell, oiIndex) {
+            // Guardar datos pendientes
+            pendingOiData = {
+                punto: punto,
+                dia: dia,
+                dayCell: dayCell
+            };
+
+            // Llenar información del modal
+            document.getElementById('crearOiPunto').textContent = punto.codigo;
+            document.getElementById('crearOiNombre').textContent = punto.nombre;
+            document.getElementById('crearOiMatriz').textContent = matrizLabelsModal[punto.matriz] || punto.matriz;
+
+            // Formatear fecha
+            const fecha = new Date(2025, 11, dia);
+            const dd = String(fecha.getDate()).padStart(2, '0');
+            const mm = String(fecha.getMonth() + 1).padStart(2, '0');
+            const yyyy = fecha.getFullYear();
+            document.getElementById('crearOiFecha').textContent = `${dd}-${mm}-${yyyy}`;
+
+            // Obtener OIs existentes
+            const oisExistentes = getOIsExistentes(dia);
+            const destinoSelect = document.getElementById('crearOiDestino');
+            const destinoSection = document.getElementById('crearOiDestinoSection');
+            const confirmBtn = document.getElementById('crearOiConfirmBtn');
+
+            // Limpiar y reconstruir dropdown de destino
+            destinoSelect.innerHTML = '<option value="nueva">+ Nueva OI</option>';
+
+            if (oisExistentes.length > 0) {
+                destinoSection.style.display = 'block';
+
+                oisExistentes.forEach((oi, idx) => {
+                    const codeParts = oi.code ? oi.code.split('\n') : [''];
+                    const oiDisplay = codeParts[1] || codeParts[0] || `OI-${assignments[dia][oi.index].oiCode}`;
+                    const puntosCount = oi.puntosMuestreo ? oi.puntosMuestreo.length : 0;
+                    const puntosText = puntosCount > 0 ? ` (${puntosCount} pts)` : '';
+                    const option = document.createElement('option');
+                    option.value = oi.index;
+                    option.textContent = `OI-${assignments[dia][oi.index].oiCode}${puntosText}`;
+                    destinoSelect.appendChild(option);
+                });
+
+                // Preseleccionar la OI sobre la que se soltó el punto
+                destinoSelect.value = oiIndex;
+                accionSeleccionada = 'asociar';
+                oiSeleccionadaParaAsociar = oiIndex;
+                confirmBtn.textContent = 'Asociar';
+            } else {
+                destinoSection.style.display = 'none';
+                confirmBtn.textContent = 'Crear OI';
+                accionSeleccionada = 'nueva';
+                oiSeleccionadaParaAsociar = null;
+            }
+
+            // Reset campos
+            document.getElementById('crearOiPlan').value = '';
+            tipoMuestraSeleccionado = 'puntual';
+            document.querySelectorAll('.crear-oi-toggle[data-tipo]').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tipo === 'puntual');
+            });
+
+            // Reset ETFA button
+            const etfaBtn = document.getElementById('crearOiEtfaBtn');
+            if (etfaBtn) {
+                etfaBtn.classList.remove('active');
+                etfaBtn.dataset.etfa = 'false';
+            }
+
+            // Inicializar recurrencia (desactivada cuando se asocia a una OI existente)
+            inicializarRecurrencia(dia);
+
+            // Mostrar modal
+            document.getElementById('crearOiModal').classList.add('show');
+
+            // Actualizar preview de recurrencia
+            setTimeout(() => actualizarPreviewRecurrencia(), 100);
+        }
+
+        // Mostrar modal para crear OI con MÚLTIPLES puntos
+        function crearOIDesdePuntos(puntos, dia, dayCell) {
+            // Guardar datos pendientes con múltiples puntos
+            pendingOiData = {
+                puntos: puntos, // Array de puntos
+                punto: puntos[0], // Primer punto como referencia
+                dia: dia,
+                dayCell: dayCell,
+                esMultiple: true
+            };
+
+            // Llenar información del modal con múltiples puntos
+            if (puntos.length === 1) {
+                document.getElementById('crearOiPunto').textContent = puntos[0].codigo;
+                document.getElementById('crearOiNombre').textContent = puntos[0].nombre;
+                document.getElementById('crearOiMatriz').textContent = matrizLabelsModal[puntos[0].matriz] || puntos[0].matriz;
+            } else {
+                // Múltiples puntos: mostrar códigos separados por coma
+                const codigos = puntos.map(p => p.codigo).join(', ');
+                document.getElementById('crearOiPunto').textContent = `${puntos.length} puntos`;
+                document.getElementById('crearOiNombre').textContent = codigos;
+                // Mostrar matrices únicas
+                const matricesUnicas = [...new Set(puntos.map(p => matrizLabelsModal[p.matriz] || p.matriz))];
+                document.getElementById('crearOiMatriz').textContent = matricesUnicas.join(', ');
+            }
+
+            // Formatear fecha
+            const fecha = new Date(2025, 11, dia);
+            const dd = String(fecha.getDate()).padStart(2, '0');
+            const mm = String(fecha.getMonth() + 1).padStart(2, '0');
+            const yyyy = fecha.getFullYear();
+            document.getElementById('crearOiFecha').textContent = `${dd}-${mm}-${yyyy}`;
+
+            // Verificar si hay OIs existentes en este día
+            const oisExistentes = getOIsExistentes(dia);
+            const destinoSelect = document.getElementById('crearOiDestino');
+            const destinoSection = document.getElementById('crearOiDestinoSection');
+            const confirmBtn = document.getElementById('crearOiConfirmBtn');
+
+            // Limpiar y reconstruir dropdown
+            destinoSelect.innerHTML = '<option value="nueva">+ Nueva OI</option>';
+
+            if (oisExistentes.length > 0) {
+                destinoSection.style.display = 'block';
+                oisExistentes.forEach((oi, idx) => {
+                    const oiData = assignments[dia][oi.index];
+                    const oiCode = oiData.oiCode || 'Sin código';
+                    const puntosCount = oi.puntosMuestreo ? oi.puntosMuestreo.length : 0;
+                    const puntosText = puntosCount > 0 ? ` (${puntosCount} pts)` : '';
+                    const option = document.createElement('option');
+                    option.value = oi.index;
+                    option.textContent = `OI-${oiCode}${puntosText}`;
+                    destinoSelect.appendChild(option);
+                });
+                destinoSelect.value = 'nueva';
+                accionSeleccionada = 'nueva';
+                oiSeleccionadaParaAsociar = null;
+                confirmBtn.textContent = 'Crear OI';
+            } else {
+                destinoSection.style.display = 'none';
+                confirmBtn.textContent = 'Crear OI';
+                accionSeleccionada = 'nueva';
+                oiSeleccionadaParaAsociar = null;
+            }
+
+            // Reset campos
+            document.getElementById('crearOiPlan').value = '';
+            tipoMuestraSeleccionado = 'puntual';
+            document.querySelectorAll('.crear-oi-toggle[data-tipo]').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tipo === 'puntual');
+            });
+            const etfaBtn = document.getElementById('crearOiEtfaBtn');
+            if (etfaBtn) {
+                etfaBtn.classList.remove('active');
+                etfaBtn.dataset.etfa = 'false';
+            }
+
+            inicializarRecurrencia(dia);
+            document.getElementById('crearOiModal').classList.add('show');
+            setTimeout(() => actualizarPreviewRecurrencia(), 100);
+        }
+
+        // Mostrar modal con MÚLTIPLES puntos y OI preseleccionada
+        function crearOIDesdePuntosConOI(puntos, dia, dayCell, oiIndex) {
+            // Guardar datos pendientes
+            pendingOiData = {
+                puntos: puntos,
+                punto: puntos[0],
+                dia: dia,
+                dayCell: dayCell,
+                esMultiple: true
+            };
+
+            // Llenar información del modal
+            if (puntos.length === 1) {
+                document.getElementById('crearOiPunto').textContent = puntos[0].codigo;
+                document.getElementById('crearOiNombre').textContent = puntos[0].nombre;
+                document.getElementById('crearOiMatriz').textContent = matrizLabelsModal[puntos[0].matriz] || puntos[0].matriz;
+            } else {
+                const codigos = puntos.map(p => p.codigo).join(', ');
+                document.getElementById('crearOiPunto').textContent = `${puntos.length} puntos`;
+                document.getElementById('crearOiNombre').textContent = codigos;
+                const matricesUnicas = [...new Set(puntos.map(p => matrizLabelsModal[p.matriz] || p.matriz))];
+                document.getElementById('crearOiMatriz').textContent = matricesUnicas.join(', ');
+            }
+
+            // Formatear fecha
+            const fecha = new Date(2025, 11, dia);
+            const dd = String(fecha.getDate()).padStart(2, '0');
+            const mm = String(fecha.getMonth() + 1).padStart(2, '0');
+            const yyyy = fecha.getFullYear();
+            document.getElementById('crearOiFecha').textContent = `${dd}-${mm}-${yyyy}`;
+
+            // OIs existentes
+            const oisExistentes = getOIsExistentes(dia);
+            const destinoSelect = document.getElementById('crearOiDestino');
+            const destinoSection = document.getElementById('crearOiDestinoSection');
+            const confirmBtn = document.getElementById('crearOiConfirmBtn');
+
+            destinoSelect.innerHTML = '<option value="nueva">+ Nueva OI</option>';
+
+            if (oisExistentes.length > 0) {
+                destinoSection.style.display = 'block';
+                oisExistentes.forEach((oi, idx) => {
+                    const oiData = assignments[dia][oi.index];
+                    const oiCode = oiData.oiCode || 'Sin código';
+                    const puntosCount = oi.puntosMuestreo ? oi.puntosMuestreo.length : 0;
+                    const puntosText = puntosCount > 0 ? ` (${puntosCount} pts)` : '';
+                    const option = document.createElement('option');
+                    option.value = oi.index;
+                    option.textContent = `OI-${oiCode}${puntosText}`;
+                    destinoSelect.appendChild(option);
+                });
+                // Preseleccionar la OI sobre la que se soltó
+                destinoSelect.value = oiIndex;
+                accionSeleccionada = 'asociar';
+                oiSeleccionadaParaAsociar = oiIndex;
+                confirmBtn.textContent = 'Asociar';
+            } else {
+                destinoSection.style.display = 'none';
+                confirmBtn.textContent = 'Crear OI';
+                accionSeleccionada = 'nueva';
+                oiSeleccionadaParaAsociar = null;
+            }
+
+            // Reset campos
+            document.getElementById('crearOiPlan').value = '';
+            tipoMuestraSeleccionado = 'puntual';
+            document.querySelectorAll('.crear-oi-toggle[data-tipo]').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tipo === 'puntual');
+            });
+            const etfaBtn = document.getElementById('crearOiEtfaBtn');
+            if (etfaBtn) {
+                etfaBtn.classList.remove('active');
+                etfaBtn.dataset.etfa = 'false';
+            }
+
+            inicializarRecurrencia(dia);
+            document.getElementById('crearOiModal').classList.add('show');
+            setTimeout(() => actualizarPreviewRecurrencia(), 100);
+        }
+
+        // Evento para cambio en dropdown de destino
+        document.getElementById('crearOiDestino').addEventListener('change', function() {
+            const confirmBtn = document.getElementById('crearOiConfirmBtn');
+            if (this.value === 'nueva') {
+                accionSeleccionada = 'nueva';
+                oiSeleccionadaParaAsociar = null;
+                confirmBtn.textContent = 'Crear OI';
+            } else {
+                accionSeleccionada = 'asociar';
+                oiSeleccionadaParaAsociar = parseInt(this.value);
+                confirmBtn.textContent = 'Asociar';
+            }
+        });
+
+        // Cerrar modal
+        function cerrarCrearOiModal() {
+            document.getElementById('crearOiModal').classList.remove('show');
+            pendingOiData = null;
+            oiSeleccionadaParaAsociar = null;
+        }
+
+        // Toggle tipo de muestra (solo los que tienen data-tipo)
+        document.querySelectorAll('.crear-oi-toggle[data-tipo]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.crear-oi-toggle[data-tipo]').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                tipoMuestraSeleccionado = this.dataset.tipo;
+            });
+        });
+
+        // Toggle ETFA
+        document.getElementById('crearOiEtfaBtn').addEventListener('click', function() {
+            const isActive = this.classList.toggle('active');
+            this.dataset.etfa = isActive ? 'true' : 'false';
+        });
+
+        // ==========================================
+        // Lógica de Recurrencia
+        // ==========================================
+        let recurrenciaActiva = false;
+        let recurrenciaTipo = 'diario';
+        let recurrenciaDiasSemana = [];
+        let recurrenciaIntervalo = 2;
+
+        // Toggle de recurrencia
+        document.getElementById('recurrenciaCheck').addEventListener('change', function() {
+            recurrenciaActiva = this.checked;
+            const options = document.getElementById('recurrenciaOptions');
+            if (this.checked) {
+                options.classList.add('show');
+                actualizarPreviewRecurrencia();
+            } else {
+                options.classList.remove('show');
+            }
+        });
+
+        // Tipo de recurrencia
+        document.querySelectorAll('.recurrencia-tipo-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.recurrencia-tipo-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                recurrenciaTipo = this.dataset.tipo;
+
+                // Mostrar/ocultar configuraciones
+                document.getElementById('configDiario').style.display = recurrenciaTipo === 'diario' ? 'block' : 'none';
+                document.getElementById('configSemanal').style.display = recurrenciaTipo === 'semanal' ? 'block' : 'none';
+                document.getElementById('configPersonalizado').style.display = recurrenciaTipo === 'personalizado' ? 'block' : 'none';
+
+                actualizarPreviewRecurrencia();
+            });
+        });
+
+        // Días de la semana (para recurrencia semanal)
+        document.querySelectorAll('.recurrencia-dia-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.classList.toggle('active');
+                const dia = parseInt(this.dataset.dia);
+                if (this.classList.contains('active')) {
+                    if (!recurrenciaDiasSemana.includes(dia)) {
+                        recurrenciaDiasSemana.push(dia);
+                    }
+                } else {
+                    recurrenciaDiasSemana = recurrenciaDiasSemana.filter(d => d !== dia);
+                }
+                actualizarPreviewRecurrencia();
+            });
+        });
+
+        // Intervalo personalizado
+        document.getElementById('recurrenciaIntervalo').addEventListener('change', function() {
+            recurrenciaIntervalo = parseInt(this.value) || 2;
+            actualizarPreviewRecurrencia();
+        });
+
+        // Eventos para actualizar preview cuando cambian las opciones de fin
+        document.getElementById('recurrenciaFechaFin').addEventListener('change', actualizarPreviewRecurrencia);
+        document.getElementById('recurrenciaOcurrencias').addEventListener('change', actualizarPreviewRecurrencia);
+        document.querySelectorAll('input[name="recurrenciaFin"]').forEach(radio => {
+            radio.addEventListener('change', actualizarPreviewRecurrencia);
+        });
+
+        // Calcular fechas de recurrencia
+        function calcularFechasRecurrencia(diaInicio) {
+            const fechas = [];
+            const fechaInicio = new Date(2025, 11, diaInicio); // Diciembre 2025
+
+            const tipoFin = document.querySelector('input[name="recurrenciaFin"]:checked').value;
+            let fechaFin, maxOcurrencias;
+
+            if (tipoFin === 'hasta') {
+                const fechaFinStr = document.getElementById('recurrenciaFechaFin').value;
+                if (fechaFinStr) {
+                    fechaFin = new Date(fechaFinStr);
+                } else {
+                    // Por defecto, fin de mes
+                    fechaFin = new Date(2025, 11, 31);
+                }
+                maxOcurrencias = 31; // Límite de seguridad
+            } else {
+                maxOcurrencias = parseInt(document.getElementById('recurrenciaOcurrencias').value) || 5;
+                fechaFin = new Date(2025, 11, 31); // Límite de seguridad
+            }
+
+            let fechaActual = new Date(fechaInicio);
+            let ocurrencias = 0;
+
+            while (fechaActual <= fechaFin && ocurrencias < maxOcurrencias) {
+                const diaDelMes = fechaActual.getDate();
+                const diaDeLaSemana = fechaActual.getDay();
+
+                // Verificar si la fecha es válida según el tipo de recurrencia
+                let incluir = false;
+
+                if (recurrenciaTipo === 'diario') {
+                    incluir = true;
+                } else if (recurrenciaTipo === 'semanal') {
+                    incluir = recurrenciaDiasSemana.includes(diaDeLaSemana);
+                } else if (recurrenciaTipo === 'personalizado') {
+                    // Cada X días desde el inicio
+                    const diffDias = Math.floor((fechaActual - fechaInicio) / (1000 * 60 * 60 * 24));
+                    incluir = diffDias % recurrenciaIntervalo === 0;
+                }
+
+                if (incluir && diaDelMes >= 1 && diaDelMes <= 31) {
+                    fechas.push(diaDelMes);
+                    ocurrencias++;
+                }
+
+                // Siguiente día
+                fechaActual.setDate(fechaActual.getDate() + 1);
+            }
+
+            return fechas;
+        }
+
+        // Actualizar preview de recurrencia
+        function actualizarPreviewRecurrencia() {
+            if (!pendingOiData) return;
+
+            const fechas = calcularFechasRecurrencia(pendingOiData.dia);
+            const previewText = document.getElementById('recurrenciaPreviewText');
+            const previewCount = document.getElementById('recurrenciaPreviewCount');
+
+            let textoTipo = '';
+            if (recurrenciaTipo === 'diario') {
+                textoTipo = 'todos los días';
+            } else if (recurrenciaTipo === 'semanal') {
+                const diasNombres = ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'];
+                const diasSeleccionados = recurrenciaDiasSemana.sort().map(d => diasNombres[d]).join(', ');
+                textoTipo = diasSeleccionados ? `los ${diasSeleccionados}` : 'días de la semana';
+            } else {
+                textoTipo = `cada ${recurrenciaIntervalo} días`;
+            }
+
+            previewText.textContent = `Se crearán OIs ${textoTipo}`;
+            previewCount.textContent = fechas.length;
+        }
+
+        // Inicializar fecha de fin por defecto
+        function inicializarRecurrencia(diaInicio) {
+            // Establecer fecha de fin por defecto (fin del mes)
+            const fechaFinDefault = new Date(2025, 11, 31);
+            document.getElementById('recurrenciaFechaFin').value = fechaFinDefault.toISOString().split('T')[0];
+
+            // Seleccionar el día de la semana del día inicial
+            const fechaInicio = new Date(2025, 11, diaInicio);
+            const diaSemana = fechaInicio.getDay();
+
+            // Reset días de semana
+            recurrenciaDiasSemana = [diaSemana];
+            document.querySelectorAll('.recurrencia-dia-btn').forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.dia) === diaSemana);
+            });
+
+            // Reset estado
+            recurrenciaActiva = false;
+            recurrenciaTipo = 'diario';
+            document.getElementById('recurrenciaCheck').checked = false;
+            document.getElementById('recurrenciaOptions').classList.remove('show');
+            document.querySelectorAll('.recurrencia-tipo-btn').forEach(b => {
+                b.classList.toggle('active', b.dataset.tipo === 'diario');
+            });
+            document.getElementById('configDiario').style.display = 'block';
+            document.getElementById('configSemanal').style.display = 'none';
+            document.getElementById('configPersonalizado').style.display = 'none';
+        }
+
+        // Generar HTML para tarjeta de OI
+        function generarHTMLTarjetaOI(oiCode, puntosMuestreo, inspectorId) {
+            // Obtener códigos de los puntos de muestreo
+            const puntosTexto = puntosMuestreo.map(p => {
+                if (typeof p === 'object') {
+                    return p.codigo || p.id;
+                }
+                // Buscar el punto en la lista de puntos de muestreo
+                const puntoInfo = puntosMuestreo.find(pm => pm.id === p);
+                return puntoInfo ? puntoInfo.codigo : p;
+            }).join(', ');
+
+            const cantidadPuntos = puntosMuestreo.length;
+            const mostrarBadgePuntos = cantidadPuntos > 1;
+
+            // Obtener iniciales del inspector (usando el mapeo global)
+            const inicialesInspector = inspectorId ? (inspectorIniciales[inspectorId] || '') : '';
+
+            return `
+                <div class="oi-number">OI-${oiCode}${mostrarBadgePuntos ? `<span class="puntos-badge">${cantidadPuntos}</span>` : ''}</div>
+                <div class="puntos">${puntosTexto || 'Sin puntos'}</div>
+                ${inicialesInspector ? `<span class="inspector-badge">${inicialesInspector}</span>` : ''}
+            `;
+        }
+
+        // Crear OI para un día específico (función auxiliar)
+        function crearOIEnDia(punto, dia, plan, tipoMuestra, esEtfa) {
+            const oiCode = Math.floor(200000 + Math.random() * 99999);
+
+            const nuevaAsignacion = {
+                oiCode: oiCode,
+                status: 'sin-asignar',
+                puntoMuestreo: punto.id,
+                puntosMuestreo: [{
+                    id: punto.id,
+                    codigo: punto.codigo,
+                    nombre: punto.nombre,
+                    plan: plan,
+                    tipoMuestra: tipoMuestra,
+                    esEtfa: esEtfa
+                }],
+                matriz: punto.matriz,
+                plan: plan,
+                tipoMuestra: tipoMuestra,
+                esEtfa: esEtfa,
+                inspectorId: null
+            };
+
+            if (!assignments[dia]) {
+                assignments[dia] = [];
+            }
+            assignments[dia].push(nuevaAsignacion);
+
+            // Crear elemento visual
+            const dayCell = document.querySelector(`.day-cell[data-day="${dia}"]`);
+            if (dayCell) {
+                const assignmentDiv = document.createElement('div');
+                assignmentDiv.className = 'assignment';
+                assignmentDiv.draggable = true;
+                assignmentDiv.dataset.day = dia;
+                assignmentDiv.dataset.index = assignments[dia].length - 1;
+                assignmentDiv.dataset.puntoMuestreo = punto.id;
+                assignmentDiv.dataset.oiCode = oiCode;
+
+                if (esEtfa) {
+                    assignmentDiv.classList.add('etfa');
+                }
+
+                assignmentDiv.innerHTML = generarHTMLTarjetaOI(oiCode, nuevaAsignacion.puntosMuestreo, null);
+
+                assignmentDiv.addEventListener('click', function(e) {
+                    if (e.target.closest('.assignment') && !assignmentMode) {
+                        openModal(dia, assignments[dia].length - 1);
+                    }
+                });
+
+                dayCell.appendChild(assignmentDiv);
+            }
+
+            return nuevaAsignacion;
+        }
+
+        // Confirmar creación o asociación de OI
+        function confirmarCrearOi() {
+            if (!pendingOiData) return;
+
+            const { punto, dia, dayCell } = pendingOiData;
+
+            // Obtener valores comunes (siempre requeridos)
+            const plan = document.getElementById('crearOiPlan').value;
+            const esEtfa = document.getElementById('crearOiEtfaBtn').dataset.etfa === 'true';
+
+            if (!plan) {
+                alert('Por favor seleccione un plan');
+                return;
+            }
+
+            if (accionSeleccionada === 'asociar') {
+                // Asociar a OI existente
+                if (oiSeleccionadaParaAsociar === null) {
+                    alert('Por favor seleccione una OI de destino');
+                    return;
+                }
+
+                // Obtener la asignación existente
+                const asignacionExistente = assignments[dia][oiSeleccionadaParaAsociar];
+
+                // Agregar el punto de muestreo a la lista de puntos
+                if (!asignacionExistente.puntosMuestreo) {
+                    asignacionExistente.puntosMuestreo = [];
+                }
+                asignacionExistente.puntosMuestreo.push({
+                    id: punto.id,
+                    codigo: punto.codigo,
+                    nombre: punto.nombre,
+                    plan: plan,
+                    tipoMuestra: tipoMuestraSeleccionado,
+                    esEtfa: esEtfa
+                });
+
+                // Si tiene ETFA, marcar la OI
+                if (esEtfa) {
+                    asignacionExistente.esEtfa = true;
+                }
+
+                // Actualizar el elemento visual
+                const assignmentEl = dayCell.querySelectorAll('.assignment')[oiSeleccionadaParaAsociar];
+                if (assignmentEl) {
+                    // Regenerar el HTML completo de la tarjeta
+                    assignmentEl.innerHTML = generarHTMLTarjetaOI(
+                        asignacionExistente.oiCode,
+                        asignacionExistente.puntosMuestreo,
+                        asignacionExistente.inspectorId
+                    );
+
+                    // Si tiene ETFA, agregar clase
+                    if (esEtfa) {
+                        assignmentEl.classList.add('etfa');
+                    }
+                }
+
+                console.log(`Punto ${punto.codigo} asociado a OI-${asignacionExistente.oiCode}`);
+
+            } else {
+                // Crear nueva(s) OI(s)
+
+                // Verificar si hay recurrencia activa
+                if (recurrenciaActiva) {
+                    // Calcular todas las fechas de recurrencia
+                    const fechasRecurrencia = calcularFechasRecurrencia(dia);
+
+                    if (fechasRecurrencia.length === 0) {
+                        alert('No se encontraron fechas válidas para la recurrencia');
+                        return;
+                    }
+
+                    // Crear OI para cada fecha
+                    fechasRecurrencia.forEach((diaRecurrencia, index) => {
+                        crearOIEnDia(punto, diaRecurrencia, plan, tipoMuestraSeleccionado, esEtfa);
+                    });
+
+                    console.log(`Recurrencia creada: ${fechasRecurrencia.length} OIs para ${punto.codigo}`);
+
+                    // Mostrar mensaje de confirmación
+                    setTimeout(() => {
+                        alert(`Se han creado ${fechasRecurrencia.length} OIs para el punto ${punto.codigo}`);
+                    }, 100);
+
+                } else {
+                    // Crear una sola OI
+                    const oiCode = Math.floor(200000 + Math.random() * 99999);
+
+                    // Crear datos de la nueva asignación
+                    const nuevaAsignacion = {
+                        oiCode: oiCode,
+                        status: 'sin-asignar',
+                        puntoMuestreo: punto.id,
+                        puntosMuestreo: [{
+                            id: punto.id,
+                            codigo: punto.codigo,
+                            nombre: punto.nombre,
+                            plan: plan,
+                            tipoMuestra: tipoMuestraSeleccionado,
+                            esEtfa: esEtfa
+                        }],
+                        matriz: punto.matriz,
+                        plan: plan,
+                        tipoMuestra: tipoMuestraSeleccionado,
+                        esEtfa: esEtfa,
+                        inspectorId: null
+                    };
+
+                    // Agregar a los datos
+                    if (!assignments[dia]) {
+                        assignments[dia] = [];
+                    }
+                    assignments[dia].push(nuevaAsignacion);
+
+                    // Crear elemento visual
+                    const assignmentDiv = document.createElement('div');
+                    assignmentDiv.className = 'assignment';
+                    assignmentDiv.draggable = true;
+                    assignmentDiv.dataset.day = dia;
+                    assignmentDiv.dataset.index = assignments[dia].length - 1;
+                    assignmentDiv.dataset.oiCode = oiCode;
+
+                    // Agregar indicador ETFA
+                    if (esEtfa) {
+                        assignmentDiv.classList.add('etfa');
+                    }
+
+                    assignmentDiv.innerHTML = generarHTMLTarjetaOI(oiCode, nuevaAsignacion.puntosMuestreo, null);
+
+                    dayCell.appendChild(assignmentDiv);
+
+                    console.log(`Nueva OI creada: OI-${oiCode}, Punto: ${punto.codigo}, Plan: ${plan}`);
+                }
+            }
+
+            // Actualizar contadores
+            updateInspectorCounters();
+
+            // Cerrar modal
+            cerrarCrearOiModal();
+        }
+
+        // Cerrar modal con Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('crearOiModal').classList.contains('show')) {
+                cerrarCrearOiModal();
+            }
+        });
+
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('crearOiModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                cerrarCrearOiModal();
+            }
+        });
+
+        // Toggle del panel
+        document.getElementById('muestreoToggle').addEventListener('click', function() {
+            const panel = document.getElementById('muestreoPanel');
+            panel.classList.toggle('collapsed');
+            this.textContent = panel.classList.contains('collapsed') ? '▶' : '◀';
+            this.title = panel.classList.contains('collapsed') ? 'Expandir panel' : 'Colapsar panel';
+        });
+
+        // Filtros de matriz
+        document.querySelectorAll('.muestreo-filter-chip').forEach(chip => {
+            chip.addEventListener('click', function() {
+                document.querySelectorAll('.muestreo-filter-chip').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                filtroMatrizActual = this.dataset.filter;
+                renderMuestreoList();
+            });
+        });
+
+        // Búsqueda
+        document.getElementById('muestreoSearch').addEventListener('input', function() {
+            busquedaActual = this.value;
+            renderMuestreoList();
+        });
+
+        // Inicializar lista de puntos de muestreo
+        renderMuestreoList();
+    </script>
+</body>
+</html>

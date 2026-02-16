@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha Técnica Comercial - SGS Chile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background-color: #f0ebe5;
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background-color: #f0ebe5;
+            min-height: 100vh;
+        }
+
+        .header {
+            background-color: #ee8866;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .content {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section {
+            margin-bottom: 20px;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .section-header {
+            background-color: #f8f8f8;
+            color: #333;
+            padding: 16px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .section-body {
+            padding: 24px;
+            background-color: #faf8f6;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 18px;
+        }
+
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        .form-row.triple {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 13px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background-color: #f5f3f0;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #5fb3ad;
+            background-color: white;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        .subsection {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #e8e8e8;
+        }
+
+        .subsection-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .checkbox-group input[type="checkbox"],
+        .checkbox-group input[type="radio"] {
+            width: 16px;
+            height: 16px;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .dynamic-list {
+            margin-top: 12px;
+        }
+
+        .list-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .list-item input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f5f3f0;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-add {
+            background-color: #ee8866;
+            color: white;
+        }
+
+        .btn-add:hover {
+            background-color: #e67550;
+        }
+
+        .btn-remove {
+            background-color: #999;
+            color: white;
+            padding: 8px 16px;
+        }
+
+        .btn-remove:hover {
+            background-color: #777;
+        }
+
+        .footer {
+            background-color: white;
+            padding: 24px;
+            text-align: center;
+            border-top: 1px solid #e8e8e8;
+            position: sticky;
+            bottom: 0;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
+        }
+
+        .btn-save {
+            background-color: #5fb3ad;
+            color: white;
+            padding: 14px 40px;
+            font-size: 15px;
+            margin-left: 10px;
+        }
+
+        .btn-save:hover {
+            background-color: #4fa39d;
+        }
+
+        .btn-cancel {
+            background-color: #ddd;
+            color: #666;
+            padding: 14px 40px;
+            font-size: 15px;
+        }
+
+        .btn-cancel:hover {
+            background-color: #ccc;
+        }
+
+        .parametro-tag {
+            display: inline-flex;
+            flex-direction: column;
+            background-color: #f5f3f0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 8px 12px;
+            gap: 4px;
+            position: relative;
+            max-width: 300px;
+            transition: all 0.2s;
+        }
+
+        .parametro-tag:hover {
+            background-color: #ede9e4;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .parametro-nombre {
+            font-weight: 600;
+            font-size: 13px;
+            color: #333;
+            padding-right: 20px;
+        }
+
+        .parametro-metodologia {
+            font-size: 11px;
+            color: #666;
+            line-height: 1.3;
+        }
+
+        .tag-remove {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 18px;
+            line-height: 1;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            padding: 0;
+        }
+
+        .tag-remove:hover {
+            background-color: #ee8866;
+            color: white;
+        }
+
+        .btn-table-remove {
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 20px;
+            cursor: pointer;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-table-remove:hover {
+            background-color: #ee8866;
+            color: white;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+            }
+            .footer {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Ficha Técnica Comercial</h1>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Datos Generales del Servicio/Propuesta -->
+            <div class="section">
+                <div class="section-header">DATOS GENERALES DEL SERVICIO/PROPUESTA</div>
+                <div class="section-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nombre Cliente / Titular *</label>
+                            <input type="text" placeholder="Nombre del cliente o titular">
+                        </div>
+                        <div class="form-group">
+                            <label>RUT Cliente *</label>
+                            <input type="text" placeholder="12.345.678-9">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nombre Representante Legal *</label>
+                            <input type="text" placeholder="Nombre del representante legal">
+                        </div>
+                        <div class="form-group">
+                            <label>RUT Representante Legal *</label>
+                            <input type="text" placeholder="12.345.678-9">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Celular o Teléfono *</label>
+                            <input type="tel" placeholder="+56 9 1234 5678">
+                        </div>
+                        <div class="form-group">
+                            <label>Correo Electrónico *</label>
+                            <input type="email" placeholder="correo@empresa.cl">
+                        </div>
+                    </div>
+
+                    <div class="form-row full">
+                        <div class="form-group">
+                            <label>Dirección del Cliente *</label>
+                            <input type="text" placeholder="Dirección completa">
+                        </div>
+                    </div>
+
+                    <div class="form-row full">
+                        <div class="form-group">
+                            <label>Nombre del Proyecto *</label>
+                            <input type="text" placeholder="Nombre del proyecto">
+                        </div>
+                    </div>
+
+                    <div class="form-row full">
+                        <div class="form-group">
+                            <label>Localidad o Ubicación del Proyecto *</label>
+                            <input type="text" placeholder="Localidad, región">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alcances del Servicio -->
+            <div class="section">
+                <div class="section-header">ALCANCES DEL SERVICIO</div>
+                <div class="section-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Frecuencia de la Campaña</label>
+                            <select>
+                                <option value="">Seleccionar...</option>
+                                <option value="mensual">Mensual</option>
+                                <option value="bimensual">Bimensual</option>
+                                <option value="trimestral">Trimestral</option>
+                                <option value="cuatrimestral">Cuatrimestral</option>
+                                <option value="semestral">Semestral</option>
+                                <option value="anual">Anual</option>
+                                <option value="unica">Única</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Número de Campañas</label>
+                            <input type="number" min="1" placeholder="1">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>¿Afecta a ETFA?</label>
+                            <div class="checkbox-group" style="margin-top: 8px;">
+                                <label><input type="radio" name="etfa" value="si"> Sí</label>
+                                <label><input type="radio" name="etfa" value="no"> No</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">Instrumentos de Carácter Ambiental</div>
+                        <div class="dynamic-list" id="instrumentos-list">
+                            <div class="list-item" style="display: grid; grid-template-columns: 2fr 1fr auto; gap: 10px; align-items: end;">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label>Tipo de Instrumento</label>
+                                    <select>
+                                        <option value="">Seleccionar...</option>
+                                        <option value="RCA">RCA - Resolución de Calificación Ambiental</option>
+                                        <option value="PDC">PDC - Plan de Cumplimiento</option>
+                                        <option value="DS">DS - Decreto Supremo</option>
+                                        <option value="PPDA">PPDA - Plan de Prevención y/o Descontaminación</option>
+                                        <option value="ORD">ORD - Ordinario SMA</option>
+                                        <option value="RES">RES - Resolución SMA</option>
+                                        <option value="PAS">PAS - Programa de Seguimiento Ambiental</option>
+                                        <option value="OTR">OTR - Otro instrumento ambiental</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label>Código</label>
+                                    <input type="text" placeholder="Ej: 123/2018">
+                                </div>
+                                <button class="btn btn-remove" onclick="removeItem(this)">Eliminar</button>
+                            </div>
+                        </div>
+                        <button class="btn btn-add" onclick="addInstrumento()">+ Agregar Instrumento</button>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">Componentes y Matrices</div>
+                        
+                        <!-- Componente Químico -->
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label>Componente Químico</label>
+                            <select id="quimico-tipo" onchange="toggleMatrices('quimico')">
+                                <option value="">No aplica</option>
+                                <option value="aplica">Aplica</option>
+                            </select>
+                            <div id="quimico-matrices" style="display:none; margin-top: 10px; padding: 15px; background-color: white; border-radius: 4px;">
+                                <label style="font-weight: 600; margin-bottom: 10px; display: block;">Matrices / Subáreas:</label>
+                                <div class="checkbox-group" style="flex-wrap: wrap; gap: 15px;">
+                                    <label><input type="checkbox"> Agua de Mar (E)</label>
+                                    <label><input type="checkbox"> Agua para fines industriales (G)</label>
+                                    <label><input type="checkbox"> Agua Residual (F)</label>
+                                    <label><input type="checkbox"> Agua Superficial (D)</label>
+                                    <label><input type="checkbox"> Biotas (U)</label>
+                                    <label><input type="checkbox"> Sedimentos Acuáticos (J)</label>
+                                    <label><input type="checkbox"> Sedimentos Marinos (L)</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Componente Biológico -->
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label>Componente Biológico</label>
+                            <select id="biologico-tipo" onchange="toggleMatrices('biologico')">
+                                <option value="">No aplica</option>
+                                <option value="aplica">Aplica</option>
+                            </select>
+                            <div id="biologico-matrices" style="display:none; margin-top: 10px; padding: 15px; background-color: white; border-radius: 4px;">
+                                <label style="font-weight: 600; margin-bottom: 10px; display: block;">Matrices / Subáreas:</label>
+                                <div class="checkbox-group" style="flex-wrap: wrap; gap: 15px;">
+                                    <label><input type="checkbox"> Flora Terrestre</label>
+                                    <label><input type="checkbox"> Fauna Terrestre</label>
+                                    <label><input type="checkbox"> Flora Marina</label>
+                                    <label><input type="checkbox"> Fauna Marina</label>
+                                    <label><input type="checkbox"> Hidrobiología</label>
+                                    <label><input type="checkbox"> Microbiología</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Componente Físico -->
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label>Componente Físico</label>
+                            <select id="fisico-tipo" onchange="toggleMatrices('fisico')">
+                                <option value="">No aplica</option>
+                                <option value="aplica">Aplica</option>
+                            </select>
+                            <div id="fisico-matrices" style="display:none; margin-top: 10px; padding: 15px; background-color: white; border-radius: 4px;">
+                                <label style="font-weight: 600; margin-bottom: 10px; display: block;">Matrices / Subáreas:</label>
+                                <div class="checkbox-group" style="flex-wrap: wrap; gap: 15px;">
+                                    <label><input type="checkbox"> Meteorología</label>
+                                    <label><input type="checkbox"> Oceanografía</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alcance Técnico -->
+            <div class="section">
+                <div class="section-header">ALCANCE TÉCNICO</div>
+                <div class="section-body">
+                    <div class="subsection-title">Lista de Parámetros (Precargados de la cotización)</div>
+                    
+                    <!-- Tabla de parámetros -->
+                    <div style="overflow-x: auto;">
+                        <table id="parametros-table" style="width: 100%; border-collapse: collapse; background-color: white; border-radius: 4px; overflow: hidden;">
+                            <thead>
+                                <tr style="background-color: #f8f8f8; border-bottom: 2px solid #e0e0e0;">
+                                    <th style="padding: 12px; text-align: center; font-weight: 600; font-size: 13px; width: 5%;">#</th>
+                                    <th style="padding: 12px; text-align: left; font-weight: 600; font-size: 13px; width: 28%;">Parámetro</th>
+                                    <th style="padding: 12px; text-align: left; font-weight: 600; font-size: 13px; width: 57%;">Metodología</th>
+                                    <th style="padding: 12px; text-align: center; font-weight: 600; font-size: 13px; width: 10%;">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid #f0f0f0;">
+                                    <td style="padding: 10px; text-align: center; color: #999; font-weight: 600;">1</td>
+                                    <td style="padding: 10px;">2-Dicloroetano</td>
+                                    <td style="padding: 10px; color: #666; font-size: 13px;">EPA 5021 A 2014</td>
+                                    <td style="padding: 10px; text-align: center;">
+                                        <button class="btn-table-remove" onclick="removeParametroRow(this)">×</button>
+                                    </td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #f0f0f0;">
+                                    <td style="padding: 10px; text-align: center; color: #999; font-weight: 600;">2</td>
+                                    <td style="padding: 10px;">Acidez</td>
+                                    <td style="padding: 10px; color: #666; font-size: 13px;">Standard Methods 2310 B, Ed 23 2017</td>
+                                    <td style="padding: 10px; text-align: center;">
+                                        <button class="btn-table-remove" onclick="removeParametroRow(this)">×</button>
+                                    </td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #f0f0f0;">
+                                    <td style="padding: 10px; text-align: center; color: #999; font-weight: 600;">3</td>
+                                    <td style="padding: 10px;">Carbono Orgánico Particulado</td>
+                                    <td style="padding: 10px; color: #666; font-size: 13px;">SM 5310 B Ed.23, 2017 (Cálculo)</td>
+                                    <td style="padding: 10px; text-align: center;">
+                                        <button class="btn-table-remove" onclick="removeParametroRow(this)">×</button>
+                                    </td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #f0f0f0;">
+                                    <td style="padding: 10px; text-align: center; color: #999; font-weight: 600;">4</td>
+                                    <td style="padding: 10px;">Clorofila A</td>
+                                    <td style="padding: 10px; color: #666; font-size: 13px;">SM 10200 H Ed.23, 2017</td>
+                                    <td style="padding: 10px; text-align: center;">
+                                        <button class="btn-table-remove" onclick="removeParametroRow(this)">×</button>
+                                    </td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #f0f0f0;">
+                                    <td style="padding: 10px; text-align: center; color: #999; font-weight: 600;">5</td>
+                                    <td style="padding: 10px;">Cobre total</td>
+                                    <td style="padding: 10px; color: #666; font-size: 13px;">I-ENV-LAB-511 Ed00 ICPMS</td>
+                                    <td style="padding: 10px; text-align: center;">
+                                        <button class="btn-table-remove" onclick="removeParametroRow(this)">×</button>
+                                    </td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #f0f0f0;">
+                                    <td style="padding: 10px; text-align: center; color: #999; font-weight: 600;">6</td>
+                                    <td style="padding: 10px;">Color</td>
+                                    <td style="padding: 10px; color: #666; font-size: 13px;">Standard Methods 2120. B, Ed 23 2017</td>
+                                    <td style="padding: 10px; text-align: center;">
+                                        <button class="btn-table-remove" onclick="removeParametroRow(this)">×</button>
+                                    </td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #f0f0f0;">
+                                    <td style="padding: 10px; text-align: center; color: #999; font-weight: 600;">7</td>
+                                    <td style="padding: 10px;">PAHs</td>
+                                    <td style="padding: 10px; color: #666; font-size: 13px;">I-ENV-LAB-301 Ed 00 GC/MS</td>
+                                    <td style="padding: 10px; text-align: center;">
+                                        <button class="btn-table-remove" onclick="removeParametroRow(this)">×</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 10px; text-align: center; color: #999; font-weight: 600;">8</td>
+                                    <td style="padding: 10px;">Yoduro (Subcontratado)</td>
+                                    <td style="padding: 10px; color: #666; font-size: 13px;">SM 4110 B Ed.22, 2012</td>
+                                    <td style="padding: 10px; text-align: center;">
+                                        <button class="btn-table-remove" onclick="removeParametroRow(this)">×</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Buscador para agregar nuevos parámetros -->
+                    <div style="margin-top: 15px; padding: 15px; background-color: white; border-radius: 4px; border: 1px solid #ddd;">
+                        <div style="margin-bottom: 10px; font-weight: 600;">Agregar Nuevo Parámetro</div>
+                        <div style="display: grid; grid-template-columns: 1fr 2fr auto; gap: 10px; align-items: end;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label style="display: block; margin-bottom: 8px;">Buscar Parámetro</label>
+                                <input type="text" id="nuevo-parametro" list="parametros-datalist" placeholder="Escriba para buscar...">
+                                <datalist id="parametros-datalist">
+                                    <option value="2-Dicloroetano">EPA 5021 A 2014</option>
+                                    <option value="Acidez">Standard Methods 2310 B, Ed 23 2017</option>
+                                    <option value="Alcalinidad">Standard Methods 2320 B, Ed 23 2017</option>
+                                    <option value="Arsénico total">I-ENV-LAB-511 Ed00 ICPMS</option>
+                                    <option value="Cadmio total">I-ENV-LAB-511 Ed00 ICPMS</option>
+                                    <option value="Carbono Orgánico Particulado">SM 5310 B Ed.23, 2017 (Cálculo)</option>
+                                    <option value="Clorofila A">SM 10200 H Ed.23, 2017</option>
+                                    <option value="Cobre total">I-ENV-LAB-511 Ed00 ICPMS</option>
+                                    <option value="Color">Standard Methods 2120. B, Ed 23 2017</option>
+                                    <option value="Coliformes Fecales">SM 9221 E Ed.23, 2017</option>
+                                    <option value="Coliformes Totales">SM 9221 B Ed.23, 2017</option>
+                                    <option value="Cromo total">I-ENV-LAB-511 Ed00 ICPMS</option>
+                                    <option value="DBO5">Standard Methods 5210 B, Ed 23 2017</option>
+                                    <option value="DQO">Standard Methods 5220 D, Ed 23 2017</option>
+                                    <option value="Fósforo Total">Standard Methods 4500-P E, Ed 23 2017</option>
+                                    <option value="Hidrocarburos Totales">EPA 8015D 2003, EPA 3510C 1996</option>
+                                    <option value="Mercurio total">I-ENV-LAB-511 Ed00 ICPMS</option>
+                                    <option value="Nitrógeno Total">Standard Methods 4500-N C, Ed 23 2017</option>
+                                    <option value="Oxígeno Disuelto">Standard Methods 4500-O G, Ed 23 2017</option>
+                                    <option value="PAHs">I-ENV-LAB-301 Ed 00 GC/MS</option>
+                                    <option value="pH">Standard Methods 4500-H+ B, Ed 23 2017</option>
+                                    <option value="Plomo total">I-ENV-LAB-511 Ed00 ICPMS</option>
+                                    <option value="Sólidos Suspendidos Totales">Standard Methods 2540 D, Ed 23 2017</option>
+                                    <option value="Temperatura">Standard Methods 2550 B, Ed 23 2017</option>
+                                    <option value="Turbidez">Standard Methods 2130 B, Ed 23 2017</option>
+                                    <option value="Yoduro (Subcontratado)">SM 4110 B Ed.22, 2012</option>
+                                    <option value="Zinc total">I-ENV-LAB-511 Ed00 ICPMS</option>
+                                </datalist>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label style="display: block; margin-bottom: 8px;">Metodología</label>
+                                <input type="text" id="nueva-metodologia" placeholder="Metodología">
+                            </div>
+                            <button class="btn btn-add" onclick="addParametro()" style="height: 42px; align-self: end;">+ Agregar</button>
+                        </div>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">Lista de Puntos de Muestreo / Estaciones</div>
+                        
+                        <!-- Campos de resumen -->
+                        <div class="form-row triple" style="margin-bottom: 20px;">
+                            <div class="form-group">
+                                <label>Número de Puntos de Muestreo</label>
+                                <input type="number" id="num-estaciones" min="0" value="0" onchange="calcularMuestras()">
+                            </div>
+                            <div class="form-group">
+                                <label>Número de Estratos</label>
+                                <input type="number" id="num-estratos" min="1" value="1" onchange="calcularMuestras()">
+                            </div>
+                            <div class="form-group">
+                                <label>Número de Réplicas</label>
+                                <input type="number" id="num-replicas" min="1" value="1" onchange="calcularMuestras()">
+                            </div>
+                        </div>
+
+                        <!-- Cantidad de muestras calculada -->
+                        <div style="background-color: white; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 2px solid #5fb3ad;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-weight: 600; color: #333;">Cantidad de Muestras (Estaciones × Estratos × Réplicas):</span>
+                                <span id="cantidad-muestras" style="font-size: 24px; font-weight: 700; color: #5fb3ad;">0</span>
+                            </div>
+                        </div>
+
+                        <!-- Tabla de estaciones -->
+                        <div style="overflow-x: auto;">
+                            <table id="estaciones-table" style="width: 100%; border-collapse: collapse; background-color: white; border-radius: 4px; overflow: hidden;">
+                                <thead>
+                                    <tr style="background-color: #f8f8f8; border-bottom: 2px solid #e0e0e0;">
+                                        <th style="padding: 12px; text-align: center; font-weight: 600; font-size: 13px; width: 5%;">#</th>
+                                        <th style="padding: 12px; text-align: left; font-weight: 600; font-size: 13px; width: 25%;">Nombre Estación</th>
+                                        <th style="padding: 12px; text-align: left; font-weight: 600; font-size: 13px; width: 30%;">Lugar de Muestreo</th>
+                                        <th style="padding: 12px; text-align: left; font-weight: 600; font-size: 13px; width: 30%;">Coordenadas Geográficas</th>
+                                        <th style="padding: 12px; text-align: center; font-weight: 600; font-size: 13px; width: 10%;">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 10px; text-align: center; color: #999; font-weight: 600;">1</td>
+                                        <td style="padding: 10px;">EST-01</td>
+                                        <td style="padding: 10px; color: #666; font-size: 13px;">Punto de descarga principal</td>
+                                        <td style="padding: 10px; color: #666; font-size: 13px;">-33.4569° S, -70.6483° W</td>
+                                        <td style="padding: 10px; text-align: center;">
+                                            <button class="btn-table-remove" onclick="removeEstacionRow(this)">×</button>
+                                        </td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 10px; text-align: center; color: #999; font-weight: 600;">2</td>
+                                        <td style="padding: 10px;">EST-02</td>
+                                        <td style="padding: 10px; color: #666; font-size: 13px;">Aguas arriba (control)</td>
+                                        <td style="padding: 10px; color: #666; font-size: 13px;">-33.4512° S, -70.6501° W</td>
+                                        <td style="padding: 10px; text-align: center;">
+                                            <button class="btn-table-remove" onclick="removeEstacionRow(this)">×</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Formulario para agregar estaciones -->
+                        <div style="margin-top: 15px; padding: 15px; background-color: white; border-radius: 4px; border: 1px solid #ddd;">
+                            <div style="margin-bottom: 10px; font-weight: 600;">Agregar Nuevo Punto de Muestreo / Estación</div>
+                            <div style="display: grid; grid-template-columns: 1fr 1.2fr 1.2fr auto; gap: 10px; align-items: end;">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label style="display: block; margin-bottom: 8px;">Nombre Estación *</label>
+                                    <input type="text" id="nueva-estacion-nombre" placeholder="Ej: EST-03">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label style="display: block; margin-bottom: 8px;">Lugar de Muestreo *</label>
+                                    <input type="text" id="nueva-estacion-lugar" placeholder="Ej: Punto de control sur">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label style="display: block; margin-bottom: 8px;">Coordenadas Geográficas</label>
+                                    <input type="text" id="nueva-estacion-coords" placeholder="Ej: -33.4569° S, -70.6483° W">
+                                </div>
+                                <button class="btn btn-add" onclick="addEstacion()" style="height: 42px; align-self: end;">+ Agregar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">Cantidad Total de Muestras del Servicio</div>
+                        <div style="background-color: white; padding: 20px; border-radius: 6px; border: 2px solid #ee8866;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-weight: 600; color: #333; font-size: 16px;">Total de Muestras Asociadas a este Servicio:</span>
+                                <span id="total-muestras-servicio" style="font-size: 32px; font-weight: 700; color: #ee8866;">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">Avistamientos</div>
+                        <div class="checkbox-group" style="flex-wrap: wrap; gap: 15px;">
+                            <label><input type="checkbox"> Tierra</label>
+                            <label><input type="checkbox"> Mar</label>
+                            <label><input type="checkbox"> Diurno</label>
+                            <label><input type="checkbox"> Nocturno</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instrumentos y Equipos -->
+            <div class="section">
+                <div class="section-header">INSTRUMENTOS Y EQUIPOS</div>
+                <div class="section-body">
+                    <div class="dynamic-list" id="equipos-list">
+                        <div class="list-item">
+                            <input type="text" placeholder="Instrumento/Equipo 1">
+                            <button class="btn btn-remove" onclick="removeItem(this)">Eliminar</button>
+                        </div>
+                    </div>
+                    <button class="btn btn-add" onclick="addEquipo()">+ Agregar Instrumento/Equipo</button>
+                </div>
+            </div>
+
+            <!-- Permisología -->
+            <div class="section">
+                <div class="section-header">PERMISOLOGÍA</div>
+                <div class="section-body">
+                    <div class="dynamic-list" id="permisos-list">
+                        <div class="list-item">
+                            <input type="text" placeholder="Permiso 1">
+                            <button class="btn btn-remove" onclick="removeItem(this)">Eliminar</button>
+                        </div>
+                    </div>
+                    <button class="btn btn-add" onclick="addPermiso()">+ Agregar Permiso</button>
+                </div>
+            </div>
+
+            <!-- Observaciones -->
+            <div class="section">
+                <div class="section-header">OBSERVACIONES</div>
+                <div class="section-body">
+                    <div class="form-row full">
+                        <div class="form-group">
+                            <label>Requerimientos Normativos Relevantes</label>
+                            <textarea placeholder="Detalle de normativas aplicables (D.S., NCh, Res. Ex., etc.)"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-row full">
+                        <div class="form-group">
+                            <label>Restricciones Relevantes</label>
+                            <textarea placeholder="Restricciones de acceso, temporales, climáticas, logísticas, etc."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-row full">
+                        <div class="form-group">
+                            <label>Observaciones para Ejecución del Servicio</label>
+                            <textarea placeholder="Información crítica que debe considerarse para la ejecución del servicio"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <button class="btn btn-cancel" onclick="window.print()">Imprimir</button>
+            <button class="btn btn-save">Guardar Ficha</button>
+        </div>
+    </div>
+
+    <script>
+        // Función para mostrar/ocultar matrices según componente
+        function toggleMatrices(tipo) {
+            const select = document.getElementById(tipo + '-tipo');
+            const matricesDiv = document.getElementById(tipo + '-matrices');
+            
+            if (select.value === 'aplica') {
+                matricesDiv.style.display = 'block';
+            } else {
+                matricesDiv.style.display = 'none';
+            }
+        }
+
+        // Función para agregar instrumentos ambientales
+        function addInstrumento() {
+            const list = document.getElementById('instrumentos-list');
+            const newItem = document.createElement('div');
+            newItem.className = 'list-item';
+            newItem.style.display = 'grid';
+            newItem.style.gridTemplateColumns = '2fr 1fr auto';
+            newItem.style.gap = '10px';
+            newItem.style.alignItems = 'end';
+            newItem.innerHTML = `
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Tipo de Instrumento</label>
+                    <select>
+                        <option value="">Seleccionar...</option>
+                        <option value="RCA">RCA - Resolución de Calificación Ambiental</option>
+                        <option value="PDC">PDC - Plan de Cumplimiento</option>
+                        <option value="DS">DS - Decreto Supremo</option>
+                        <option value="PPDA">PPDA - Plan de Prevención y/o Descontaminación</option>
+                        <option value="ORD">ORD - Ordinario SMA</option>
+                        <option value="RES">RES - Resolución SMA</option>
+                        <option value="PAS">PAS - Programa de Seguimiento Ambiental</option>
+                        <option value="OTR">OTR - Otro instrumento ambiental</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Código</label>
+                    <input type="text" placeholder="Ej: 123/2018">
+                </div>
+                <button class="btn btn-remove" onclick="removeItem(this)">Eliminar</button>
+            `;
+            list.appendChild(newItem);
+        }
+
+        // Función para agregar parámetros
+        function addParametro() {
+            const parametro = document.getElementById('nuevo-parametro').value.trim();
+            const metodologia = document.getElementById('nueva-metodologia').value.trim();
+            
+            if (!parametro) {
+                alert('Por favor ingrese un parámetro');
+                return;
+            }
+            
+            // Si se seleccionó del datalist, buscar la metodología correspondiente
+            let metodologiaFinal = metodologia;
+            if (!metodologia) {
+                const datalist = document.getElementById('parametros-datalist');
+                const options = datalist.querySelectorAll('option');
+                for (let option of options) {
+                    if (option.value === parametro) {
+                        metodologiaFinal = option.textContent;
+                        break;
+                    }
+                }
+            }
+            
+            const tbody = document.querySelector('#parametros-table tbody');
+            const newRow = tbody.insertRow();
+            newRow.style.borderBottom = '1px solid #f0f0f0';
+            
+            // Calcular el próximo número
+            const rowCount = tbody.rows.length;
+            
+            const cell0 = newRow.insertCell(0);
+            const cell1 = newRow.insertCell(1);
+            const cell2 = newRow.insertCell(2);
+            const cell3 = newRow.insertCell(3);
+            
+            cell0.style.padding = '10px';
+            cell0.style.textAlign = 'center';
+            cell0.style.color = '#999';
+            cell0.style.fontWeight = '600';
+            cell0.textContent = rowCount;
+            
+            cell1.style.padding = '10px';
+            cell1.textContent = parametro;
+            
+            cell2.style.padding = '10px';
+            cell2.style.color = '#666';
+            cell2.style.fontSize = '13px';
+            cell2.textContent = metodologiaFinal;
+            
+            cell3.style.padding = '10px';
+            cell3.style.textAlign = 'center';
+            cell3.innerHTML = '<button class="btn-table-remove" onclick="removeParametroRow(this)">×</button>';
+            
+            // Limpiar campos
+            document.getElementById('nuevo-parametro').value = '';
+            document.getElementById('nueva-metodologia').value = '';
+        }
+
+        // Función para eliminar fila de parámetro y renumerar
+        function removeParametroRow(button) {
+            const row = button.closest('tr');
+            row.remove();
+            renumerarParametros();
+        }
+
+        // Función para renumerar los parámetros
+        function renumerarParametros() {
+            const tbody = document.querySelector('#parametros-table tbody');
+            const rows = tbody.querySelectorAll('tr');
+            rows.forEach((row, index) => {
+                row.cells[0].textContent = index + 1;
+            });
+        }
+
+        // Función para agregar estaciones
+        function addEstacion() {
+            const nombre = document.getElementById('nueva-estacion-nombre').value.trim();
+            const lugar = document.getElementById('nueva-estacion-lugar').value.trim();
+            const coords = document.getElementById('nueva-estacion-coords').value.trim();
+            
+            if (!nombre || !lugar) {
+                alert('Por favor ingrese el nombre de la estación y el lugar de muestreo');
+                return;
+            }
+            
+            const tbody = document.querySelector('#estaciones-table tbody');
+            const newRow = tbody.insertRow();
+            newRow.style.borderBottom = '1px solid #f0f0f0';
+            
+            // Calcular el próximo número
+            const rowCount = tbody.rows.length;
+            
+            const cell0 = newRow.insertCell(0);
+            const cell1 = newRow.insertCell(1);
+            const cell2 = newRow.insertCell(2);
+            const cell3 = newRow.insertCell(3);
+            const cell4 = newRow.insertCell(4);
+            
+            cell0.style.padding = '10px';
+            cell0.style.textAlign = 'center';
+            cell0.style.color = '#999';
+            cell0.style.fontWeight = '600';
+            cell0.textContent = rowCount;
+            
+            cell1.style.padding = '10px';
+            cell1.textContent = nombre;
+            
+            cell2.style.padding = '10px';
+            cell2.style.color = '#666';
+            cell2.style.fontSize = '13px';
+            cell2.textContent = lugar;
+            
+            cell3.style.padding = '10px';
+            cell3.style.color = '#666';
+            cell3.style.fontSize = '13px';
+            cell3.textContent = coords || '-';
+            
+            cell4.style.padding = '10px';
+            cell4.style.textAlign = 'center';
+            cell4.innerHTML = '<button class="btn-table-remove" onclick="removeEstacionRow(this)">×</button>';
+            
+            // Limpiar campos
+            document.getElementById('nueva-estacion-nombre').value = '';
+            document.getElementById('nueva-estacion-lugar').value = '';
+            document.getElementById('nueva-estacion-coords').value = '';
+            
+            // Actualizar contador y calcular muestras
+            actualizarNumeroEstaciones();
+            calcularMuestras();
+        }
+
+        // Función para eliminar fila de estación y renumerar
+        function removeEstacionRow(button) {
+            const row = button.closest('tr');
+            row.remove();
+            renumerarEstaciones();
+            actualizarNumeroEstaciones();
+            calcularMuestras();
+        }
+
+        // Función para renumerar las estaciones
+        function renumerarEstaciones() {
+            const tbody = document.querySelector('#estaciones-table tbody');
+            const rows = tbody.querySelectorAll('tr');
+            rows.forEach((row, index) => {
+                row.cells[0].textContent = index + 1;
+            });
+        }
+
+        // Función para actualizar el número de estaciones
+        function actualizarNumeroEstaciones() {
+            const tbody = document.querySelector('#estaciones-table tbody');
+            const numEstaciones = tbody.rows.length;
+            document.getElementById('num-estaciones').value = numEstaciones;
+        }
+
+        // Función para calcular muestras
+        function calcularMuestras() {
+            const numEstaciones = parseInt(document.getElementById('num-estaciones').value) || 0;
+            const numEstratos = parseInt(document.getElementById('num-estratos').value) || 1;
+            const numReplicas = parseInt(document.getElementById('num-replicas').value) || 1;
+            
+            const cantidadMuestras = numEstaciones * numEstratos * numReplicas;
+            
+            document.getElementById('cantidad-muestras').textContent = cantidadMuestras;
+            document.getElementById('total-muestras-servicio').textContent = cantidadMuestras;
+        }
+
+        // Inicializar al cargar la página
+        window.addEventListener('DOMContentLoaded', function() {
+            actualizarNumeroEstaciones();
+            calcularMuestras();
+        });
+
+        // Función para agregar equipos
+        function addEquipo() {
+            const list = document.getElementById('equipos-list');
+            const newItem = document.createElement('div');
+            newItem.className = 'list-item';
+            newItem.innerHTML = `
+                <input type="text" placeholder="Nuevo instrumento/equipo">
+                <button class="btn btn-remove" onclick="removeItem(this)">Eliminar</button>
+            `;
+            list.appendChild(newItem);
+        }
+
+        // Función para agregar permisos
+        function addPermiso() {
+            const list = document.getElementById('permisos-list');
+            const newItem = document.createElement('div');
+            newItem.className = 'list-item';
+            newItem.innerHTML = `
+                <input type="text" placeholder="Nuevo permiso">
+                <button class="btn btn-remove" onclick="removeItem(this)">Eliminar</button>
+            `;
+            list.appendChild(newItem);
+        }
+
+        // Función para eliminar items
+        function removeItem(button) {
+            const item = button.parentElement;
+            item.remove();
+        }
+
+        // Simulación de guardado
+        document.querySelector('.btn-save').addEventListener('click', function() {
+            alert('Ficha técnica guardada exitosamente');
+        });
+    </script>
+</body>
+</html>
