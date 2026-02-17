@@ -349,6 +349,17 @@
             grid-column: 1 / -1;
         }
 
+        .etfa-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px 20px;
+            margin-top: 8px;
+            padding: 14px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+
         .form-group {
             display: flex;
             flex-direction: column;
@@ -688,8 +699,10 @@
 
         .cal-controls {
             display: flex;
-            justify-content: flex-end;
+            justify-content: flex-start;
             align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
             padding: 10px 16px;
             border-bottom: 1px solid #eee;
         }
@@ -791,6 +804,7 @@
             padding: 4px;
             min-height: 80px;
             position: relative;
+            overflow: visible;
         }
 
         .cal-day.empty {
@@ -818,6 +832,11 @@
             transition: all 0.2s;
             position: relative;
             line-height: 1.3;
+            z-index: 1;
+        }
+
+        .cal-oi.has-menu {
+            z-index: 200;
         }
 
         .cal-oi:hover {
@@ -835,6 +854,16 @@
             color: white;
         }
 
+        .cal-oi.lab-ingresada {
+            background: #1f9d55;
+            color: #fff;
+        }
+
+        .cal-oi.lab-enviada {
+            background: #f59e0b;
+            color: #fff;
+        }
+
         .cal-grid.assigning-mode .cal-oi {
             cursor: pointer;
         }
@@ -843,6 +872,12 @@
             outline: 2px solid #111;
             outline-offset: 1px;
             transform: translateY(-1px);
+        }
+
+        .cal-oi.assign-disabled {
+            opacity: 0.35;
+            cursor: not-allowed !important;
+            pointer-events: none;
         }
 
         .cal-oi .oi-title {
@@ -856,6 +891,13 @@
         .cal-oi .oi-detail {
             font-size: 9px;
             opacity: 0.85;
+        }
+
+        .cal-oi .cal-oi-context {
+            position: absolute;
+            top: 20px;
+            right: 4px;
+            z-index: 5000;
         }
 
         .cal-oi .oi-type-icon {
@@ -912,13 +954,16 @@
             display: flex;
             flex-direction: column;
             gap: 2px;
+            position: relative;
+            overflow: visible;
         }
 
         .cal-assign-bar {
             position: fixed;
-            left: 210px;
-            right: 0;
-            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 12px;
+            width: min(980px, calc(100vw - 260px));
             background: #f3f4f6;
             border-top: 2px solid #e67e53;
             padding: 8px 16px;
@@ -926,6 +971,7 @@
             align-items: center;
             justify-content: space-between;
             z-index: 3500;
+            border-radius: 10px;
             box-shadow: 0 -6px 16px rgba(0,0,0,0.08);
         }
 
@@ -1661,6 +1707,87 @@
             border-color: #ee8866;
         }
 
+        .oi-status-filter {
+            min-width: 180px;
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #334155;
+            background: #fff;
+            outline: none;
+        }
+
+        .oi-status-filter:focus {
+            border-color: #ee8866;
+        }
+
+        .cal-status-filter {
+            position: relative;
+            margin-left: auto;
+        }
+
+        .cal-status-btn {
+            min-width: 180px;
+            padding: 8px 12px;
+            border: 1px solid #d7dee7;
+            border-radius: 10px;
+            background: #fff;
+            color: #334155;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .cal-status-btn:hover {
+            border-color: #ee8866;
+            color: #1f2937;
+        }
+
+        .cal-status-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            right: 0;
+            width: 230px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            box-shadow: 0 8px 22px rgba(15, 23, 42, 0.14);
+            padding: 8px;
+            display: none;
+            z-index: 80;
+        }
+
+        .cal-status-menu.show {
+            display: block;
+        }
+
+        .cal-status-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #334155;
+            cursor: pointer;
+        }
+
+        .cal-status-option:hover {
+            background: #f8fafc;
+        }
+
+        .cal-status-option input[type="checkbox"] {
+            width: 14px;
+            height: 14px;
+            accent-color: #ee8866;
+        }
+
         .oi-table {
             width: 100%;
             border-collapse: collapse;
@@ -1722,6 +1849,10 @@
         .oi-status-pendiente .dot { background: #e65100; }
         .oi-status-programada { background: #e3f2fd; color: #1565c0; }
         .oi-status-programada .dot { background: #1565c0; }
+        .oi-status-en_ejecucion { background: #fff8e1; color: #b26a00; }
+        .oi-status-en_ejecucion .dot { background: #b26a00; }
+        .oi-status-enviada { background: #e8f5e9; color: #2e7d32; }
+        .oi-status-enviada .dot { background: #2e7d32; }
         .oi-status-ejecutada { background: #e8f5e9; color: #2e7d32; }
         .oi-status-ejecutada .dot { background: #2e7d32; }
         .oi-status-cancelada { background: #fce4ec; color: #c62828; }
@@ -1767,6 +1898,231 @@
             display: grid;
             grid-template-columns: 1fr;
             gap: 8px;
+        }
+
+        .oi-campana-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .oi-campana-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 10px;
+            border: 1px solid #d5dbe3;
+            border-radius: 999px;
+            background: #fff;
+            color: #475569;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .oi-campana-chip:hover {
+            border-color: #ee8866;
+            color: #ee8866;
+        }
+
+        .oi-campana-chip.active {
+            border-color: #22c55e;
+            color: #166534;
+            background: #ecfdf5;
+        }
+
+        .oi-campana-chip .count {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .cal-campana-filters {
+            margin-bottom: 0;
+            margin-left: 8px;
+        }
+
+        #tab-listado-oi .section,
+        #tab-listado-oi .section-body,
+        #tab-listado-oi .oi-cards-grid {
+            overflow: visible;
+        }
+
+        .campana-form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .campana-form-grid .full {
+            grid-column: 1 / -1;
+        }
+
+        .campana-muestras-box {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background: #fff;
+            overflow: hidden;
+        }
+
+        .campana-puntos-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .campana-puntos-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .campana-puntos-count {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .campana-mini-btn {
+            font-size: 12px;
+            padding: 6px 10px;
+        }
+
+        .campana-puntos-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            color: #334155;
+        }
+
+        .campana-puntos-table thead th {
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            color: #64748b;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            text-align: left;
+            padding: 8px 10px;
+            font-weight: 700;
+        }
+
+        .campana-puntos-table thead th.col-check {
+            width: 40px;
+            text-align: center;
+        }
+
+        .campana-puntos-table tbody td {
+            border-bottom: 1px solid #eef2f7;
+            padding: 8px 10px;
+            vertical-align: top;
+        }
+
+        .campana-puntos-table tbody td.col-check {
+            text-align: center;
+        }
+
+        .campana-puntos-list {
+            max-height: 260px;
+            overflow-y: auto;
+            border: 1px solid #e3e7ed;
+            border-radius: 10px;
+            background: #fff;
+        }
+
+        .campana-punto-item {
+            align-items: flex-start;
+            padding: 9px 10px;
+        }
+
+        .campana-punto-item .punto-check-line {
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .campana-punto-item .punto-check-badges {
+            margin-left: 0;
+            align-self: flex-start;
+            padding-top: 2px;
+        }
+
+        .campana-punto-lugar {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        .campana-punto-meta {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 1px;
+        }
+
+        .campana-puntos-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .campana-puntos-empty {
+            padding: 10px 12px;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .campana-cards {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .campana-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            background: #fff;
+            padding: 12px;
+        }
+
+        .campana-card.active {
+            border-color: #22c55e;
+            box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.18);
+            border-left-width: 5px;
+        }
+
+        .campana-card-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .campana-card-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .campana-card-line {
+            font-size: 12px;
+            color: #475569;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 4px;
+        }
+
+        .campana-badge {
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid #dbe3ef;
+            background: #f8fafc;
+            color: #334155;
+            border-radius: 999px;
+            font-size: 11px;
+            padding: 3px 8px;
+            margin: 4px 6px 0 0;
         }
 
         .oi-card {
@@ -2180,6 +2536,18 @@
             background: #eff6ff;
             border-color: #bfdbfe;
             color: #1d4ed8;
+        }
+
+        .oi-estado-en_ejecucion {
+            background: #fffbeb;
+            border-color: #fde68a;
+            color: #b45309;
+        }
+
+        .oi-estado-enviada {
+            background: #ecfdf5;
+            border-color: #a7f3d0;
+            color: #047857;
         }
 
         .oi-estado-ejecutada {
@@ -2885,16 +3253,21 @@
                     <span class="label-title">Proyecto</span>
                     <span class="label-value empty" id="headerProyecto">-</span>
                 </div>
+                <div class="info-label">
+                    <span class="label-title">Campaña activa</span>
+                    <span class="label-value empty" id="headerCampanaActiva">Sin campaña activa</span>
+                </div>
             </div>
         </div>
 
         <div class="content">
             <!-- Tabs -->
             <div class="tabs">
-                <button class="tab-button active" data-tab="ficha"><i class="fa-regular fa-clipboard"></i>Ficha</button>
+                <button class="tab-button active" data-tab="ficha"><i class="fa-regular fa-clipboard"></i>Ficha de Proyecto</button>
+                <button class="tab-button" data-tab="campana" id="tabCampana"><i class="fa-regular fa-flag"></i>Campañas</button>
                 <button class="tab-button" data-tab="listado-oi" id="tabListadoOI"><i class="fa-regular fa-rectangle-list"></i>Listado OI</button>
                 <button class="tab-button" data-tab="calendario" id="tabCalendario"><i class="fa-regular fa-calendar-days"></i>Calendario</button>
-                <button class="btn-nueva-oi-tabs" id="btnNuevaOITabs" onclick="abrirModalOI()">+ Nueva OI</button>
+                <button class="btn-nueva-oi-tabs" id="btnNuevaOITabs" onclick="accionBotonTabs()">+ Nueva OI</button>
             </div>
 
             <!-- Tab: Ficha -->
@@ -2938,6 +3311,35 @@
                             <div class="form-group full-width">
                                 <label for="inputDescripcion">Descripción</label>
                                 <textarea id="inputDescripcion" placeholder="Breve descripción del proyecto y sus objetivos..."></textarea>
+                            </div>
+                            <div class="form-group full-width">
+                                <label class="panel-section-title">Proyecto ETFA</label>
+                                <div class="etfa-info-grid">
+                                    <div class="form-group">
+                                        <label for="inputEtfaActividadFuente">Proyecto Actividad o Fuente</label>
+                                        <input type="text" id="inputEtfaActividadFuente" placeholder="Ej: Monitoreo Ambiental Chuquicamata">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputEtfaInstrumento">Instrumento de Gestión Ambiental</label>
+                                        <input type="text" id="inputEtfaInstrumento" placeholder="Ej: RCA N° 010-2012">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputEtfaTitular">Titular</label>
+                                        <input type="text" id="inputEtfaTitular" placeholder="Razón social titular">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputEtfaRutTitular">RUT titular</label>
+                                        <input type="text" id="inputEtfaRutTitular" placeholder="Ej: 61.704.000-K">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputEtfaRepresentante">Representante Legal</label>
+                                        <input type="text" id="inputEtfaRepresentante" placeholder="Nombre representante legal">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputEtfaRutRrll">RUT RRLL</label>
+                                        <input type="text" id="inputEtfaRutRrll" placeholder="Ej: 16.905.805-9">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="form-actions">
@@ -2989,11 +3391,29 @@
                         <span class="oi-count-info" id="oiCountInfo"></span>
                     </div>
                     <div class="section-body">
+                        <div class="oi-campana-filters" id="oiCampanaFilters"></div>
                         <div class="oi-toolbar">
                             <input type="text" class="oi-search" id="oiSearch" placeholder="Buscar por código, matriz, inspector...">
+                            <select class="oi-status-filter" id="oiStatusFilter" onchange="setOIEstadoFilter(this.value)">
+                                <option value="all">Todos los estados</option>
+                            </select>
                         </div>
                         <div class="oi-cards-grid" id="oiCardsContainer"></div>
                         <div class="empty-table-msg" id="emptyOIMsg">No hay órdenes de inspección creadas</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Campaña -->
+            <div class="tab-content" id="tab-campana">
+                <div class="section">
+                    <div class="section-header">
+                        Campañas del proyecto
+                        <span class="oi-count-info" id="campanaCountInfo"></span>
+                    </div>
+                    <div class="section-body">
+                        <div class="campana-cards" id="campanaCards"></div>
+                        <div class="empty-table-msg" id="emptyCampanaMsg">No hay campañas creadas</div>
                     </div>
                 </div>
             </div>
@@ -3082,6 +3502,14 @@
                                 <button class="cal-nav-btn" onclick="calChangeMonth(1)">›</button>
                                 <button class="cal-nav-btn" onclick="calChangeYear(1)">»</button>
                             </div>
+                            <div class="cal-status-filter" id="calStatusFilterWrap">
+                                <button type="button" class="cal-status-btn" id="calStatusFilterBtn" onclick="toggleCalEstadoDropdown(event)">
+                                    <span id="calStatusFilterLabel">Estados</span>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </button>
+                                <div class="cal-status-menu" id="calStatusMenu"></div>
+                            </div>
+                            <div class="oi-campana-filters cal-campana-filters" id="calCampanaFilters"></div>
                         </div>
                         <div class="cal-legend">
                             <div class="cal-legend-item"><span class="cal-legend-dot etfa"></span> ETFA</div>
@@ -3186,6 +3614,84 @@
             <div class="modal-box-footer">
                 <button class="btn-modal-cancel" onclick="cerrarModalLabPuntoObs()">Cancelar</button>
                 <button class="btn-modal-save" onclick="guardarModalLabPuntoObs()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel Campaña -->
+    <div class="panel-overlay" id="panelCampanaOverlay" onclick="toggleCampanaForm(false)"></div>
+    <div class="panel-lateral campana-panel-lateral" id="panelCampana">
+        <div class="panel-header">
+            <h3 id="panelCampanaTitle">Nueva campaña</h3>
+            <button class="panel-close" onclick="toggleCampanaForm(false)">&times;</button>
+        </div>
+        <div class="panel-body">
+            <input type="hidden" id="campanaEditId">
+            <div class="campana-form-grid">
+                <div class="form-group full">
+                    <label for="campanaNombre">Nombre de campaña</label>
+                    <input type="text" id="campanaNombre" placeholder="Ej: Campaña febrero 2026">
+                </div>
+                <div class="form-group full">
+                    <label for="campanaCotizacion">Cotización asociada</label>
+                    <select id="campanaCotizacion"></select>
+                </div>
+                <div class="form-group">
+                    <label for="campanaInicio">Fecha inicio</label>
+                    <input type="date" id="campanaInicio">
+                </div>
+                <div class="form-group">
+                    <label for="campanaTermino">Fecha término</label>
+                    <input type="date" id="campanaTermino">
+                </div>
+                <div class="form-group full">
+                    <label for="campanaDescripcion">Descripción</label>
+                    <textarea id="campanaDescripcion" placeholder="Descripción breve de la campaña..."></textarea>
+                </div>
+                <div class="form-group full">
+                    <label>Puntos de muestreo/estaciones de la campaña</label>
+                    <button type="button" class="btn-abrir-form" id="btnAbrirFormMuestrasCampana" onclick="toggleCampanaAddMuestrasForm(true)">
+                        <span class="ico">+</span>
+                        Agregar muestras
+                    </button>
+
+                    <div class="add-muestras-form" id="addMuestrasFormCampana">
+                        <div class="form-title-bar">
+                            <span>Agregar muestras</span>
+                            <button type="button" onclick="toggleCampanaAddMuestrasForm(false)" title="Cerrar">✕</button>
+                        </div>
+                        <div class="form-inner">
+                            <div class="form-row">
+                                <div class="form-field">
+                                    <label>Puntos de muestreo</label>
+                                    <div class="puntos-toolbar">
+                                        <input type="text" id="campanaFormPuntosSearch" class="puntos-search-input" placeholder="Buscar por código o lugar..." oninput="setFiltroCampanaPuntos(this.value)">
+                                    </div>
+                                    <div class="puntos-selection-info" id="campanaFormPuntosInfo">0 seleccionados</div>
+                                    <div class="puntos-check-list modern" id="campanaFormPuntosChecklist"></div>
+                                    <div class="field-help">Los estratos y réplicas se tomarán desde cada punto del proyecto.</div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-agregar-muestras" onclick="agregarPuntosCampanaDesdeForm()">Agregar muestras seleccionadas</button>
+                        </div>
+                    </div>
+
+                    <div class="puntos-list-header">
+                        <span class="panel-section-title">Puntos asignados</span>
+                        <span class="puntos-list-count" id="campanaPuntosAsignadosCount">0 puntos</span>
+                    </div>
+                    <div id="campanaPuntosListContainer">
+                        <div class="puntos-empty-msg">Sin puntos asignados</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <div class="panel-footer-left">
+                <button class="btn-panel btn-panel-secondary" onclick="toggleCampanaForm(false)">Cancelar</button>
+            </div>
+            <div>
+                <button class="btn-panel btn-panel-primary" id="btnGuardarCampana" onclick="guardarCampana()">Crear campaña</button>
             </div>
         </div>
     </div>
@@ -3339,6 +3845,13 @@
                     <label>Plan<span class="required">*</span></label>
                     <select id="oiPlan" disabled>
                         <option value="">Seleccionar plan...</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="oiCampanaGroup">
+                    <label>Campaña<span class="required">*</span></label>
+                    <select id="oiCampana">
+                        <option value="">Seleccione campaña...</option>
                     </select>
                 </div>
 
@@ -3644,6 +4157,21 @@
                 elProyecto.textContent = '-';
                 elProyecto.classList.add('empty');
             }
+
+            actualizarHeaderCampanaActiva();
+        }
+
+        function actualizarHeaderCampanaActiva() {
+            const el = document.getElementById('headerCampanaActiva');
+            if (!el) return;
+            const activa = (campanas || []).find(c => c.activa);
+            if (activa && activa.nombre) {
+                el.textContent = activa.nombre;
+                el.classList.remove('empty');
+            } else {
+                el.textContent = 'Sin campaña activa';
+                el.classList.add('empty');
+            }
         }
 
         // ==========================================
@@ -3671,8 +4199,478 @@
         function actualizarBotonNuevaOITabs(tabId) {
             const btn = document.getElementById('btnNuevaOITabs');
             if (!btn) return;
-            btn.style.display = (tabId === 'listado-oi' || tabId === 'calendario') ? 'inline-block' : 'none';
+            const visible = (tabId === 'listado-oi' || tabId === 'calendario' || tabId === 'campana');
+            btn.style.display = visible ? 'inline-block' : 'none';
+            btn.textContent = tabId === 'campana' ? '+ Nueva campaña' : '+ Nueva OI';
             if (tabId !== 'calendario' && assignmentMode) cancelBatchAssign();
+        }
+
+        function accionBotonTabs() {
+            const active = document.querySelector('.tab-button.active');
+            const tabId = active ? active.dataset.tab : '';
+            if (tabId === 'campana') {
+                toggleCampanaForm(true);
+                return;
+            }
+            abrirModalOI();
+        }
+
+        // ==========================================
+        // CAMPAÑAS
+        // ==========================================
+        const cotizacionesCampana = ['COT-2026-001', 'COT-2026-002', 'COT-2026-003'];
+        let campanaPanelPuntos = [];
+        let campanaFormPuntosFiltro = '';
+        let campanaFormPuntosSeleccionados = new Set();
+        var campanas = [
+            {
+                id: 'CAMP-001',
+                nombre: 'Campaña febrero 2026',
+                cotizacion: 'COT-2026-001',
+                fechaInicio: '2026-02-01',
+                fechaTermino: '2026-02-28',
+                descripcion: 'Campaña mensual de seguimiento ambiental',
+                activa: true,
+                oiAsignadas: ['OI-2026-001']
+            },
+            {
+                id: 'CAMP-002',
+                nombre: 'Campaña cierre mes',
+                cotizacion: 'COT-2026-002',
+                fechaInicio: '2026-02-20',
+                fechaTermino: '2026-02-29',
+                descripcion: 'Campaña de cierre y verificación de muestras',
+                activa: false,
+                oiAsignadas: ['OI-2026-002']
+            }
+        ];
+
+        function toggleCampanaForm(open) {
+            const overlay = document.getElementById('panelCampanaOverlay');
+            const panel = document.getElementById('panelCampana');
+            if (!overlay || !panel) return;
+
+            if (open) {
+                const editId = document.getElementById('campanaEditId');
+                if (!editId || !editId.value) limpiarFormularioCampana(true);
+                overlay.classList.add('show');
+                panel.classList.add('show');
+                return;
+            }
+
+            overlay.classList.remove('show');
+            panel.classList.remove('show');
+            limpiarFormularioCampana(true);
+        }
+
+        function renderCampanaCotizaciones() {
+            const sel = document.getElementById('campanaCotizacion');
+            if (!sel) return;
+            sel.innerHTML = '<option value="">Seleccione cotización...</option>' +
+                cotizacionesCampana.map(c => `<option value="${c}">${c}</option>`).join('');
+        }
+
+        function getCampanaActivaId() {
+            const activa = campanas.find(c => c.activa);
+            return activa ? activa.id : '';
+        }
+
+        function renderCampanasSelectOI() {
+            const sel = document.getElementById('oiCampana');
+            if (!sel) return;
+            const activaId = getCampanaActivaId();
+            sel.innerHTML = '<option value="">Seleccione campaña...</option>' +
+                campanas.map(c => `<option value="${c.id}">${c.nombre}${c.id === activaId ? ' (Activa)' : ''}</option>`).join('');
+        }
+
+        function ensureCampanasConsistency() {
+            const validCampanaIds = new Set(campanas.map(c => c.id));
+            const campanaByOiCodigo = new Map();
+
+            campanas.forEach(c => {
+                (c.oiAsignadas || []).forEach(codigo => {
+                    if (!campanaByOiCodigo.has(codigo)) campanaByOiCodigo.set(codigo, c.id);
+                });
+            });
+
+            ordenesInspeccion.forEach(oi => {
+                if (oi.campanaId && !validCampanaIds.has(oi.campanaId)) oi.campanaId = '';
+                if (!oi.campanaId && campanaByOiCodigo.has(oi.codigo)) {
+                    oi.campanaId = campanaByOiCodigo.get(oi.codigo);
+                }
+            });
+
+            if (campanas.length && !campanas.some(c => c.activa)) {
+                campanas[0].activa = true;
+            }
+
+            syncCampanaAssignmentsFromOIs();
+        }
+
+        function normalizarEstratosCampana(estratosRaw) {
+            if (Array.isArray(estratosRaw)) return estratosRaw.filter(Boolean);
+            if (!estratosRaw) return [];
+            return String(estratosRaw).split(',').map(x => x.trim()).filter(Boolean);
+        }
+
+        function getCampanaPuntoKey(p) {
+            return `${p.estacion || ''}|${p.lugar || ''}|${p.matriz || ''}`;
+        }
+
+        function getCampanaEstratosTexto(p) {
+            let estratos = normalizarEstratosCampana(p.estratos);
+            if (!estratos.length && p.estratos !== null && p.estratos !== undefined && p.estratos !== '') {
+                estratos = obtenerEstratosDesdePunto(p.estratos);
+            }
+            return estratos.length ? estratos.join(', ') : 'S';
+        }
+
+        function hydrateCampanaPanelPuntosFromKeys(keys) {
+            const arr = Array.isArray(keys) ? keys : [];
+            const set = new Set(arr);
+            const points = [];
+            (puntosMuestreo || []).forEach(pm => {
+                const key = getCampanaPuntoKey(pm);
+                if (set.has(key)) points.push({
+                    estacion: pm.estacion,
+                    lugar: pm.lugar,
+                    matriz: pm.matriz,
+                    estratos: pm.estratos,
+                    replicas: pm.replicas
+                });
+            });
+            return points;
+        }
+
+        function renderCampanaMuestrasDisponibles() {
+            renderCampanaFormPuntos();
+            renderCampanaPanelPuntos();
+        }
+
+        function renderCampanaFormPuntos() {
+            const checklist = document.getElementById('campanaFormPuntosChecklist');
+            const info = document.getElementById('campanaFormPuntosInfo');
+            if (!checklist) return;
+            if (!Array.isArray(puntosMuestreo) || !puntosMuestreo.length) {
+                checklist.innerHTML = '<div class="campana-puntos-empty">No hay puntos de muestreo configurados en el proyecto.</div>';
+                if (info) info.textContent = '0 seleccionados';
+                return;
+            }
+            const filtro = (campanaFormPuntosFiltro || '').trim().toLowerCase();
+            const visibles = puntosMuestreo.filter(pm => {
+                if (!filtro) return true;
+                return `${pm.estacion || ''} ${pm.lugar || ''}`.toLowerCase().includes(filtro);
+            });
+            if (!visibles.length) {
+                checklist.innerHTML = '<div class="campana-puntos-empty">No hay puntos que coincidan con la búsqueda.</div>';
+                if (info) info.textContent = `${campanaFormPuntosSeleccionados.size} seleccionados`;
+                return;
+            }
+            checklist.innerHTML = visibles.map(pm => {
+                const key = getCampanaPuntoKey(pm);
+                const estratosTxt = getCampanaEstratosTexto(pm);
+                const replicas = parseInt(pm.replicas, 10) || 1;
+                return `<label class="punto-check-item">
+                    <input type="checkbox" value="${key}" ${campanaFormPuntosSeleccionados.has(key) ? 'checked' : ''} onchange="toggleCampanaPuntoFormSeleccion('${key.replace(/'/g, "\\'")}', this.checked)">
+                    <span class="punto-check-text">
+                        <span class="punto-check-line"><span class="pci-name">${pm.estacion}</span><span class="pci-detail">${pm.lugar || '-'}</span></span>
+                    </span>
+                    <span class="punto-check-badges">
+                        <span class="pci-badge">E ${estratosTxt}</span>
+                        <span class="pci-badge">R ${replicas}</span>
+                    </span>
+                </label>`;
+            }).join('');
+            if (info) info.textContent = `${campanaFormPuntosSeleccionados.size} seleccionados`;
+        }
+
+        function toggleCampanaPuntoFormSeleccion(key, checked) {
+            if (checked) campanaFormPuntosSeleccionados.add(key);
+            else campanaFormPuntosSeleccionados.delete(key);
+            const info = document.getElementById('campanaFormPuntosInfo');
+            if (info) info.textContent = `${campanaFormPuntosSeleccionados.size} seleccionados`;
+        }
+
+        function setFiltroCampanaPuntos(valor) {
+            campanaFormPuntosFiltro = valor || '';
+            renderCampanaFormPuntos();
+        }
+
+        function toggleCampanaAddMuestrasForm(open) {
+            const form = document.getElementById('addMuestrasFormCampana');
+            const btn = document.getElementById('btnAbrirFormMuestrasCampana');
+            if (!form || !btn) return;
+            form.classList.toggle('show', open);
+            btn.style.display = open ? 'none' : 'flex';
+            if (open) renderCampanaFormPuntos();
+        }
+
+        function agregarPuntosCampanaDesdeForm() {
+            const selectedKeys = Array.from(campanaFormPuntosSeleccionados);
+            if (!selectedKeys.length) { alert('Seleccione al menos un punto de muestreo'); return; }
+            const byKey = new Set(campanaPanelPuntos.map(getCampanaPuntoKey));
+            selectedKeys.forEach(key => {
+                const pm = (puntosMuestreo || []).find(x => getCampanaPuntoKey(x) === key);
+                if (!pm || byKey.has(key)) return;
+                campanaPanelPuntos.push({
+                    estacion: pm.estacion,
+                    lugar: pm.lugar,
+                    matriz: pm.matriz,
+                    estratos: pm.estratos,
+                    replicas: pm.replicas
+                });
+                byKey.add(key);
+            });
+            campanaFormPuntosSeleccionados = new Set();
+            const input = document.getElementById('campanaFormPuntosSearch');
+            if (input) input.value = '';
+            campanaFormPuntosFiltro = '';
+            renderCampanaMuestrasDisponibles();
+            toggleCampanaAddMuestrasForm(false);
+        }
+
+        function renderCampanaPanelPuntos() {
+            const container = document.getElementById('campanaPuntosListContainer');
+            const count = document.getElementById('campanaPuntosAsignadosCount');
+            if (!container || !count) return;
+            count.textContent = `${campanaPanelPuntos.length} puntos`;
+            if (!campanaPanelPuntos.length) {
+                container.innerHTML = '<div class="puntos-empty-msg">Sin puntos asignados</div>';
+                return;
+            }
+            container.innerHTML = campanaPanelPuntos.map((p, i) => {
+                const estratosTxt = getCampanaEstratosTexto(p);
+                const replicas = parseInt(p.replicas, 10) || 1;
+                return `<div class="punto-list-item">
+                    <div class="punto-list-icon">${i + 1}</div>
+                    <div class="punto-list-info">
+                        <div class="punto-list-name">${p.estacion || '-'}</div>
+                        <div class="punto-list-place"><strong>Lugar:</strong> ${p.lugar || 'Sin lugar de muestreo'}</div>
+                        <div class="punto-list-details">
+                            <span class="punto-list-tag tag-estrato">${p.matriz || '-'}</span>
+                            <span class="detail-sep">·</span>
+                            <span class="punto-list-tag tag-estrato">E ${estratosTxt}</span>
+                            <span class="detail-sep">·</span>
+                            <span class="punto-list-tag tag-estrato">R ${replicas}</span>
+                        </div>
+                    </div>
+                    <button class="punto-list-remove" onclick="removeCampanaPanelPunto(${i})" title="Quitar">✕</button>
+                </div>`;
+            }).join('');
+        }
+
+        function removeCampanaPanelPunto(idx) {
+            campanaPanelPuntos.splice(idx, 1);
+            renderCampanaPanelPuntos();
+        }
+
+        function syncCampanaAssignmentsFromOIs() {
+            campanas.forEach(c => {
+                c.oiAsignadas = ordenesInspeccion
+                    .filter(oi => oi.campanaId === c.id)
+                    .map(oi => oi.codigo);
+            });
+        }
+
+        function limpiarFormularioCampana(silent) {
+            const editId = document.getElementById('campanaEditId');
+            const nombre = document.getElementById('campanaNombre');
+            const cot = document.getElementById('campanaCotizacion');
+            const ini = document.getElementById('campanaInicio');
+            const fin = document.getElementById('campanaTermino');
+            const desc = document.getElementById('campanaDescripcion');
+            const btn = document.getElementById('btnGuardarCampana');
+            const title = document.getElementById('panelCampanaTitle');
+            if (editId) editId.value = '';
+            if (nombre) nombre.value = '';
+            if (cot) cot.value = '';
+            if (ini) ini.value = '';
+            if (fin) fin.value = '';
+            if (desc) desc.value = '';
+            if (btn) btn.textContent = 'Crear campaña';
+            if (title) title.textContent = 'Nueva campaña';
+            campanaPanelPuntos = [];
+            campanaFormPuntosFiltro = '';
+            campanaFormPuntosSeleccionados = new Set();
+            const search = document.getElementById('campanaFormPuntosSearch');
+            if (search) search.value = '';
+            renderCampanaMuestrasDisponibles();
+            toggleCampanaAddMuestrasForm(false);
+            if (!silent) toggleCampanaForm(false);
+        }
+
+        function guardarCampana() {
+            const editId = document.getElementById('campanaEditId').value;
+            const nombre = document.getElementById('campanaNombre').value.trim();
+            const cotizacion = document.getElementById('campanaCotizacion').value;
+            const fechaInicio = document.getElementById('campanaInicio').value;
+            const fechaTermino = document.getElementById('campanaTermino').value;
+            const descripcion = document.getElementById('campanaDescripcion').value.trim();
+            const puntosSeleccionados = campanaPanelPuntos.map(getCampanaPuntoKey);
+
+            if (!nombre) { alert('Ingrese un nombre de campaña'); return; }
+            if (!cotizacion) { alert('Seleccione una cotización asociada'); return; }
+            if (!fechaInicio || !fechaTermino) { alert('Seleccione fecha inicio y término'); return; }
+            if (fechaInicio > fechaTermino) { alert('La fecha inicio no puede ser mayor que la fecha término'); return; }
+            if (!puntosSeleccionados.length) { alert('Seleccione al menos un punto de muestreo para la campaña'); return; }
+
+            if (editId) {
+                const idx = campanas.findIndex(c => c.id === editId);
+                if (idx >= 0) {
+                    campanas[idx].nombre = nombre;
+                    campanas[idx].cotizacion = cotizacion;
+                    campanas[idx].fechaInicio = fechaInicio;
+                    campanas[idx].fechaTermino = fechaTermino;
+                    campanas[idx].descripcion = descripcion;
+                    campanas[idx].puntosSeleccionados = puntosSeleccionados;
+                    mostrarToast(`Campaña "${nombre}" actualizada`);
+                }
+            } else {
+                const id = `CAMP-${Date.now()}`;
+                campanas.push({
+                    id,
+                    nombre,
+                    cotizacion,
+                    fechaInicio,
+                    fechaTermino,
+                    descripcion,
+                    activa: campanas.length === 0,
+                    oiAsignadas: [],
+                    puntosSeleccionados
+                });
+                mostrarToast(`Campaña "${nombre}" creada`);
+            }
+
+            syncCampanaAssignmentsFromOIs();
+            renderCampanasSelectOI();
+            limpiarFormularioCampana(true);
+            toggleCampanaForm(false);
+            renderCampanas();
+            renderOIs(document.getElementById('oiSearch').value);
+            renderCalendar();
+        }
+
+        function editarCampana(campanaId) {
+            const c = campanas.find(x => x.id === campanaId);
+            if (!c) return;
+            const title = document.getElementById('panelCampanaTitle');
+            document.getElementById('campanaEditId').value = c.id;
+            document.getElementById('campanaNombre').value = c.nombre || '';
+            document.getElementById('campanaCotizacion').value = c.cotizacion || '';
+            document.getElementById('campanaInicio').value = c.fechaInicio || '';
+            document.getElementById('campanaTermino').value = c.fechaTermino || '';
+            document.getElementById('campanaDescripcion').value = c.descripcion || '';
+            document.getElementById('btnGuardarCampana').textContent = 'Guardar campaña';
+            if (title) title.textContent = 'Editar campaña';
+            if (Array.isArray(c.puntosSeleccionados) && c.puntosSeleccionados.length) {
+                campanaPanelPuntos = hydrateCampanaPanelPuntosFromKeys(c.puntosSeleccionados);
+            } else {
+                campanaPanelPuntos = (puntosMuestreo || []).map(pm => ({
+                    estacion: pm.estacion,
+                    lugar: pm.lugar,
+                    matriz: pm.matriz,
+                    estratos: pm.estratos,
+                    replicas: pm.replicas
+                }));
+            }
+            campanaFormPuntosFiltro = '';
+            campanaFormPuntosSeleccionados = new Set();
+            const search = document.getElementById('campanaFormPuntosSearch');
+            if (search) search.value = '';
+            renderCampanaMuestrasDisponibles();
+            toggleCampanaAddMuestrasForm(false);
+            toggleCampanaForm(true);
+            activarTab('campana');
+        }
+
+        function setCampanaActiva(campanaId) {
+            let changed = false;
+            campanas.forEach(c => {
+                const next = c.id === campanaId;
+                if (c.activa !== next) changed = true;
+                c.activa = next;
+            });
+            if (!changed) return;
+            oiCampanaFiltro = campanaId;
+            calCampanaFiltro = campanaId;
+            renderCampanas();
+            renderCampanasSelectOI();
+            actualizarHeaderCampanaActiva();
+            renderOIs(document.getElementById('oiSearch').value);
+            renderCalendar();
+            mostrarToast('Campaña activa actualizada');
+        }
+
+        function eliminarCampana(campanaId) {
+            const c = campanas.find(x => x.id === campanaId);
+            if (!c) return;
+            if (!confirm(`¿Eliminar campaña "${c.nombre}"?`)) return;
+            if ((c.oiAsignadas || []).length > 0) {
+                ordenesInspeccion.forEach(oi => {
+                    if (oi.campanaId === c.id) oi.campanaId = '';
+                });
+            }
+            campanas = campanas.filter(x => x.id !== campanaId);
+            if (campanas.length && !campanas.some(x => x.activa)) campanas[0].activa = true;
+            syncCampanaAssignmentsFromOIs();
+            renderCampanasSelectOI();
+            renderCampanas();
+            actualizarHeaderCampanaActiva();
+            renderOIs(document.getElementById('oiSearch').value);
+            renderCalendar();
+            mostrarToast(`Campaña "${c.nombre}" eliminada`);
+        }
+
+        function renderCampanas() {
+            const container = document.getElementById('campanaCards');
+            const empty = document.getElementById('emptyCampanaMsg');
+            const countInfo = document.getElementById('campanaCountInfo');
+            if (!container || !empty || !countInfo) return;
+            syncCampanaAssignmentsFromOIs();
+            countInfo.textContent = `(${campanas.length} total)`;
+            if (!campanas.length) {
+                container.style.display = 'none';
+                empty.style.display = 'block';
+                return;
+            }
+            container.style.display = 'grid';
+            empty.style.display = 'none';
+            container.innerHTML = campanas.map(c => {
+                const muestrasCampana = (c.oiAsignadas || []).map(cod => {
+                    const oi = ordenesInspeccion.find(x => x.codigo === cod);
+                    const n = oi ? getMuestrasFromOI(oi) : 0;
+                    return { codigo: cod, muestras: n };
+                });
+                const totalMuestras = muestrasCampana.reduce((acc, x) => acc + x.muestras, 0);
+                return `<div class="campana-card ${c.activa ? 'active' : ''}">
+                    <div class="campana-card-head">
+                        <div class="campana-card-title">${c.nombre} ${c.activa ? '<span class="campana-badge" style="margin-left:6px; background:#ecfdf5; border-color:#a7f3d0; color:#047857;">Activa</span>' : ''}</div>
+                        <div class="oi-options-wrap">
+                            <button class="oi-options-btn" onclick="toggleContextMenuById('campanaOptionsMenu-${c.id}', event)">
+                                Opciones <span>▾</span>
+                            </button>
+                            <div class="oi-options-menu" id="campanaOptionsMenu-${c.id}">
+                                <button class="oi-options-item" onclick="setCampanaActiva('${c.id}'); closeAllOiOptions();">Activar Campaña</button>
+                                <button class="oi-options-item" onclick="editarCampana('${c.id}'); closeAllOiOptions();">Editar</button>
+                                <button class="oi-options-item delete" onclick="eliminarCampana('${c.id}'); closeAllOiOptions();">Eliminar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="campana-card-line">
+                        <span><strong>Cotización:</strong> ${c.cotizacion}</span>
+                        <span><strong>Inicio:</strong> ${formatearFecha(c.fechaInicio)}</span>
+                        <span><strong>Término:</strong> ${formatearFecha(c.fechaTermino)}</span>
+                        <span><strong>Muestras:</strong> ${totalMuestras}</span>
+                    </div>
+                    ${c.descripcion ? `<div class="campana-card-line"><span><strong>Descripción:</strong> ${c.descripcion}</span></div>` : ''}
+                    <div>
+                        ${(muestrasCampana.length
+                            ? muestrasCampana.map(m => `<span class="campana-badge">${m.codigo} · ${m.muestras} mues.</span>`).join('')
+                            : '<span class="oi-count-info">Sin muestras asignadas</span>')}
+                    </div>
+                </div>`;
+            }).join('');
+            actualizarHeaderCampanaActiva();
         }
 
         // ==========================================
@@ -3716,6 +4714,7 @@
 
             // Habilitar tabs
             document.getElementById('tabListadoOI').classList.remove('disabled');
+            document.getElementById('tabCampana').classList.remove('disabled');
             document.getElementById('tabCalendario').classList.remove('disabled');
 
             // Cambiar botón
@@ -3751,26 +4750,9 @@
         // PUNTOS DE MUESTREO
         // ==========================================
         const puntosMuestreo = [
-            { estacion: 'EST-01', lugar: 'Descarga principal', matriz: 'AGUA_SUPERFICIAL', latitud: '-33.4569', longitud: '-70.6483', estratos: 3, replicas: 2, muestras: 1 },
-            { estacion: 'EST-02', lugar: 'Canal norte', matriz: 'AGUA_SUPERFICIAL', latitud: '-33.4574', longitud: '-70.6472', estratos: 2, replicas: 2, muestras: 1 },
-            { estacion: 'EST-03', lugar: 'Canal sur', matriz: 'AGUA_SUPERFICIAL', latitud: '-33.4581', longitud: '-70.6490', estratos: 1, replicas: 1, muestras: 1 },
-            { estacion: 'EST-04', lugar: 'Poza decantación', matriz: 'AGUA_SUPERFICIAL', latitud: '-33.4592', longitud: '-70.6466', estratos: 2, replicas: 1, muestras: 1 },
-            { estacion: 'EST-05', lugar: 'Bocatoma este', matriz: 'AGUA_SUPERFICIAL', latitud: '-33.4600', longitud: '-70.6454', estratos: 3, replicas: 1, muestras: 1 },
-            { estacion: 'EST-06', lugar: 'Bocatoma oeste', matriz: 'AGUA_SUPERFICIAL', latitud: '-33.4614', longitud: '-70.6443', estratos: 2, replicas: 2, muestras: 1 },
-            { estacion: 'EST-07', lugar: 'Quebrada interna', matriz: 'AGUA_SUPERFICIAL', latitud: '-33.4622', longitud: '-70.6432', estratos: 1, replicas: 2, muestras: 1 },
-            { estacion: 'EST-08', lugar: 'Vertedero secundario', matriz: 'AGUA_SUPERFICIAL', latitud: '-33.4633', longitud: '-70.6421', estratos: 3, replicas: 1, muestras: 1 },
-            { estacion: 'EST-09', lugar: 'Punto puente', matriz: 'AGUA_SUPERFICIAL', latitud: '-33.4641', longitud: '-70.6410', estratos: 2, replicas: 1, muestras: 1 },
-            { estacion: 'EST-10', lugar: 'Salida planta', matriz: 'AGUA_SUPERFICIAL', latitud: '-33.4650', longitud: '-70.6398', estratos: 1, replicas: 3, muestras: 1 },
-            { estacion: 'EST-11', lugar: 'Aguas arriba control 1', matriz: 'AGUA_MAR', latitud: '-33.4512', longitud: '-70.6501', estratos: 1, replicas: 1, muestras: 1 },
-            { estacion: 'EST-12', lugar: 'Aguas arriba control 2', matriz: 'AGUA_MAR', latitud: '-33.4503', longitud: '-70.6515', estratos: 2, replicas: 1, muestras: 1 },
-            { estacion: 'EST-13', lugar: 'Rompeolas norte', matriz: 'AGUA_MAR', latitud: '-33.4495', longitud: '-70.6526', estratos: 3, replicas: 1, muestras: 1 },
-            { estacion: 'EST-14', lugar: 'Rompeolas sur', matriz: 'AGUA_MAR', latitud: '-33.4487', longitud: '-70.6538', estratos: 2, replicas: 2, muestras: 1 },
-            { estacion: 'EST-15', lugar: 'Boyarín central', matriz: 'AGUA_MAR', latitud: '-33.4478', longitud: '-70.6550', estratos: 1, replicas: 2, muestras: 1 },
-            { estacion: 'EST-16', lugar: 'Canal de navegación', matriz: 'AGUA_MAR', latitud: '-33.4470', longitud: '-70.6561', estratos: 2, replicas: 1, muestras: 1 },
-            { estacion: 'EST-17', lugar: 'Frente terminal', matriz: 'AGUA_MAR', latitud: '-33.4462', longitud: '-70.6573', estratos: 3, replicas: 2, muestras: 1 },
-            { estacion: 'EST-18', lugar: 'Zona fondeo', matriz: 'AGUA_MAR', latitud: '-33.4454', longitud: '-70.6584', estratos: 1, replicas: 1, muestras: 1 },
-            { estacion: 'EST-19', lugar: 'Exterior bahía', matriz: 'AGUA_MAR', latitud: '-33.4446', longitud: '-70.6596', estratos: 2, replicas: 3, muestras: 1 },
-            { estacion: 'EST-20', lugar: 'Control referencia costa', matriz: 'AGUA_MAR', latitud: '-33.4438', longitud: '-70.6608', estratos: 3, replicas: 1, muestras: 1 }
+            { estacion: 'EST-01', lugar: 'Descarga principal', matriz: 'AGUA_SUPERFICIAL', latitud: '-33.4569', longitud: '-70.6483', estratos: 2, replicas: 2, muestras: 1 },
+            { estacion: 'EST-02', lugar: 'Canal norte', matriz: 'AGUA_SUPERFICIAL', latitud: '-33.4574', longitud: '-70.6472', estratos: 2, replicas: 1, muestras: 1 },
+            { estacion: 'EST-03', lugar: 'Canal sur', matriz: 'AGUA_SUPERFICIAL', latitud: '-33.4581', longitud: '-70.6490', estratos: 1, replicas: 2, muestras: 1 }
         ];
 
         function renderPuntos() {
@@ -3906,15 +4888,16 @@
             'Cynthia Ocaranza': '19.551.802-3'
         };
 
-        const OI_STATE_STORAGE_KEY = 'sgs_fp_ordenes_v1';
+        const OI_STATE_STORAGE_KEY = 'sgs_fp_ordenes_v2_demo';
         const LAB_NAV_STORAGE_KEY = 'sgs_lab_nav_v1';
 
         let ordenesInspeccion = [
             {
-                codigo: 'OI-2026-001', fecha: '2026-02-15', tipo: 'muestreo_medicion', composicion: 'puntual', estado: 'programada',
+                codigo: 'OI-2026-001', fecha: '2026-02-18', tipo: 'muestreo_medicion', composicion: 'puntual', estado: 'programada',
+                campanaId: 'CAMP-001',
                 puntos: [
                     { punto: 'EST-01', matriz: 'AGUA_SUPERFICIAL', plan: 'PLAN-001', estratos: ['S', 'M'], replicas: 2, etfa: true, laboratorio: 'SGS Antofagasta' },
-                    { punto: 'EST-02', matriz: 'AGUA_MAR', plan: 'PLAN-002', estratos: ['S'], replicas: 1, etfa: false, laboratorio: 'SGS Antofagasta' }
+                    { punto: 'EST-02', matriz: 'AGUA_SUPERFICIAL', plan: 'PLAN-001', estratos: ['S', 'M'], replicas: 1, etfa: true, laboratorio: 'SGS Antofagasta' }
                 ],
                 usuarios: [
                     { rol: 'Coordinador', nombre: 'Romina Gonzalez Lopez', tipo: 'coordinador' },
@@ -3923,32 +4906,66 @@
                 ]
             },
             {
-                codigo: 'OI-2026-002', fecha: '2026-02-18', tipo: 'muestreo_medicion', composicion: 'compuesta', estado: 'pendiente',
+                codigo: 'OI-2026-002', fecha: '2026-02-24', tipo: 'muestreo_medicion', composicion: 'compuesta', estado: 'pendiente',
+                campanaId: 'CAMP-002',
                 puntos: [
-                    { punto: 'EST-01', matriz: 'AGUA_SUPERFICIAL', plan: 'PLAN-001', estratos: ['S', 'M', 'F'], replicas: 1, etfa: true, laboratorio: 'SGS Santiago' }
+                    { punto: 'EST-03', matriz: 'AGUA_SUPERFICIAL', plan: 'PLAN-001', estratos: ['S'], replicas: 2, etfa: true, laboratorio: 'SGS Santiago' }
                 ],
                 usuarios: [
                     { rol: 'Coordinador', nombre: 'Viviana López', tipo: 'coordinador' },
-                    { rol: 'Supervisor', nombre: 'Ana Rodríguez', tipo: 'supervisor' },
-                    { rol: 'Inspector', nombre: 'Carlos Mendoza', tipo: 'inspector' }
-                ]
-            },
-            {
-                codigo: 'OI-2026-003', fecha: '2026-01-10', tipo: 'medicion', composicion: 'puntual', estado: 'ejecutada',
-                puntos: [
-                    { punto: 'EST-02', matriz: 'AGUA_MAR', plan: 'PLAN-003', estratos: ['S'], replicas: 3, etfa: false, laboratorio: 'SGS Calama' }
-                ],
-                usuarios: [
-                    { rol: 'Coordinador', nombre: 'María González', tipo: 'coordinador' },
-                    { rol: 'Supervisor', nombre: 'Jorge Alegría', tipo: 'supervisor' },
-                    { rol: 'Inspector', nombre: 'Pedro Sánchez', tipo: 'inspector' }
+                    { rol: 'Supervisor', nombre: 'Ana Rodríguez', tipo: 'supervisor' }
                 ]
             }
         ];
 
-        const oiEstadoLabels = { 'pendiente': 'Pendiente', 'programada': 'Programada', 'ejecutada': 'Ejecutada', 'cancelada': 'Cancelada' };
+        const oiEstadoLabels = {
+            'pendiente': 'Pendiente',
+            'programada': 'Programada',
+            'en_ejecucion': 'En ejecución',
+            'enviada': 'Enviada',
+            'ingresada': 'Ingresada',
+            'ejecutada': 'Ejecutada',
+            'cancelada': 'Cancelada'
+        };
+        const oiEstadoFilterOrder = ['pendiente', 'programada', 'en_ejecucion', 'enviada', 'ingresada', 'ejecutada', 'cancelada'];
         const oiTipoLabels = { 'muestreo_medicion': 'Muestreo y Medición', 'medicion': 'Solo Medición' };
         const oiComposicionLabels = { 'puntual': 'Puntual', 'compuesta': 'Compuesta' };
+
+        function getOIVisualStateKey(oi) {
+            if (!oi) return 'pendiente';
+            if (oi.labEstado === 'ingresada' || oi.labRecepcionada === true) return 'ingresada';
+            if (oi.estado === 'enviada') return 'enviada';
+            return oi.estado || 'pendiente';
+        }
+
+        function getInspectoresFromUsuarios(usuarios) {
+            return (usuarios || []).filter(u => u && (u.tipo === 'inspector' || /inspector/i.test(u.rol || '')));
+        }
+
+        function hasInspectorAsignado(oi) {
+            return getInspectoresFromUsuarios(oi && oi.usuarios).length > 0;
+        }
+
+        function syncOIEstadoPorInspector(oi) {
+            if (!oi) return;
+            if (oi.estado === 'cancelada' || oi.estado === 'enviada' || oi.estado === 'ejecutada') return;
+            const hasInspector = hasInspectorAsignado(oi);
+            if (hasInspector) {
+                if (oi.estado === 'pendiente') oi.estado = 'programada';
+                return;
+            }
+            if (oi.estado === 'programada' || oi.estado === 'pendiente' || oi.estado === 'en_ejecucion') {
+                oi.estado = 'pendiente';
+            }
+        }
+
+        function markOIEnEjecucionIfApplicable(oi) {
+            if (!oi) return;
+            if (oi.estado === 'cancelada' || oi.estado === 'enviada' || oi.estado === 'ejecutada') return;
+            if (hasInspectorAsignado(oi) && (oi.estado === 'pendiente' || oi.estado === 'programada')) {
+                oi.estado = 'en_ejecucion';
+            }
+        }
 
         function saveOIStateToStorage() {
             try {
@@ -3974,6 +4991,7 @@
             const oi = ordenesInspeccion[idx];
             if (!oi) return;
 
+            markOIEnEjecucionIfApplicable(oi);
             saveOIStateToStorage();
             try {
                 const navPayload = {
@@ -4000,9 +5018,192 @@
         let assignmentMode = false;
         let assignmentInspectorId = null;
         let assignmentSelectedOIs = new Set();
+        let assignmentEligibleOIs = new Set();
         let assignmentAction = 'assign';
+        let oiCampanaFiltro = '';
+        let oiEstadoFiltro = 'all';
 
         loadOIStateFromStorage();
+        ensureCampanasConsistency();
+        ensureDemoOIsByCampana(3);
+        ensureDemoLabEstado();
+        ensureInspectorForLabStates();
+        ensureAtLeastOneOIUnassigned();
+
+        function ensureDemoOIsByCampana(minPorCampana) {
+            const min = Math.max(1, parseInt(minPorCampana, 10) || 3);
+            if (!Array.isArray(campanas) || !campanas.length) return;
+
+            const basePuntos = [
+                { punto: 'EST-01', matriz: 'AGUA_SUPERFICIAL', plan: 'PLAN-001', estratos: ['S', 'M'], replicas: 2, etfa: true, laboratorio: 'SGS Antofagasta' },
+                { punto: 'EST-02', matriz: 'AGUA_SUPERFICIAL', plan: 'PLAN-001', estratos: ['S'], replicas: 1, etfa: true, laboratorio: 'SGS Antofagasta' },
+                { punto: 'EST-03', matriz: 'AGUA_SUPERFICIAL', plan: 'PLAN-001', estratos: ['S'], replicas: 2, etfa: false, laboratorio: 'SGS Santiago' }
+            ];
+            const monthBase = '2026-02-';
+
+            campanas.forEach((campana, idxCampana) => {
+                const actuales = ordenesInspeccion.filter(oi => oi.campanaId === campana.id).length;
+                const faltan = Math.max(0, min - actuales);
+                for (let i = 0; i < faltan; i++) {
+                    const nro = ordenesInspeccion.length + 1;
+                    const day = String(10 + ((idxCampana * min + actuales + i) % 18)).padStart(2, '0');
+                    const estado = (actuales + i) % 2 === 0 ? 'programada' : 'pendiente';
+                    const conInspector = estado === 'programada';
+                    const pA = basePuntos[(idxCampana + i) % basePuntos.length];
+                    const pB = basePuntos[(idxCampana + i + 1) % basePuntos.length];
+                    ordenesInspeccion.push({
+                        codigo: `OI-2026-${String(nro).padStart(3, '0')}`,
+                        fecha: `${monthBase}${day}`,
+                        tipo: 'muestreo_medicion',
+                        composicion: i % 2 ? 'compuesta' : 'puntual',
+                        estado,
+                        matriz: 'AGUA_SUPERFICIAL',
+                        plan: 'PLAN-001',
+                        campanaId: campana.id,
+                        puntos: [JSON.parse(JSON.stringify(pA)), JSON.parse(JSON.stringify(pB))],
+                        usuarios: conInspector
+                            ? [
+                                { rol: 'Coordinador', nombre: 'Romina Gonzalez Lopez', tipo: 'coordinador' },
+                                { rol: 'Supervisor', nombre: 'Jorge Alegría', tipo: 'supervisor' },
+                                { rol: 'Inspector', nombre: 'Carlos Mendoza', tipo: 'inspector' }
+                            ]
+                            : [
+                                { rol: 'Coordinador', nombre: 'Viviana López', tipo: 'coordinador' },
+                                { rol: 'Supervisor', nombre: 'Ana Rodríguez', tipo: 'supervisor' }
+                            ]
+                    });
+                }
+            });
+            saveOIStateToStorage();
+        }
+
+        function ensureDemoLabEstado() {
+            if (!Array.isArray(ordenesInspeccion) || ordenesInspeccion.length < 3) return;
+
+            const calcTotal = (oi) => getMuestrasFromOI(oi);
+
+            const candidatos = ordenesInspeccion.filter(oi => oi && oi.campanaId && oi.estado !== 'cancelada');
+            const oiIngresada = candidatos[0];
+            const oiEnviada1 = candidatos[1];
+            const oiEnviada2 = candidatos[2];
+
+            if (oiIngresada) {
+                const total = calcTotal(oiIngresada);
+                oiIngresada.estado = 'enviada';
+                oiIngresada.labRecepcionada = true;
+                oiIngresada.labEstado = 'ingresada';
+                oiIngresada.labIngreso = oiIngresada.labIngreso || {};
+                oiIngresada.labIngreso.totalMuestras = total;
+                oiIngresada.labIngreso.muestrasConfirmadas = Array.from({ length: total }, (_, i) => `M-${i + 1}`);
+            }
+
+            if (oiEnviada1) {
+                const total = calcTotal(oiEnviada1);
+                const enviadas = Math.max(1, Math.min(total - 1, Math.ceil(total * 0.6)));
+                oiEnviada1.estado = 'enviada';
+                oiEnviada1.labRecepcionada = false;
+                oiEnviada1.labEstado = 'enviada';
+                oiEnviada1.labIngreso = oiEnviada1.labIngreso || {};
+                oiEnviada1.labIngreso.totalMuestras = total;
+                oiEnviada1.labIngreso.muestrasConfirmadas = Array.from({ length: enviadas }, (_, i) => `M-${i + 1}`);
+            }
+
+            if (oiEnviada2) {
+                const total = calcTotal(oiEnviada2);
+                const enviadas = Math.max(0, Math.min(total - 1, Math.ceil(total * 0.3)));
+                oiEnviada2.estado = 'enviada';
+                oiEnviada2.labRecepcionada = false;
+                oiEnviada2.labEstado = 'enviada';
+                oiEnviada2.labIngreso = oiEnviada2.labIngreso || {};
+                oiEnviada2.labIngreso.totalMuestras = total;
+                oiEnviada2.labIngreso.muestrasConfirmadas = Array.from({ length: enviadas }, (_, i) => `M-${i + 1}`);
+            }
+
+            saveOIStateToStorage();
+        }
+
+        function ensureInspectorForLabStates() {
+            if (!Array.isArray(ordenesInspeccion) || !ordenesInspeccion.length) return;
+            const inspectorDefault = 'Carlos Mendoza';
+            let changed = false;
+
+            ordenesInspeccion.forEach(oi => {
+                if (!oi) return;
+                const requiereInspector = oi.estado === 'enviada' || oi.labEstado === 'ingresada';
+                if (!requiereInspector) return;
+
+                oi.usuarios = oi.usuarios || [];
+                const hasInspector = (oi.usuarios || []).some(u =>
+                    (u.tipo === 'inspector' || /inspector/i.test(u.rol || ''))
+                );
+                if (hasInspector) return;
+
+                oi.usuarios.push({ rol: 'Inspector', nombre: inspectorDefault, tipo: 'inspector' });
+                changed = true;
+            });
+
+            if (changed) saveOIStateToStorage();
+        }
+
+        function ensureAtLeastOneOIUnassigned() {
+            if (!Array.isArray(ordenesInspeccion) || ordenesInspeccion.length === 0) return;
+            const existeSinInspector = ordenesInspeccion.some(oi => {
+                if (!oi || !oi.campanaId || oi.estado === 'cancelada') return false;
+                return !hasInspectorAsignado(oi);
+            });
+            if (existeSinInspector) return;
+
+            const candidata = ordenesInspeccion.find(oi =>
+                oi && oi.campanaId && oi.estado !== 'cancelada' && oi.estado !== 'enviada' && oi.estado !== 'ejecutada'
+            ) || ordenesInspeccion.find(oi => oi && oi.campanaId && oi.estado !== 'cancelada');
+
+            if (!candidata) return;
+            candidata.usuarios = (candidata.usuarios || []).filter(u =>
+                !((u && (u.tipo === 'inspector' || /inspector/i.test(u.rol || ''))))
+            );
+            syncOIEstadoPorInspector(candidata);
+            saveOIStateToStorage();
+        }
+
+        function renderOICampanaFilters() {
+            const wrap = document.getElementById('oiCampanaFilters');
+            if (!wrap) return;
+            const oisConCampana = ordenesInspeccion.filter(oi => !!oi.campanaId);
+            const activaId = getCampanaActivaId();
+            if (!oiCampanaFiltro) oiCampanaFiltro = activaId || 'all';
+            if (oiCampanaFiltro !== 'all' && !campanas.some(c => c.id === oiCampanaFiltro)) {
+                oiCampanaFiltro = activaId || 'all';
+            }
+
+            const total = oisConCampana.length;
+            const chips = [
+                `<button type="button" class="oi-campana-chip ${oiCampanaFiltro === 'all' ? 'active' : ''}" onclick="setOICampanaFilter('all')">Todas <span class="count">(${total})</span></button>`
+            ];
+            campanas.forEach(c => {
+                const count = oisConCampana.filter(oi => oi.campanaId === c.id).length;
+                chips.push(`<button type="button" class="oi-campana-chip ${oiCampanaFiltro === c.id ? 'active' : ''}" onclick="setOICampanaFilter('${c.id}')">${c.nombre}${c.activa ? ' · Activa' : ''} <span class="count">(${count})</span></button>`);
+            });
+            wrap.innerHTML = chips.join('');
+        }
+
+        function setOICampanaFilter(campanaId) {
+            oiCampanaFiltro = campanaId || 'all';
+            renderOIs(document.getElementById('oiSearch').value);
+        }
+
+        function renderOIEstadoFilter() {
+            const sel = document.getElementById('oiStatusFilter');
+            if (!sel) return;
+            const opts = [`<option value="all">Todos los estados</option>`]
+                .concat(oiEstadoFilterOrder.map(k => `<option value="${k}">${oiEstadoLabels[k]}</option>`));
+            sel.innerHTML = opts.join('');
+            sel.value = oiEstadoFiltro || 'all';
+        }
+
+        function setOIEstadoFilter(estado) {
+            oiEstadoFiltro = estado || 'all';
+            renderOIs(document.getElementById('oiSearch').value);
+        }
 
         function renderOIs(filtro = '') {
             const cardsContainer = document.getElementById('oiCardsContainer');
@@ -4010,12 +5211,21 @@
             const countInfo = document.getElementById('oiCountInfo');
 
             saveOIStateToStorage();
+            renderOICampanaFilters();
+            renderOIEstadoFilter();
 
             const filtroLower = filtro.toLowerCase();
             const oiFiltradas = ordenesInspeccion.filter(oi => {
+                if (!oi.campanaId) return false;
+                const estadoVisual = getOIVisualStateKey(oi);
+                const cumpleCampana = oiCampanaFiltro === 'all' || !oiCampanaFiltro || oi.campanaId === oiCampanaFiltro;
+                if (!cumpleCampana) return false;
+                const cumpleEstado = oiEstadoFiltro === 'all' || estadoVisual === oiEstadoFiltro;
+                if (!cumpleEstado) return false;
                 if (!filtro) return true;
                 return oi.codigo.toLowerCase().includes(filtroLower)
-                    || oi.estado.toLowerCase().includes(filtroLower)
+                    || estadoVisual.toLowerCase().includes(filtroLower)
+                    || (oiEstadoLabels[estadoVisual] || '').toLowerCase().includes(filtroLower)
                     || (oiTipoLabels[oi.tipo] || '').toLowerCase().includes(filtroLower)
                     || oi.puntos.some(p => p.punto.toLowerCase().includes(filtroLower) || p.matriz.toLowerCase().includes(filtroLower));
             });
@@ -4043,8 +5253,10 @@
                     const supervisoresTxt = supervisores.length ? supervisores.join(', ') : 'Sin asignar';
                     const tipoTxt = oiTipoLabels[oi.tipo] || '-';
                     const composicionTxt = oiComposicionLabels[oi.composicion] || 'Puntual';
-                    const estadoTxt = oiEstadoLabels[oi.estado] || oi.estado || '-';
+                    const estadoVisual = getOIVisualStateKey(oi);
+                    const estadoTxt = oiEstadoLabels[estadoVisual] || estadoVisual || '-';
                     const matrizTxt = oi.matriz || (oi.puntos[0] && oi.puntos[0].matriz) || '-';
+                    const campanaTxt = (campanas.find(c => c.id === oi.campanaId) || {}).nombre || '-';
                     const planes = Array.from(new Set((oi.puntos || []).map(p => p.plan).filter(Boolean)));
                     const planTxt = oi.plan || (planes.length > 1 ? 'Mixto' : (planes[0] || '-'));
                     const laboratoriosOi = Array.from(new Set((oi.puntos || []).map(p => p.laboratorio).filter(Boolean)));
@@ -4079,7 +5291,8 @@
                             </div>
                         </div>
                         <div class="oi-card-line">
-                            <span class="oi-info-item"><span class="oi-info-icon"><i class="fa-solid fa-calendar-check"></i></span><span class="k">Recepción:</span> <span class="v">${fechaFmt}</span></span>
+                            <span class="oi-info-item"><span class="oi-info-icon"><i class="fa-solid fa-calendar-check"></i></span><span class="k">Programado:</span> <span class="v">${fechaFmt}</span></span>
+                            <span class="oi-info-item"><span class="oi-info-icon"><i class="fa-regular fa-flag"></i></span><span class="k">Campaña:</span> <span class="v">${campanaTxt}</span></span>
                             <span class="oi-info-item"><span class="oi-info-icon"><i class="fa-solid fa-layer-group"></i></span><span class="k">Matriz:</span> <span class="v">${matrizTxt}</span></span>
                             <span class="oi-info-item"><span class="oi-info-icon"><i class="fa-solid fa-flask-vial"></i></span><span class="k">Laboratorio:</span> <span class="v">${laboratorioTxt}</span></span>
                             <span class="oi-info-item"><span class="oi-info-icon"><i class="fa-solid fa-clipboard-list"></i></span><span class="k">Plan:</span> <span class="v">${planTxt}</span></span>
@@ -4090,10 +5303,13 @@
                 });
                 cardsContainer.innerHTML = html;
             }
+            renderCampanaMuestrasDisponibles();
+            renderCampanas();
         }
 
         function closeAllOiOptions() {
             document.querySelectorAll('.oi-options-menu.show').forEach(menu => menu.classList.remove('show'));
+            document.querySelectorAll('.cal-oi.has-menu').forEach(card => card.classList.remove('has-menu'));
         }
 
         function toggleOiOptions(idx, event) {
@@ -4103,9 +5319,23 @@
             const willShow = !menu.classList.contains('show');
             closeAllOiOptions();
             menu.classList.toggle('show', willShow);
+            const card = menu.closest('.cal-oi');
+            if (card && willShow) card.classList.add('has-menu');
+        }
+
+        function toggleContextMenuById(menuId, event) {
+            if (event) event.stopPropagation();
+            const menu = document.getElementById(menuId);
+            if (!menu) return;
+            const willShow = !menu.classList.contains('show');
+            closeAllOiOptions();
+            menu.classList.toggle('show', willShow);
+            const card = menu.closest('.cal-oi');
+            if (card && willShow) card.classList.add('has-menu');
         }
 
         function formatearFecha(fechaStr) {
+            if (!fechaStr || !String(fechaStr).includes('-')) return '-';
             const [y, m, d] = fechaStr.split('-');
             return `${d}/${m}/${y}`;
         }
@@ -4162,7 +5392,11 @@
             oiUsuariosActuales = (oiUsuariosActuales || []).filter(u =>
                 !((u.tipo === 'inspector' || /inspector/i.test(u.rol || '')) && u.nombre === nombreInspector)
             );
+            if (getInspectoresFromUsuarios(oiUsuariosActuales).length === 0 && (oiEstadoActual === 'programada' || oiEstadoActual === 'en_ejecucion')) {
+                oiEstadoActual = 'pendiente';
+            }
             renderUsuariosOI();
+            actualizarCabeceraOI();
             mostrarToast(`Inspector "${nombreInspector}" removido de la OI`);
         }
 
@@ -4276,6 +5510,11 @@
         }
 
         function abrirPanelOI() {
+            if (!campanas.length) {
+                alert('Debe crear al menos una campaña antes de crear una OI');
+                activarTab('campana');
+                return;
+            }
             editandoOIIdx = -1;
             pasoActual = 1;
             oiTipoActual = 'muestreo_medicion';
@@ -4287,6 +5526,7 @@
             document.getElementById('newOIFecha').value = '';
             document.getElementById('oiMatriz').value = '';
             document.getElementById('oiPlan').value = '';
+            document.getElementById('oiCampana').value = '';
             document.getElementById('chkRecurrencia').checked = false;
             document.getElementById('recurrenciaSection').classList.remove('show');
 
@@ -4312,6 +5552,8 @@
             oiPanelPuntos = [];
             initFormSelects();
             actualizarFormPlanes('');
+            const campanaActivaId = getCampanaActivaId();
+            if (campanaActivaId) document.getElementById('oiCampana').value = campanaActivaId;
             resetForm();
             renderOIPanelPuntos();
             toggleAddMuestrasForm(false);
@@ -4349,9 +5591,11 @@
                 const fecha = document.getElementById('newOIFecha').value;
                 const matriz = document.getElementById('oiMatriz').value;
                 const plan = document.getElementById('oiPlan').value;
+                const campanaId = document.getElementById('oiCampana').value;
                 if (!fecha) { alert('Seleccione una fecha'); return; }
                 if (!matriz) { alert('Seleccione una matriz'); return; }
                 if (!plan) { alert('Seleccione un plan'); return; }
+                if (!campanaId) { alert('Seleccione una campaña'); return; }
             }
             pasoActual = paso;
             actualizarPasoUI();
@@ -4527,6 +5771,7 @@
             // Estado inicial dependiente
             actualizarFormPlanes('');
             actualizarFormPuntos();
+            renderCampanasSelectOI();
         }
 
         function onChangeOIMatriz() {
@@ -4772,12 +6017,14 @@
             const fecha = document.getElementById('newOIFecha').value;
             const matrizOI = document.getElementById('oiMatriz').value;
             const planOI = document.getElementById('oiPlan').value;
+            const campanaId = document.getElementById('oiCampana').value;
             const composicionOI = oiComposicionActual || 'puntual';
             const codigo = editandoOIIdx >= 0 ? ordenesInspeccion[editandoOIIdx].codigo : generarCodigoOI();
 
             if (!fecha) { alert('Seleccione una fecha'); return; }
             if (!matrizOI) { alert('Seleccione una matriz'); return; }
             if (!planOI) { alert('Seleccione un plan'); return; }
+            if (!campanaId) { alert('Seleccione una campaña'); return; }
             if (oiPanelPuntos.length === 0) { alert('Agregue al menos un punto de muestreo'); return; }
 
             for (let i = 0; i < oiPanelPuntos.length; i++) {
@@ -4793,8 +6040,12 @@
                 ordenesInspeccion[editandoOIIdx].composicion = composicionOI;
                 ordenesInspeccion[editandoOIIdx].matriz = matrizOI;
                 ordenesInspeccion[editandoOIIdx].plan = planOI;
+                ordenesInspeccion[editandoOIIdx].campanaId = campanaId;
                 ordenesInspeccion[editandoOIIdx].puntos = puntosClone;
                 ordenesInspeccion[editandoOIIdx].usuarios = JSON.parse(JSON.stringify(oiUsuariosActuales));
+                syncOIEstadoPorInspector(ordenesInspeccion[editandoOIIdx]);
+                syncCampanaAssignmentsFromOIs();
+                renderCampanas();
                 cerrarPanelOI();
                 renderOIs(document.getElementById('oiSearch').value);
                 renderCalendar();
@@ -4815,11 +6066,14 @@
                             composicion: composicionOI,
                             matriz: matrizOI,
                             plan: planOI,
+                            campanaId: campanaId,
                             estado: 'pendiente',
                             puntos: JSON.parse(JSON.stringify(puntosClone)),
                             usuarios: JSON.parse(JSON.stringify(oiUsuariosActuales))
                         });
                     });
+                    syncCampanaAssignmentsFromOIs();
+                    renderCampanas();
                     cerrarPanelOI();
                     renderOIs(document.getElementById('oiSearch').value);
                     renderCalendar();
@@ -4832,10 +6086,13 @@
                         composicion: composicionOI,
                         matriz: matrizOI,
                         plan: planOI,
+                        campanaId: campanaId,
                         estado: 'pendiente',
                         puntos: puntosClone,
                         usuarios: JSON.parse(JSON.stringify(oiUsuariosActuales))
                     });
+                    syncCampanaAssignmentsFromOIs();
+                    renderCampanas();
                     cerrarPanelOI();
                     renderOIs(document.getElementById('oiSearch').value);
                     renderCalendar();
@@ -4881,9 +6138,11 @@
             initFormSelects();
             const matrizOI = oi.matriz || (oiPanelPuntos[0] && oiPanelPuntos[0].matriz) || '';
             const planOI = oi.plan || (oiPanelPuntos[0] && oiPanelPuntos[0].plan) || '';
+            const campanaOI = oi.campanaId || getCampanaActivaId() || '';
             document.getElementById('oiMatriz').value = matrizOI;
             actualizarFormPlanes(matrizOI);
             if (planOI) document.getElementById('oiPlan').value = planOI;
+            document.getElementById('oiCampana').value = campanaOI;
             resetForm();
             renderOIPanelPuntos();
             toggleAddMuestrasForm(false);
@@ -5220,12 +6479,18 @@
                 totalMuestras: labMuestrasDetalladas.length,
                 actualizacion: new Date().toISOString()
             };
+            oi.estado = 'enviada';
 
             cerrarPanelLaboratorio();
             renderOIs(document.getElementById('oiSearch').value);
             renderCalendar();
             mostrarToast(`Muestras preparadas para laboratorio (${oi.labIngreso.muestrasConfirmadas.length})`);
         }
+
+        // Inicializar campañas
+        renderCampanaCotizaciones();
+        limpiarFormularioCampana();
+        renderCampanas();
 
         // Renderizar OIs al inicio
         renderOIs();
@@ -5240,6 +6505,10 @@
             }
             if (!e.target.closest('.cal-inspector-right')) {
                 closeInspectorMenus();
+            }
+            if (!e.target.closest('#calStatusFilterWrap')) {
+                const statusMenu = document.getElementById('calStatusMenu');
+                if (statusMenu) statusMenu.classList.remove('show');
             }
         });
 
@@ -5286,6 +6555,8 @@
             return new Date(now.getFullYear(), now.getMonth(), 1);
         })();
         let calData = {};
+        let calCampanaFiltro = '';
+        let calEstadoFiltros = new Set();
 
         function getInspectorIdsFromOI(oi) {
             return Array.from(new Set(
@@ -5310,6 +6581,12 @@
             const month = calViewDate.getMonth();
 
             ordenesInspeccion.forEach((oi, idx) => {
+                if (!oi.campanaId) return;
+                const cumpleCampana = calCampanaFiltro === 'all' || !calCampanaFiltro || oi.campanaId === calCampanaFiltro;
+                if (!cumpleCampana) return;
+                const estadoVisual = getOIVisualStateKey(oi);
+                const cumpleEstado = calEstadoFiltros.size === 0 || calEstadoFiltros.has(estadoVisual);
+                if (!cumpleEstado) return;
                 if (!oi.fecha) return;
                 const dt = new Date(`${oi.fecha}T12:00:00`);
                 if (isNaN(dt)) return;
@@ -5317,22 +6594,116 @@
 
                 const day = dt.getDate();
                 if (!data[day]) data[day] = [];
+                const totalMuestras = getMuestrasFromOI(oi);
+                const confirmadas = Array.isArray(oi.labIngreso && oi.labIngreso.muestrasConfirmadas)
+                    ? oi.labIngreso.muestrasConfirmadas.length
+                    : 0;
+                const isIngresada = oi.labEstado === 'ingresada' || oi.labRecepcionada === true;
+                const envioLabel = isIngresada ? 'Ingresadas' : 'Enviadas';
+                const envioTxt = oi.estado === 'enviada' ? ` · ${envioLabel} ${confirmadas}/${totalMuestras}` : '';
+                let estadoLaboratorio = null;
+                if (oi.estado === 'enviada') {
+                    estadoLaboratorio = isIngresada ? 'ingresada' : 'enviada';
+                }
                 data[day].push({
                     oiIdx: idx,
                     title: oi.codigo,
-                    detail: `${(oi.puntos || []).length} pts / ${getMuestrasFromOI(oi)} mues.`,
+                    detail: `${(oi.puntos || []).length} pts / ${totalMuestras} mues.${envioTxt}`,
                     tipo: oi.tipo || 'muestreo_medicion',
                     inspectorIds: getInspectorIdsFromOI(oi),
-                    etfa: (oi.puntos || []).some(p => p.etfa) ? 'green' : null
+                    etfa: (oi.puntos || []).some(p => p.etfa) ? 'green' : null,
+                    estadoLaboratorio
                 });
             });
 
             return data;
         }
 
+        function renderCalCampanaFilters() {
+            const wrap = document.getElementById('calCampanaFilters');
+            if (!wrap) return;
+            const activaId = getCampanaActivaId();
+            if (!calCampanaFiltro) calCampanaFiltro = activaId || 'all';
+            if (calCampanaFiltro !== 'all' && !campanas.some(c => c.id === calCampanaFiltro)) {
+                calCampanaFiltro = activaId || 'all';
+            }
+
+            const oisConCampana = ordenesInspeccion.filter(oi => !!oi.campanaId);
+            const total = oisConCampana.length;
+            const chips = [
+                `<button type="button" class="oi-campana-chip ${calCampanaFiltro === 'all' ? 'active' : ''}" onclick="setCalCampanaFilter('all')">Todas <span class="count">(${total})</span></button>`
+            ];
+            campanas.forEach(c => {
+                const count = oisConCampana.filter(oi => oi.campanaId === c.id).length;
+                chips.push(`<button type="button" class="oi-campana-chip ${calCampanaFiltro === c.id ? 'active' : ''}" onclick="setCalCampanaFilter('${c.id}')">${c.nombre}${c.activa ? ' · Activa' : ''} <span class="count">(${count})</span></button>`);
+            });
+            wrap.innerHTML = chips.join('');
+        }
+
+        function setCalCampanaFilter(campanaId) {
+            calCampanaFiltro = campanaId || 'all';
+            renderCalendar();
+        }
+
+        function renderCalEstadoFilter() {
+            const menu = document.getElementById('calStatusMenu');
+            const label = document.getElementById('calStatusFilterLabel');
+            if (!menu || !label) return;
+
+            const estados = oiEstadoFilterOrder;
+            const selectedCount = calEstadoFiltros.size;
+            if (selectedCount === 0) {
+                label.textContent = 'Estados: todos';
+            } else if (selectedCount === 1) {
+                const only = Array.from(calEstadoFiltros)[0];
+                label.textContent = oiEstadoLabels[only] || only;
+            } else {
+                label.textContent = `Estados (${selectedCount})`;
+            }
+
+            const rows = [];
+            rows.push(`
+                <label class="cal-status-option">
+                    <input type="checkbox" ${selectedCount === 0 ? 'checked' : ''} onchange="toggleCalEstadoOption('all', this.checked)">
+                    <span>Todos los estados</span>
+                </label>
+            `);
+            estados.forEach(estado => {
+                rows.push(`
+                    <label class="cal-status-option">
+                        <input type="checkbox" ${calEstadoFiltros.has(estado) ? 'checked' : ''} onchange="toggleCalEstadoOption('${estado}', this.checked)">
+                        <span>${oiEstadoLabels[estado]}</span>
+                    </label>
+                `);
+            });
+            menu.innerHTML = rows.join('');
+        }
+
+        function toggleCalEstadoDropdown(event) {
+            if (event) event.stopPropagation();
+            const menu = document.getElementById('calStatusMenu');
+            if (!menu) return;
+            menu.classList.toggle('show');
+        }
+
+        function toggleCalEstadoOption(estado, checked) {
+            if (estado === 'all') {
+                calEstadoFiltros.clear();
+                renderCalEstadoFilter();
+                renderCalendar();
+                return;
+            }
+            if (checked) calEstadoFiltros.add(estado);
+            else calEstadoFiltros.delete(estado);
+            renderCalEstadoFilter();
+            renderCalendar();
+        }
+
         function renderCalendar() {
             const grid = document.getElementById('calGrid');
             if (!grid) return;
+            renderCalEstadoFilter();
+            renderCalCampanaFilters();
             calData = buildCalDataFromOIs();
 
             const days = ['LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO', 'DOMINGO'];
@@ -5369,6 +6740,9 @@
                 ois.forEach((oi, idx) => {
                     const inspectorIds = Array.isArray(oi.inspectorIds) ? oi.inspectorIds : [];
                     const assignedClass = inspectorIds.length > 0 ? 'assigned' : 'unassigned';
+                    const estadoClass = oi.estadoLaboratorio === 'ingresada'
+                        ? 'lab-ingresada'
+                        : (oi.estadoLaboratorio === 'enviada' ? 'lab-enviada' : assignedClass);
                     let etfaDot = '';
                     if (oi.etfa === 'green') etfaDot = `<span class="etfa-dot green" title="ETFA"><i class="fa-solid fa-circle-check"></i></span>`;
                     else if (oi.etfa === 'red') etfaDot = `<span class="etfa-dot red" title="Plan no autorizado"><i class="fa-solid fa-triangle-exclamation"></i></span>`;
@@ -5378,10 +6752,18 @@
                         ? '<i class="fa-solid fa-chart-line oi-type-icon" title="Solo Medición"></i>'
                         : '<i class="fa-solid fa-vial-circle-check oi-type-icon" title="Muestreo y Medición"></i>';
 
-                    html += `<div class="cal-oi ${assignedClass}" draggable="true" data-day="${day}" data-idx="${idx}" data-oi-idx="${oi.oiIdx}" data-inspectors="${inspectorsAttr}">
+                    html += `<div class="cal-oi ${estadoClass}" draggable="true" data-day="${day}" data-idx="${idx}" data-oi-idx="${oi.oiIdx}" data-inspectors="${inspectorsAttr}">
                         ${etfaDot}
                         <div class="oi-title">${tipoIcon}<span>${oi.title}</span></div>
                         <div class="oi-detail">${oi.detail}</div>
+                        <div class="oi-options-wrap cal-oi-context">
+                            <div class="oi-options-menu" id="calOiOptionsMenu-${oi.oiIdx}">
+                                <button class="oi-options-item" onclick="verOI(${oi.oiIdx}); closeAllOiOptions();">Ver</button>
+                                <button class="oi-options-item" onclick="editarOI(${oi.oiIdx}); closeAllOiOptions();">Editar</button>
+                                <button class="oi-options-item" onclick="abrirPaginaLaboratorio(${oi.oiIdx}); closeAllOiOptions();">Enviar a laboratorio</button>
+                                <button class="oi-options-item delete" onclick="eliminarOI(${oi.oiIdx}); closeAllOiOptions();">Eliminar</button>
+                            </div>
+                        </div>
                     </div>`;
                 });
 
@@ -5491,7 +6873,17 @@
             grid.classList.toggle('assigning-mode', assignmentMode);
             grid.querySelectorAll('.cal-oi').forEach(card => {
                 const oiIdx = parseInt(card.dataset.oiIdx, 10);
+                const eligible = !assignmentMode
+                    || assignmentAction !== 'unassign'
+                    || assignmentEligibleOIs.has(oiIdx);
+                if (!eligible) assignmentSelectedOIs.delete(oiIdx);
                 card.classList.toggle('assign-selected', assignmentSelectedOIs.has(oiIdx));
+                card.classList.toggle('assign-disabled', assignmentMode && assignmentAction === 'unassign' && !eligible);
+                if (assignmentMode) {
+                    card.style.opacity = (assignmentAction === 'unassign' && !eligible) ? '0.35' : '1';
+                } else {
+                    card.style.opacity = '1';
+                }
             });
             updateAssignBar();
         }
@@ -5503,8 +6895,20 @@
             assignmentInspectorId = inspectorId;
             assignmentAction = action === 'unassign' ? 'unassign' : 'assign';
             assignmentSelectedOIs = new Set();
+            assignmentEligibleOIs = new Set();
+            if (assignmentAction === 'unassign') {
+                const inspectorName = inspectorNameById[inspectorId] || '';
+                ordenesInspeccion.forEach((oi, idx) => {
+                    const bloqueadaPorEstado = oi.estado === 'enviada' || oi.labEstado === 'ingresada';
+                    if (bloqueadaPorEstado) return;
+                    const hasTargetInspector = (oi.usuarios || []).some(u =>
+                        (u.tipo === 'inspector' || /inspector/i.test(u.rol || '')) && u.nombre === inspectorName
+                    );
+                    if (hasTargetInspector) assignmentEligibleOIs.add(idx);
+                });
+            }
             document.querySelectorAll('.cal-inspector-card').forEach(c => c.classList.remove('selected'));
-            document.querySelectorAll('.cal-oi').forEach(oi => { oi.style.opacity = '1'; });
+            document.querySelectorAll('.cal-oi').forEach(oi => { oi.style.opacity = ''; });
             applyAssignmentUIState();
             const modeTxt = assignmentAction === 'unassign' ? 'desasignación' : 'asignación';
             mostrarToast(`Modo ${modeTxt}: ${inspectorNameById[inspectorId] || 'Inspector'}`);
@@ -5515,7 +6919,9 @@
             assignmentInspectorId = null;
             assignmentAction = 'assign';
             assignmentSelectedOIs = new Set();
+            assignmentEligibleOIs = new Set();
             applyAssignmentUIState();
+            document.querySelectorAll('.cal-oi').forEach(oi => { oi.style.opacity = '1'; });
         }
 
         function confirmBatchAssign() {
@@ -5538,6 +6944,7 @@
                         oi.usuarios.push({ rol: 'Inspector', nombre: inspectorName, tipo: 'inspector' });
                     }
                 }
+                syncOIEstadoPorInspector(oi);
             });
 
             const total = assignmentSelectedOIs.size;
@@ -5546,6 +6953,7 @@
             const actionDone = assignmentAction;
             assignmentAction = 'assign';
             assignmentSelectedOIs = new Set();
+            assignmentEligibleOIs = new Set();
 
             renderOIs(document.getElementById('oiSearch').value);
             renderCalendar();
@@ -5574,8 +6982,10 @@
                         e.preventDefault();
                         return;
                     }
+                    e.preventDefault();
+                    e.stopPropagation();
                     const oiIdx = parseInt(this.dataset.oiIdx, 10);
-                    if (!isNaN(oiIdx)) verOI(oiIdx);
+                    if (!isNaN(oiIdx)) toggleContextMenuById(`calOiOptionsMenu-${oiIdx}`, e);
                 });
 
                 card.addEventListener('click', function(e) {
@@ -5584,6 +6994,7 @@
                     e.stopPropagation();
                     const oiIdx = parseInt(this.dataset.oiIdx, 10);
                     if (isNaN(oiIdx)) return;
+                    if (assignmentAction === 'unassign' && !assignmentEligibleOIs.has(oiIdx)) return;
                     if (assignmentSelectedOIs.has(oiIdx)) assignmentSelectedOIs.delete(oiIdx);
                     else assignmentSelectedOIs.add(oiIdx);
                     applyAssignmentUIState();
@@ -5698,6 +7109,7 @@
                                     }
                                     mostrarToast(`${inspectorName} asignado a "${oiCard.title}"`);
                                 }
+                                syncOIEstadoPorInspector(oiRef);
                                 renderOIs(document.getElementById('oiSearch').value);
                                 renderCalendar();
                             }

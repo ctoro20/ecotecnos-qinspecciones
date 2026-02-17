@@ -1028,9 +1028,16 @@
     <div class="toast" id="toast"></div>
 
     <script>
-        const OI_STATE_STORAGE_KEY = 'sgs_fp_ordenes_v1';
+        const OI_STATE_STORAGE_KEY = 'sgs_fp_ordenes_v2_demo';
         const LAB_NAV_STORAGE_KEY = 'sgs_lab_nav_v1';
-        const oiEstadoLabels = { 'pendiente': 'Pendiente', 'programada': 'Programada', 'ejecutada': 'Ejecutada', 'cancelada': 'Cancelada' };
+        const oiEstadoLabels = {
+            'pendiente': 'Pendiente',
+            'programada': 'Programada',
+            'en_ejecucion': 'En ejecución',
+            'enviada': 'Enviada',
+            'ejecutada': 'Ejecutada',
+            'cancelada': 'Cancelada'
+        };
         const oiTipoLabels = { 'muestreo_medicion': 'Muestreo y Medición', 'medicion': 'Solo Medición' };
         const oiComposicionLabels = { 'puntual': 'Puntual', 'compuesta': 'Compuesta' };
         const telefonosContacto = {
@@ -2024,6 +2031,15 @@
                 .filter(u => u.tipo === 'inspector' || /inspector/i.test(u.rol || ''))
                 .map(u => u.nombre)
                 .join(', ') || 'Sin asignar';
+            const hasInspector = inspectoresTxt !== 'Sin asignar';
+            if (hasInspector && (oi.estado === 'pendiente' || oi.estado === 'programada')) {
+                oi.estado = 'en_ejecucion';
+                try {
+                    sessionStorage.setItem(OI_STATE_STORAGE_KEY, JSON.stringify(ordenesInspeccion));
+                } catch (e) {
+                    // noop
+                }
+            }
             const supervisoresTxt = (oi.usuarios || [])
                 .filter(u => u.tipo === 'supervisor' || /supervisor/i.test(u.rol || ''))
                 .map(u => u.nombre)
@@ -2228,6 +2244,7 @@
                 totalMuestras: labMuestrasDetalladas.length,
                 fechaHoraMuestreo: ''
             };
+            oi.estado = 'enviada';
 
             try {
                 sessionStorage.setItem(OI_STATE_STORAGE_KEY, JSON.stringify(ordenesInspeccion));
