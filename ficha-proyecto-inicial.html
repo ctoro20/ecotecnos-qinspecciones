@@ -831,6 +831,18 @@
             overflow: visible;
         }
 
+        .cal-grid.show-muestras {
+            grid-auto-rows: 220px;
+        }
+
+        .cal-grid.show-muestras .cal-day {
+            min-height: 220px;
+            height: 220px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
         .cal-day.empty {
             background: #f9f9f9;
         }
@@ -924,6 +936,109 @@
             z-index: 5000;
         }
 
+        .cal-view-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border: 1px solid #d7dde6;
+            border-radius: 999px;
+            background: #fff;
+            color: #475569;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .cal-view-toggle.active {
+            border-color: #ee8866;
+            background: #fff7f3;
+            color: #c65d3b;
+        }
+
+        .cal-muestras {
+            margin-top: 8px;
+            display: grid;
+            gap: 6px;
+        }
+
+        .cal-muestra-card {
+            padding: 5px 7px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.92);
+            border: 1px solid rgba(255,255,255,0.7);
+            color: #334155;
+            display: grid;
+            gap: 3px;
+        }
+
+        .cal-muestra-head {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cal-muestra-title {
+            font-size: 10px;
+            font-weight: 700;
+            line-height: 1.2;
+            min-width: 0;
+        }
+
+        .cal-muestra-meta {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .cal-muestra-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 1px 6px;
+            border-radius: 999px;
+            font-size: 9px;
+            font-weight: 500;
+            line-height: 1.2;
+        }
+
+        .cal-muestra-badge.matriz {
+            background: #fff3e0;
+            color: #c65d07;
+            font-size: 8px;
+        }
+
+        .cal-muestra-badge.estado-right {
+            margin-left: auto;
+        }
+
+        .cal-muestra-badge.estado-pendiente {
+            background: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .cal-muestra-badge.estado-ejecucion {
+            background: #ecfdf5;
+            color: #15803d;
+        }
+
+        .cal-muestra-badge.estado-enviados {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .cal-muestra-badge.estado-recepcionadas {
+            background: #fff7ed;
+            color: #c2410c;
+        }
+
+        .cal-muestra-detail {
+            font-size: 9px;
+            opacity: 0.88;
+            line-height: 1.25;
+        }
+
         .cal-oi .oi-type-icon {
             font-size: 9px;
             opacity: 0.95;
@@ -980,6 +1095,18 @@
             gap: 2px;
             position: relative;
             overflow: visible;
+        }
+
+        .cal-grid.show-muestras .cal-day .oi-container {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 2px;
+        }
+
+        .cal-grid.show-muestras .cal-oi:hover {
+            transform: none;
         }
 
         .cal-assign-bar {
@@ -1070,9 +1197,16 @@
         }
 
         .cal-assign-btn.confirm {
+            border-color: #ee8866;
+            background: #ee8866;
+            color: white;
+            box-shadow: 0 8px 18px rgba(238, 136, 102, 0.22);
+        }
+
+        .cal-assign-btn.confirm:disabled {
             border-color: transparent;
             background: #b8b8bc;
-            color: white;
+            box-shadow: none;
         }
 
         .cal-assign-btn:disabled {
@@ -1689,6 +1823,16 @@
                 max-width: 100vw;
             }
 
+            .panel-lateral#panelOI {
+                right: -100vw;
+                width: 100vw;
+                max-width: 100vw;
+            }
+
+            .oi-inline-grid {
+                grid-template-columns: 1fr;
+            }
+
             .lab-panel-lateral {
                 width: 100vw;
                 max-width: 100vw;
@@ -2057,6 +2201,12 @@
 
         .campana-form-grid .full {
             grid-column: 1 / -1;
+        }
+
+        .oi-inline-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
         }
 
         .campana-muestras-box {
@@ -2746,6 +2896,16 @@
         }
 
         .panel-lateral.campana-panel-lateral.show {
+            right: 0;
+        }
+
+        .panel-lateral#panelOI {
+            right: -760px;
+            width: 760px;
+            max-width: calc(100vw - 48px);
+        }
+
+        .panel-lateral#panelOI.show {
             right: 0;
         }
 
@@ -3505,6 +3665,10 @@
         .punto-list-tag.tag-etfa { background: #e8f5e9; color: #2e7d32; }
         .punto-list-tag.tag-noetfa { background: #fce4ec; color: #c62828; }
         .punto-list-tag.tag-estrato { background: #fff3e0; color: #e65100; }
+        .punto-list-tag.tag-estado-pendiente { background: #f3f4f6; color: #4b5563; }
+        .punto-list-tag.tag-estado-ejecucion { background: #ecfdf5; color: #15803d; }
+        .punto-list-tag.tag-estado-enviados { background: #eff6ff; color: #1d4ed8; }
+        .punto-list-tag.tag-estado-recepcionadas { background: #fff7ed; color: #c2410c; }
 
         .punto-list-remove {
             width: 22px; height: 22px; border-radius: 50%;
@@ -3890,6 +4054,10 @@
                                 </button>
                                 <div class="cal-status-menu" id="calStatusMenu"></div>
                             </div>
+                            <button type="button" class="cal-view-toggle" id="calViewToggleBtn" onclick="toggleCalMuestrasView()">
+                                <i class="fa-solid fa-vials"></i>
+                                <span id="calViewToggleLabel">Ver por muestras</span>
+                            </button>
                             <div class="oi-campana-filters cal-campana-filters" id="calCampanaFilters"></div>
                         </div>
                         <div class="cal-legend">
@@ -4021,7 +4189,7 @@
             <div class="campana-form-grid">
                 <div class="form-group full">
                     <label for="campanaNombre">Nombre de campaña</label>
-                    <input type="text" id="campanaNombre" placeholder="Ej: Campaña febrero 2026">
+                    <input type="text" id="campanaNombre" placeholder="Ej: Campaña marzo 2026">
                 </div>
                 <div class="form-group">
                     <label for="campanaInicio">Fecha inicio</label>
@@ -4217,19 +4385,21 @@
         <div class="panel-body">
             <!-- PASO 1: Datos cabecera -->
             <div class="panel-step-content active" id="panelStep1">
-                <div class="form-group" id="oiFechaGroup">
-                    <label>Fecha<span class="required">*</span></label>
-                    <input type="date" id="newOIFecha">
+                <div class="oi-inline-grid">
+                    <div class="form-group" id="oiFechaGroup">
+                        <label>Fecha<span class="required">*</span></label>
+                        <input type="date" id="newOIFecha">
+                    </div>
+
+                    <div class="form-group" id="oiMatrizGroup" style="display:none;">
+                        <label>Matriz<span class="required">*</span></label>
+                        <select id="oiMatriz" onchange="onChangeOIMatriz()">
+                            <option value="">Seleccionar matriz...</option>
+                        </select>
+                    </div>
                 </div>
 
-                <div class="form-group" id="oiMatrizGroup">
-                    <label>Matriz<span class="required">*</span></label>
-                    <select id="oiMatriz" onchange="onChangeOIMatriz()">
-                        <option value="">Seleccionar matriz...</option>
-                    </select>
-                </div>
-
-                <div class="form-group" id="oiPlanGroup">
+                <div class="form-group" id="oiPlanGroup" style="display:none;">
                     <label>Plan<span class="required">*</span></label>
                     <select id="oiPlan" disabled>
                         <option value="">Seleccionar plan...</option>
@@ -4243,19 +4413,21 @@
                     </select>
                 </div>
 
-                <div class="form-group" id="oiTipoGroup">
-                    <label class="panel-section-title">Tipo de Orden</label>
-                    <div class="type-toggle" id="typeToggle">
-                        <button type="button" class="active" onclick="setTipoOI('muestreo_medicion', this)">Muestreo y Medición</button>
-                        <button type="button" onclick="setTipoOI('medicion', this)">Solo Medición</button>
+                <div class="oi-inline-grid">
+                    <div class="form-group" id="oiTipoGroup">
+                        <label>Tipo de orden<span class="required">*</span></label>
+                        <div class="type-toggle" id="typeToggle">
+                            <button type="button" class="active" onclick="setTipoOI('muestreo_medicion', this)">Muestreo y Medición</button>
+                            <button type="button" onclick="setTipoOI('medicion', this)">Solo Medición</button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group" id="oiComposicionGroup">
-                    <label>Tipo de muestra<span class="required">*</span></label>
-                    <div class="type-toggle" id="composicionToggle">
-                        <button type="button" class="active" onclick="setComposicionOI('puntual', this)">Puntual</button>
-                        <button type="button" onclick="setComposicionOI('compuesta', this)">Compuesta</button>
+                    <div class="form-group" id="oiComposicionGroup">
+                        <label>Tipo de muestra<span class="required">*</span></label>
+                        <div class="type-toggle" id="composicionToggle">
+                            <button type="button" class="active" onclick="setComposicionOI('puntual', this)">Puntual</button>
+                            <button type="button" onclick="setComposicionOI('compuesta', this)">Compuesta</button>
+                        </div>
                     </div>
                 </div>
 
@@ -4335,7 +4507,25 @@
                                     <button type="button" onclick="setFormEtfa(true, this)">ETFA</button>
                                 </div>
                             </div>
-                            <div class="form-field" style="flex:1.9;">
+                            <div class="form-field" style="flex:1.2;">
+                                <label>Matriz</label>
+                                <select id="formMatriz" onchange="onChangeFormMatriz()">
+                                    <option value="">Seleccionar matriz...</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label>Plan</label>
+                                <select id="formPlan">
+                                    <option value="">Seleccionar plan...</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-field">
                                 <label>Laboratorio</label>
                                 <select id="formLaboratorio">
                                     <option value="">Seleccionar...</option>
@@ -4347,7 +4537,7 @@
                             <div class="form-field">
                                 <label>Puntos de muestreo</label>
                                 <div class="puntos-toolbar">
-                                    <input type="text" id="formPuntosSearch" class="puntos-search-input" placeholder="Buscar por código o lugar..." oninput="setFiltroPuntos(this.value)">
+                                    <input type="text" id="formPuntosSearch" class="puntos-search-input" placeholder="Buscar por código, lugar o matriz..." oninput="setFiltroPuntos(this.value)">
                                 </div>
                                 <div class="puntos-selection-info" id="formPuntosInfo">0 seleccionados</div>
                                 <div class="puntos-check-list modern" id="formPuntosChecklist"></div>
@@ -4665,7 +4855,9 @@
                 { estacion: 'EST-05', lugar: 'Pozo control', matriz: 'AGUA_SUBTERRANEA', este: '366510', norte: '7422310', huso: '19S', datum: 'WGS84', estratos: 1, replicas: 1 }
             ],
             'COT-2026-003': [
-                { estacion: 'EST-06', lugar: 'Estación perimetral', matriz: 'AIRE', este: '364990', norte: '7423055', huso: '19S', datum: 'WGS84', estratos: 1, replicas: 3 }
+                { estacion: 'EST-06', lugar: 'Estación perimetral', matriz: 'AIRE', este: '364990', norte: '7423055', huso: '19S', datum: 'WGS84', estratos: 1, replicas: 3 },
+                { estacion: 'MAR-01', lugar: 'Muelle norte', matriz: 'AGUA_MAR', este: '367420', norte: '7420185', huso: '19S', datum: 'WGS84', estratos: 2, replicas: 1 },
+                { estacion: 'MAR-02', lugar: 'Descarga emisario', matriz: 'AGUA_MAR', este: '367865', norte: '7419822', huso: '19S', datum: 'WGS84', estratos: 1, replicas: 2 }
             ]
         };
         let campanaCotizacionesSeleccionadas = [];
@@ -4674,10 +4866,10 @@
         var campanas = [
             {
                 id: 'CAMP-001',
-                nombre: 'Campaña febrero 2026',
+                nombre: 'Campaña marzo 2026',
                 cotizaciones: ['COT-2026-001', 'COT-2026-002'],
-                fechaInicio: '2026-02-01',
-                fechaTermino: '2026-02-28',
+                fechaInicio: '2026-03-01',
+                fechaTermino: '2026-03-31',
                 descripcion: 'Campaña mensual de seguimiento ambiental',
                 activa: true,
                 oiAsignadas: ['OI-2026-001']
@@ -4686,8 +4878,8 @@
                 id: 'CAMP-002',
                 nombre: 'Campaña cierre mes',
                 cotizaciones: ['COT-2026-002'],
-                fechaInicio: '2026-02-20',
-                fechaTermino: '2026-02-29',
+                fechaInicio: '2026-03-20',
+                fechaTermino: '2026-03-31',
                 descripcion: 'Campaña de cierre y verificación de muestras',
                 activa: false,
                 oiAsignadas: ['OI-2026-002']
@@ -5356,7 +5548,9 @@
         const puntosMuestreo = [
             { estacion: 'EST-01', origenTipo: 'cotizacion', origenRef: 'COT-2026-001', fechaCreacion: '2026-01-15', lugar: 'Descarga principal', matriz: 'AGUA_SUPERFICIAL', este: '365432', norte: '7421890', huso: '19S', datum: 'WGS84', estratos: 2, replicas: 2, muestras: 1 },
             { estacion: 'EST-02', origenTipo: 'proyecto', origenRef: '', fechaCreacion: '2026-03-19', lugar: 'Canal norte', matriz: 'AGUA_SUPERFICIAL', este: '365780', norte: '7422144', huso: '19S', datum: 'WGS84', estratos: 2, replicas: 1, muestras: 1 },
-            { estacion: 'EST-03', origenTipo: 'carga-masiva', origenRef: 'CM-2026-003', fechaCreacion: '2026-02-04', lugar: 'Canal sur', matriz: 'AGUA_SUPERFICIAL', este: '366105', norte: '7421678', huso: '19S', datum: 'SIRGAS', estratos: 1, replicas: 2, muestras: 1 }
+            { estacion: 'EST-03', origenTipo: 'carga-masiva', origenRef: 'CM-2026-003', fechaCreacion: '2026-02-04', lugar: 'Canal sur', matriz: 'AGUA_SUPERFICIAL', este: '366105', norte: '7421678', huso: '19S', datum: 'SIRGAS', estratos: 1, replicas: 2, muestras: 1 },
+            { estacion: 'MAR-01', origenTipo: 'cotizacion', origenRef: 'COT-2026-003', fechaCreacion: '2026-02-18', lugar: 'Muelle norte', matriz: 'AGUA_MAR', este: '367420', norte: '7420185', huso: '19S', datum: 'WGS84', estratos: 2, replicas: 1, muestras: 1 },
+            { estacion: 'MAR-02', origenTipo: 'proyecto', origenRef: '', fechaCreacion: '2026-03-19', lugar: 'Descarga emisario', matriz: 'AGUA_MAR', este: '367865', norte: '7419822', huso: '19S', datum: 'WGS84', estratos: 1, replicas: 2, muestras: 1 }
         ];
 
         function formatearOrigenPunto(punto) {
@@ -5478,7 +5672,7 @@
         // ==========================================
         // LISTADO OI
         // ==========================================
-        const laboratorios = ['SGS Antofagasta', 'SGS Santiago', 'SGS Concepción', 'SGS Lima', 'SGS Calama'];
+        const laboratorios = ['SGS Antofagasta', 'SGS Santiago'];
         const planesDisponibles = ['PLAN-001', 'PLAN-002', 'PLAN-003', 'PLAN-004', 'PLAN-005'];
         const planesPorMatriz = {
             'AGUA_SUPERFICIAL': ['PLAN-001', 'PLAN-004'],
@@ -5524,12 +5718,12 @@
             'Cynthia Ocaranza': '19.551.802-3'
         };
 
-        const OI_STATE_STORAGE_KEY = 'sgs_fp_ordenes_v2_demo';
+        const OI_STATE_STORAGE_KEY = 'sgs_fp_ordenes_v3_demo';
         const LAB_NAV_STORAGE_KEY = 'sgs_lab_nav_v1';
 
         let ordenesInspeccion = [
             {
-                codigo: 'OI-2026-001', fecha: '2026-02-18', tipo: 'muestreo_medicion', composicion: 'puntual', estado: 'programada',
+                codigo: 'OI-2026-001', fecha: '2026-03-18', tipo: 'muestreo_medicion', composicion: 'puntual', estado: 'programada',
                 campanaId: 'CAMP-001',
                 puntos: [
                     { punto: 'EST-01', matriz: 'AGUA_SUPERFICIAL', plan: 'PLAN-001', estratos: ['S', 'M'], replicas: 2, etfa: true, laboratorio: 'SGS Antofagasta' },
@@ -5542,7 +5736,7 @@
                 ]
             },
             {
-                codigo: 'OI-2026-002', fecha: '2026-02-24', tipo: 'muestreo_medicion', composicion: 'compuesta', estado: 'pendiente',
+                codigo: 'OI-2026-002', fecha: '2026-03-24', tipo: 'muestreo_medicion', composicion: 'compuesta', estado: 'pendiente',
                 campanaId: 'CAMP-002',
                 puntos: [
                     { punto: 'EST-03', matriz: 'AGUA_SUPERFICIAL', plan: 'PLAN-001', estratos: ['S'], replicas: 2, etfa: true, laboratorio: 'SGS Santiago' }
@@ -5566,12 +5760,40 @@
         const oiEstadoFilterOrder = ['pendiente', 'programada', 'en_ejecucion', 'enviada', 'ingresada', 'ejecutada', 'cancelada'];
         const oiTipoLabels = { 'muestreo_medicion': 'Muestreo y Medición', 'medicion': 'Solo Medición' };
         const oiComposicionLabels = { 'puntual': 'Puntual', 'compuesta': 'Compuesta' };
+        const puntoEstadoLabels = {
+            'pendiente': 'Pendiente',
+            'en_ejecucion': 'En ejecución',
+            'enviados': 'Enviados',
+            'recepcionadas': 'Recepcionadas'
+        };
 
         function getOIVisualStateKey(oi) {
             if (!oi) return 'pendiente';
             if (oi.labEstado === 'ingresada' || oi.labRecepcionada === true) return 'ingresada';
             if (oi.estado === 'enviada') return 'enviada';
             return oi.estado || 'pendiente';
+        }
+
+        function getPuntoEstadoKeyFromOI(oi, punto) {
+            if (punto && punto.estado && puntoEstadoLabels[punto.estado]) return punto.estado;
+            if (!oi) return 'pendiente';
+            if (oi.labEstado === 'ingresada' || oi.labRecepcionada === true) return 'recepcionadas';
+            if (oi.estado === 'enviada') return 'enviados';
+            if (oi.estado === 'en_ejecucion') return 'en_ejecucion';
+            return 'pendiente';
+        }
+
+        function syncPuntosEstadoFromOI(oi) {
+            if (!oi || !Array.isArray(oi.puntos)) return;
+            oi.puntos.forEach(p => {
+                if (!p) return;
+                p.estado = getPuntoEstadoKeyFromOI(oi, { ...p, estado: undefined });
+            });
+        }
+
+        function syncAllPuntosEstado() {
+            if (!Array.isArray(ordenesInspeccion)) return;
+            ordenesInspeccion.forEach(syncPuntosEstadoFromOI);
         }
 
         function getInspectoresFromUsuarios(usuarios) {
@@ -5588,11 +5810,13 @@
             const hasInspector = hasInspectorAsignado(oi);
             if (hasInspector) {
                 if (oi.estado === 'pendiente') oi.estado = 'programada';
+                syncPuntosEstadoFromOI(oi);
                 return;
             }
             if (oi.estado === 'programada' || oi.estado === 'pendiente' || oi.estado === 'en_ejecucion') {
                 oi.estado = 'pendiente';
             }
+            syncPuntosEstadoFromOI(oi);
         }
 
         function markOIEnEjecucionIfApplicable(oi) {
@@ -5600,6 +5824,7 @@
             if (oi.estado === 'cancelada' || oi.estado === 'enviada' || oi.estado === 'ejecutada') return;
             if (hasInspectorAsignado(oi) && (oi.estado === 'pendiente' || oi.estado === 'programada')) {
                 oi.estado = 'en_ejecucion';
+                syncPuntosEstadoFromOI(oi);
             }
         }
 
@@ -5621,6 +5846,18 @@
             } catch (e) {
                 // noop
             }
+        }
+
+        function migrateDemoOIsToMarch() {
+            if (!Array.isArray(ordenesInspeccion) || !ordenesInspeccion.length) return;
+            let changed = false;
+            ordenesInspeccion.forEach(oi => {
+                if (!oi || !oi.fecha || typeof oi.fecha !== 'string') return;
+                if (!/^2026-02-\d{2}$/.test(oi.fecha)) return;
+                oi.fecha = oi.fecha.replace('2026-02-', '2026-03-');
+                changed = true;
+            });
+            if (changed) saveOIStateToStorage();
         }
 
         function abrirPaginaLaboratorio(idx) {
@@ -5660,11 +5897,13 @@
         let oiEstadoFiltro = 'all';
 
         loadOIStateFromStorage();
+        migrateDemoOIsToMarch();
         ensureCampanasConsistency();
         ensureDemoOIsByCampana(3);
         ensureDemoLabEstado();
         ensureInspectorForLabStates();
         ensureAtLeastOneOIUnassigned();
+        syncAllPuntosEstado();
 
         function ensureDemoOIsByCampana(minPorCampana) {
             const min = Math.max(1, parseInt(minPorCampana, 10) || 3);
@@ -5675,7 +5914,7 @@
                 { punto: 'EST-02', matriz: 'AGUA_SUPERFICIAL', plan: 'PLAN-001', estratos: ['S'], replicas: 1, etfa: true, laboratorio: 'SGS Antofagasta' },
                 { punto: 'EST-03', matriz: 'AGUA_SUPERFICIAL', plan: 'PLAN-001', estratos: ['S'], replicas: 2, etfa: false, laboratorio: 'SGS Santiago' }
             ];
-            const monthBase = '2026-02-';
+            const monthBase = '2026-03-';
 
             campanas.forEach((campana, idxCampana) => {
                 const actuales = ordenesInspeccion.filter(oi => oi.campanaId === campana.id).length;
@@ -6225,12 +6464,8 @@
             // Validate step 1 before going to step 2
             if (paso === 2 && pasoActual === 1) {
                 const fecha = document.getElementById('newOIFecha').value;
-                const matriz = document.getElementById('oiMatriz').value;
-                const plan = document.getElementById('oiPlan').value;
                 const campanaId = document.getElementById('oiCampana').value;
                 if (!fecha) { alert('Seleccione una fecha'); return; }
-                if (!matriz) { alert('Seleccione una matriz'); return; }
-                if (!plan) { alert('Seleccione un plan'); return; }
                 if (!campanaId) { alert('Seleccione una campaña'); return; }
             }
             pasoActual = paso;
@@ -6399,15 +6634,27 @@
                 laboratorios.map(l => `<option value="${l}">${l}</option>`).join('');
 
             // Matrices
+            const formMatrizSel = document.getElementById('formMatriz');
             const matrizSel = document.getElementById('oiMatriz');
             const matrices = [...new Set(puntosMuestreo.map(p => p.matriz).filter(Boolean))];
-            matrizSel.innerHTML = '<option value="">Seleccionar matriz...</option>' +
+            const matricesOptions = '<option value="">Seleccionar matriz...</option>' +
                 matrices.map(m => `<option value="${m}">${m}</option>`).join('');
+            formMatrizSel.innerHTML = matricesOptions;
+            matrizSel.innerHTML = matricesOptions;
 
             // Estado inicial dependiente
             actualizarFormPlanes('');
             actualizarFormPuntos();
             renderCampanasSelectOI();
+        }
+
+        function onChangeFormMatriz() {
+            const matriz = document.getElementById('formMatriz').value;
+            formPuntosFiltro = '';
+            formPuntosSeleccionados = new Set();
+            document.getElementById('formPuntosSearch').value = '';
+            actualizarFormPlanes(matriz);
+            actualizarFormPuntos();
         }
 
         function onChangeOIMatriz() {
@@ -6431,13 +6678,16 @@
 
         function actualizarFormPlanes(matriz) {
             const planSel = document.getElementById('oiPlan');
+            const formPlanSel = document.getElementById('formPlan');
             const planes = matriz
                 ? (planesPorMatriz[matriz] || planesDisponibles)
-                : [];
-
-            planSel.disabled = !matriz;
-            planSel.innerHTML = '<option value="">Seleccionar plan...</option>' +
+                : planesDisponibles;
+            const options = '<option value="">Seleccionar plan...</option>' +
                 planes.map(p => `<option value="${p}">${p}</option>`).join('');
+
+            planSel.disabled = false;
+            planSel.innerHTML = options;
+            if (formPlanSel) formPlanSel.innerHTML = options;
         }
 
         function actualizarFormPuntos() {
@@ -6445,9 +6695,9 @@
             if (!checklist) return;
             const info = document.getElementById('formPuntosInfo');
 
-            const matrizSeleccionada = document.getElementById('oiMatriz').value;
+            const matrizSeleccionada = document.getElementById('formMatriz').value;
             if (!matrizSeleccionada) {
-                checklist.innerHTML = '<div class="punto-check-item disabled">Seleccione una matriz para ver puntos</div>';
+                checklist.innerHTML = '<div class="punto-check-item disabled">Seleccione una matriz para ver los puntos disponibles</div>';
                 if (info) info.textContent = '0 seleccionados';
                 return;
             }
@@ -6459,7 +6709,9 @@
             const filtro = formPuntosFiltro.trim().toLowerCase();
             const visibles = filtro
                 ? disponibles.filter(pm =>
-                    pm.estacion.toLowerCase().includes(filtro) || pm.lugar.toLowerCase().includes(filtro)
+                    pm.estacion.toLowerCase().includes(filtro) ||
+                    pm.lugar.toLowerCase().includes(filtro) ||
+                    (pm.matriz || '').toLowerCase().includes(filtro)
                 )
                 : disponibles;
 
@@ -6507,9 +6759,8 @@
         }
 
         function seleccionarPuntosVisibles(seleccionar) {
-            const matrizSeleccionada = document.getElementById('oiMatriz').value;
+            const matrizSeleccionada = document.getElementById('formMatriz').value;
             if (!matrizSeleccionada) return;
-
             const asignados = oiPanelPuntos.map(p => p.punto);
             const disponibles = puntosMuestreo.filter(pm =>
                 pm.matriz === matrizSeleccionada && !asignados.includes(pm.estacion)
@@ -6517,7 +6768,9 @@
             const filtro = formPuntosFiltro.trim().toLowerCase();
             const visibles = filtro
                 ? disponibles.filter(pm =>
-                    pm.estacion.toLowerCase().includes(filtro) || pm.lugar.toLowerCase().includes(filtro)
+                    pm.estacion.toLowerCase().includes(filtro) ||
+                    pm.lugar.toLowerCase().includes(filtro) ||
+                    (pm.matriz || '').toLowerCase().includes(filtro)
                 )
                 : disponibles;
 
@@ -6545,6 +6798,8 @@
 
         function resetForm() {
             document.getElementById('formLaboratorio').value = '';
+            document.getElementById('formMatriz').value = '';
+            document.getElementById('formPlan').value = '';
             document.getElementById('formPuntosSearch').value = '';
             formEtfa = false;
             formPuntosFiltro = '';
@@ -6557,9 +6812,9 @@
         }
 
         function agregarPuntosDesdeForm() {
-            const matriz = document.getElementById('oiMatriz').value;
+            const matriz = document.getElementById('formMatriz').value;
             const puntosSeleccionados = Array.from(formPuntosSeleccionados);
-            const plan = document.getElementById('oiPlan').value;
+            const plan = document.getElementById('formPlan').value;
             const laboratorio = document.getElementById('formLaboratorio').value;
 
             if (!matriz) { alert('Seleccione una matriz'); return; }
@@ -6582,6 +6837,7 @@
                     estratos: estratos,
                     replicas: replicas,
                     muestras: muestras,
+                    estado: 'pendiente',
                     etfa: formEtfa,
                     laboratorio: laboratorio
                 });
@@ -6614,6 +6870,14 @@
                 const etfaTag = p.etfa
                     ? '<span class="punto-list-tag tag-etfa">ETFA</span>'
                     : '<span class="punto-list-tag tag-noetfa">No ETFA</span>';
+                const estadoPunto = p.estado || 'pendiente';
+                const estadoClass = {
+                    'pendiente': 'tag-estado-pendiente',
+                    'en_ejecucion': 'tag-estado-ejecucion',
+                    'enviados': 'tag-estado-enviados',
+                    'recepcionadas': 'tag-estado-recepcionadas'
+                }[estadoPunto] || 'tag-estado-pendiente';
+                const estadoTag = `<span class="punto-list-tag ${estadoClass}">${puntoEstadoLabels[estadoPunto] || 'Pendiente'}</span>`;
                 const muestras = (parseInt(p.replicas, 10) || 1) * (estratos.length || 1);
                 const removeBtn = panelOIReadOnly
                     ? ''
@@ -6621,15 +6885,16 @@
                 return `<div class="punto-list-item">
                     <div class="punto-list-icon">${i + 1}</div>
                     <div class="punto-list-info">
-                        <div class="punto-list-name">${p.punto}</div>
-                        <div class="punto-list-place"><strong>Lugar:</strong> ${p.lugar || 'Sin lugar de muestreo'}</div>
+                        <div class="punto-list-name">${p.punto} <span class="detail-sep">·</span> <span class="punto-list-place"><strong>Lugar:</strong> ${p.lugar || 'Sin lugar de muestreo'}</span></div>
                         <div class="punto-list-details">
+                            ${estadoTag}
                             ${etfaTag}
                             ${estratosTags}
                             <span class="detail-sep">·</span>
                     ${p.replicas} répl.
                     <span class="detail-sep">·</span>
                     ${muestras} muestras
+                    <span class="detail-sep">·</span> ${p.matriz || 'Sin matriz'}
                     <span class="detail-sep">·</span> ${p.plan || 'Sin plan'}
                     ${p.laboratorio ? `<span class="detail-sep">·</span> ${p.laboratorio}` : ''}
                 </div>
@@ -6649,17 +6914,20 @@
         // ==========================================
         // CREAR / EDITAR OI
         // ==========================================
+        function obtenerResumenMatrizOIDesdePuntos(puntos) {
+            const matrices = Array.from(new Set((puntos || []).map(p => p.matriz).filter(Boolean)));
+            if (!matrices.length) return '';
+            return matrices.length > 1 ? 'Mixta' : matrices[0];
+        }
+
         function crearOI() {
             const fecha = document.getElementById('newOIFecha').value;
-            const matrizOI = document.getElementById('oiMatriz').value;
             const planOI = document.getElementById('oiPlan').value;
             const campanaId = document.getElementById('oiCampana').value;
             const composicionOI = oiComposicionActual || 'puntual';
             const codigo = editandoOIIdx >= 0 ? ordenesInspeccion[editandoOIIdx].codigo : generarCodigoOI();
 
             if (!fecha) { alert('Seleccione una fecha'); return; }
-            if (!matrizOI) { alert('Seleccione una matriz'); return; }
-            if (!planOI) { alert('Seleccione un plan'); return; }
             if (!campanaId) { alert('Seleccione una campaña'); return; }
             if (oiPanelPuntos.length === 0) { alert('Agregue al menos un punto de muestreo'); return; }
 
@@ -6668,6 +6936,7 @@
             }
 
             const puntosClone = JSON.parse(JSON.stringify(oiPanelPuntos));
+            const matrizOI = obtenerResumenMatrizOIDesdePuntos(puntosClone);
 
             if (editandoOIIdx >= 0) {
                 ordenesInspeccion[editandoOIIdx].codigo = codigo;
@@ -6680,6 +6949,7 @@
                 ordenesInspeccion[editandoOIIdx].puntos = puntosClone;
                 ordenesInspeccion[editandoOIIdx].usuarios = JSON.parse(JSON.stringify(oiUsuariosActuales));
                 syncOIEstadoPorInspector(ordenesInspeccion[editandoOIIdx]);
+                syncPuntosEstadoFromOI(ordenesInspeccion[editandoOIIdx]);
                 syncCampanaAssignmentsFromOIs();
                 renderCampanas();
                 cerrarPanelOI();
@@ -6695,19 +6965,20 @@
                     fechas.forEach((f, i) => {
                         const codigoNum = ordenesInspeccion.length + 1 + i;
                         const codigoAuto = `OI-${f.getFullYear()}-${String(codigoNum).padStart(3, '0')}`;
-                        ordenesInspeccion.push({
-                            codigo: codigoAuto,
-                            fecha: f.toISOString().split('T')[0],
-                            tipo: oiTipoActual,
+                    ordenesInspeccion.push({
+                        codigo: codigoAuto,
+                        fecha: f.toISOString().split('T')[0],
+                        tipo: oiTipoActual,
                             composicion: composicionOI,
                             matriz: matrizOI,
                             plan: planOI,
-                            campanaId: campanaId,
-                            estado: 'pendiente',
-                            puntos: JSON.parse(JSON.stringify(puntosClone)),
-                            usuarios: JSON.parse(JSON.stringify(oiUsuariosActuales))
-                        });
+                        campanaId: campanaId,
+                        estado: 'pendiente',
+                        puntos: JSON.parse(JSON.stringify(puntosClone)),
+                        usuarios: JSON.parse(JSON.stringify(oiUsuariosActuales))
                     });
+                    syncPuntosEstadoFromOI(ordenesInspeccion[ordenesInspeccion.length - 1]);
+                });
                     syncCampanaAssignmentsFromOIs();
                     renderCampanas();
                     cerrarPanelOI();
@@ -6727,6 +6998,7 @@
                         puntos: puntosClone,
                         usuarios: JSON.parse(JSON.stringify(oiUsuariosActuales))
                     });
+                    syncPuntosEstadoFromOI(ordenesInspeccion[ordenesInspeccion.length - 1]);
                     syncCampanaAssignmentsFromOIs();
                     renderCampanas();
                     cerrarPanelOI();
@@ -6764,6 +7036,7 @@
                 : obtenerUsuariosDefaultOI();
 
             oiPanelPuntos = JSON.parse(JSON.stringify(oi.puntos));
+            syncPuntosEstadoFromOI({ ...oi, puntos: oiPanelPuntos });
             // Enrich with lugar from puntosMuestreo
             oiPanelPuntos.forEach(p => {
                 if (!p.lugar) {
@@ -6772,11 +7045,10 @@
                 }
             });
             initFormSelects();
-            const matrizOI = oi.matriz || (oiPanelPuntos[0] && oiPanelPuntos[0].matriz) || '';
             const planOI = oi.plan || (oiPanelPuntos[0] && oiPanelPuntos[0].plan) || '';
             const campanaOI = oi.campanaId || getCampanaActivaId() || '';
-            document.getElementById('oiMatriz').value = matrizOI;
-            actualizarFormPlanes(matrizOI);
+            document.getElementById('oiMatriz').value = '';
+            actualizarFormPlanes('');
             if (planOI) document.getElementById('oiPlan').value = planOI;
             document.getElementById('oiCampana').value = campanaOI;
             resetForm();
@@ -6875,6 +7147,8 @@
                             codigo: codigo,
                             punto: p.punto || '-',
                             lugar: p.lugar || '',
+                            matriz: p.matriz || '',
+                            estado: p.estado || 'pendiente',
                             estrato: estratoLabel,
                             replica: replicaLabel,
                             observacionPunto: p.observacion || ''
@@ -7116,6 +7390,7 @@
                 actualizacion: new Date().toISOString()
             };
             oi.estado = 'enviada';
+            syncPuntosEstadoFromOI(oi);
 
             cerrarPanelLaboratorio();
             renderOIs(document.getElementById('oiSearch').value);
@@ -7193,6 +7468,7 @@
         let calData = {};
         let calCampanaFiltro = '';
         let calEstadoFiltros = new Set();
+        let calMostrarMuestras = false;
 
         function getInspectorIdsFromOI(oi) {
             return Array.from(new Set(
@@ -7209,6 +7485,19 @@
                 const replicas = parseInt(p.replicas, 10) || 1;
                 return acc + replicas * (estratos.length || 1);
             }, 0);
+        }
+
+        function renderCalViewToggle() {
+            const btn = document.getElementById('calViewToggleBtn');
+            const label = document.getElementById('calViewToggleLabel');
+            if (!btn || !label) return;
+            btn.classList.toggle('active', calMostrarMuestras);
+            label.textContent = calMostrarMuestras ? 'Ocultar muestras' : 'Ver por muestras';
+        }
+
+        function toggleCalMuestrasView() {
+            calMostrarMuestras = !calMostrarMuestras;
+            renderCalendar();
         }
 
         function buildCalDataFromOIs() {
@@ -7248,7 +7537,16 @@
                     tipo: oi.tipo || 'muestreo_medicion',
                     inspectorIds: getInspectorIdsFromOI(oi),
                     etfa: (oi.puntos || []).some(p => p.etfa) ? 'green' : null,
-                    estadoLaboratorio
+                    estadoLaboratorio,
+                    muestras: generarMuestrasDetalladasDesdeOI(oi).map(m => ({
+                        codigo: m.codigo,
+                        punto: m.punto,
+                        lugar: m.lugar,
+                        matriz: m.matriz,
+                        estado: m.estado,
+                        estrato: m.estrato,
+                        replica: m.replica
+                    }))
                 });
             });
 
@@ -7340,6 +7638,8 @@
             if (!grid) return;
             renderCalEstadoFilter();
             renderCalCampanaFilters();
+            renderCalViewToggle();
+            grid.classList.toggle('show-muestras', calMostrarMuestras);
             calData = buildCalDataFromOIs();
 
             const days = ['LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO', 'DOMINGO'];
@@ -7392,6 +7692,26 @@
                         ${etfaDot}
                         <div class="oi-title">${tipoIcon}<span>${oi.title}</span></div>
                         <div class="oi-detail">${oi.detail}</div>
+                        ${calMostrarMuestras ? `<div class="cal-muestras">${(oi.muestras || []).map(m => {
+                            const estadoClass = ({
+                                'pendiente': 'estado-pendiente',
+                                'en_ejecucion': 'estado-ejecucion',
+                                'enviados': 'estado-enviados',
+                                'recepcionadas': 'estado-recepcionadas'
+                            })[m.estado] || 'estado-pendiente';
+                            const estadoLabel = puntoEstadoLabels[m.estado] || 'Pendiente';
+                            return `
+                            <div class="cal-muestra-card">
+                                <div class="cal-muestra-head">
+                                    <div class="cal-muestra-title">${m.codigo}</div>
+                                </div>
+                                <div class="cal-muestra-detail">${m.estrato}/${m.replica}</div>
+                                <div class="cal-muestra-meta">
+                                    <span class="cal-muestra-badge matriz">${m.matriz || 'Sin matriz'}</span>
+                                    <span class="cal-muestra-badge ${estadoClass} estado-right">${estadoLabel}</span>
+                                </div>
+                            </div>`;
+                        }).join('')}</div>` : ''}
                         <div class="oi-options-wrap cal-oi-context">
                             <div class="oi-options-menu" id="calOiOptionsMenu-${oi.oiIdx}">
                                 <button class="oi-options-item" onclick="verOI(${oi.oiIdx}); closeAllOiOptions();">Ver</button>

@@ -118,6 +118,33 @@
         tr:nth-child(even) { background: #fbfcfe; }
         tr:hover { background: #f6f9fd; }
         .sample-code { font-weight: 700; color: #0f172a; }
+        .sample-code-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .sample-status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 7px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        .sample-status-badge.pendiente {
+            background: #f3f4f6;
+            color: #4b5563;
+        }
+        .sample-status-badge.en_ejecucion {
+            background: #ecfdf5;
+            color: #15803d;
+        }
+        .sample-status-badge.enviada {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
         .sample-point {
             min-width: 230px;
         }
@@ -160,6 +187,36 @@
             padding: 2px 7px;
             line-height: 1.2;
         }
+        .sample-meta-stack {
+            display: grid;
+            gap: 3px;
+            min-width: 170px;
+        }
+        .sample-meta-line {
+            display: block;
+            font-size: 11px;
+            color: #475569;
+            line-height: 1.2;
+        }
+        .sample-meta-line .v {
+            color: #334155;
+        }
+        .sample-meta-line.lab-small .v {
+            font-size: 10px;
+            color: #64748b;
+        }
+        .sample-meta-badge {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            border: 1px solid #dbe3ef;
+            background: #fff3e0;
+            color: #c65d07;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            line-height: 1.2;
+        }
         .point-terreno-btn {
             width: 24px;
             height: 24px;
@@ -189,6 +246,29 @@
         .obs-btn { width: 24px; height: 24px; border-radius: 999px; border: 1px solid #dbe3ef; background: #fff; color: #8aa0be; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; font-size: 11px; transition: all .2s ease; }
         .obs-btn:hover { border-color: #c7d2e3; color: #64748b; }
         .obs-btn.has-note { border-color: #f0b59c; background: #fff2ec; color: #e67550; }
+        .obs-btn.has-files { border-color: #f0b59c; background: #fff2ec; color: #e67550; position: relative; }
+        .point-terreno-btn.disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        .obs-btn-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            min-width: 14px;
+            height: 14px;
+            border-radius: 999px;
+            background: #ef835d;
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 3px;
+            line-height: 1;
+        }
         input[type="date"], input[type="time"], input[type="text"], textarea { width: 100%; height: 36px; border: 1px solid #d5dde8; border-radius: 8px; background: #f8fafd; color: #1f2937; font-size: 13px; padding: 8px 10px; outline: none; }
         textarea { height: auto; min-height: 84px; resize: vertical; }
         input:focus, textarea:focus { border-color: #f0a48d; box-shadow: 0 0 0 3px rgba(238, 136, 102, 0.12); background: #fff; }
@@ -231,6 +311,142 @@
             overflow-x: hidden;
         }
         .terrain-panel.show { transform: translateX(0); }
+        .attach-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: min(520px, 94vw);
+            height: 100vh;
+            background: #fff;
+            border-left: 1px solid #dbe2ec;
+            box-shadow: -10px 0 28px rgba(15, 23, 42, 0.15);
+            z-index: 49;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(100%);
+            transition: transform .22s ease;
+            overflow-x: hidden;
+        }
+        .attach-panel.show { transform: translateX(0); }
+        .attach-head {
+            padding: 14px 16px;
+            border-bottom: 1px solid #e5e7eb;
+            display: grid;
+            gap: 4px;
+            background: #fff;
+        }
+        .attach-title { font-size: 15px; font-weight: 700; color: #1f2937; }
+        .attach-sub { font-size: 12px; color: #64748b; }
+        .attach-body {
+            padding: 16px;
+            overflow-y: auto;
+            display: grid;
+            gap: 14px;
+            background: #fbfcfe;
+        }
+        .attach-upload-box {
+            border: 1px dashed #cfd8e6;
+            border-radius: 10px;
+            padding: 12px;
+            background: #f8fafc;
+        }
+        .attach-upload-box input[type="file"] { display: none; }
+        .attach-upload-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid #d5dde8;
+            background: #fff;
+            color: #475569;
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .attach-upload-btn:hover { border-color: #c0ccdd; color: #334155; }
+        .attach-upload-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        .attach-help { font-size: 11px; color: #94a3b8; margin-top: 8px; }
+        .attach-list {
+            display: grid;
+            gap: 8px;
+        }
+        .attach-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .attach-item-main {
+            min-width: 0;
+            display: grid;
+            gap: 3px;
+        }
+        .attach-item-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: #334155;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .attach-item-meta {
+            font-size: 11px;
+            color: #94a3b8;
+        }
+        .attach-remove {
+            width: 24px;
+            height: 24px;
+            border-radius: 999px;
+            border: 1px solid #d5dde8;
+            background: #fff;
+            color: #94a3b8;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .attach-remove:hover {
+            border-color: #f0b59c;
+            color: #e67550;
+            background: #fff2ec;
+        }
+        .attach-remove.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        .attach-empty {
+            border: 1px dashed #dbe2ec;
+            border-radius: 8px;
+            padding: 14px;
+            background: #fff;
+            color: #94a3b8;
+            text-align: center;
+            font-size: 12px;
+        }
+        .attach-foot {
+            border-top: 1px solid #e5e7eb;
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            background: #fff;
+        }
+        .attach-count {
+            font-size: 12px;
+            font-weight: 700;
+            color: #64748b;
+        }
         .terrain-head {
             padding: 14px 16px;
             border-bottom: 1px solid #e5e7eb;
@@ -775,8 +991,6 @@
                 </div>
                 <div class="lab-header-line2">
                     <span class="lab-info-item"><span class="lab-info-icon"><i class="fa-solid fa-calendar-check"></i></span><span class="k">Fecha programada:</span> <span class="v" id="labHeadRecepcion">-</span></span>
-                    <span class="lab-info-item"><span class="lab-info-icon"><i class="fa-solid fa-layer-group"></i></span><span class="k">Matriz:</span> <span class="v" id="labHeadMatriz">-</span></span>
-                    <span class="lab-info-item"><span class="lab-info-icon"><i class="fa-solid fa-clipboard-list"></i></span><span class="k">Plan:</span> <span class="v" id="labHeadPlan">-</span></span>
                     <span class="lab-info-item"><span class="lab-info-icon"><i class="fa-solid fa-user-tie"></i></span><span class="k">Inspector:</span> <span class="v" id="labHeadInspector">-</span></span>
                 </div>
                 <div class="lab-header-extra" id="labHeaderExtra">
@@ -829,9 +1043,10 @@
                                 <th style="width:52px;">OK</th>
                                 <th>Identificacion de la muestra</th>
                                 <th>Punto / Estacion de muestreo</th>
-                                <th>Obs punto</th>
+                                <th>Matriz / Plan / Laboratorio</th>
                                 <th>Fecha muestreo</th>
                                 <th>Hora muestreo</th>
+                                <th>Obs punto</th>
                                 <th style="width:44px;">Terreno</th>
                             </tr>
                         </thead>
@@ -886,6 +1101,55 @@
                 <button type="button" class="btn btn-secondary" onclick="cerrarObsModal()">Cancelar</button>
                 <button type="button" class="btn btn-primary" onclick="guardarObsModal()">Guardar</button>
             </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="sendConfirmOverlay">
+        <div class="mini-modal">
+            <div class="mini-head">
+                <span id="sendConfirmTitle">Confirmar envío</span>
+                <button type="button" class="btn-icon-close" onclick="cerrarConfirmacionEnvio()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="mini-body">
+                <div id="sendConfirmText">¿Confirma el envío de las muestras al laboratorio?</div>
+            </div>
+            <div class="mini-foot" id="sendConfirmActions">
+                <button type="button" class="btn btn-secondary" onclick="cerrarConfirmacionEnvio()">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="confirmarEnvioLaboratorio()">Confirmar envío</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="terrain-overlay" id="attachOverlay" onclick="cerrarPanelAdjuntos()"></div>
+    <div class="attach-panel" id="attachPanel">
+        <div class="attach-head">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+                <div class="attach-title">Archivos del muestreo</div>
+                <button type="button" class="btn-icon-close" onclick="cerrarPanelAdjuntos()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="attach-sub" id="attachSampleLabel">-</div>
+        </div>
+        <div class="attach-body">
+            <div class="form-group" style="margin:0;">
+                <label>Comentario del punto</label>
+                <textarea id="attachObsTexto" rows="4" placeholder="Ingrese observación para este punto..." oninput="actualizarObsAdjuntoActual(this.value)"></textarea>
+            </div>
+            <div class="form-group" style="margin:0;">
+                <label>Adjuntar archivos al muestreo</label>
+                <div class="attach-upload-box">
+                    <input type="file" id="attachFileInput" multiple onchange="onChangeAdjuntosMuestra(this.files)">
+                    <label for="attachFileInput" class="attach-upload-btn"><i class="fa-solid fa-paperclip"></i> Subir archivos</label>
+                    <div class="attach-help">Puede asociar varios archivos a esta muestra. En esta maqueta se guardan nombre, tamaño y tipo.</div>
+                </div>
+            </div>
+            <div>
+                <div class="section-title" style="margin-bottom:8px;"><i class="fa-regular fa-file-lines"></i>Archivos asociados</div>
+                <div class="attach-list" id="attachList"></div>
+            </div>
+        </div>
+        <div class="attach-foot">
+            <div class="attach-count" id="attachCount">0 archivos</div>
+            <button type="button" class="btn btn-secondary" onclick="cerrarPanelAdjuntos()">Cerrar</button>
         </div>
     </div>
 
@@ -1040,6 +1304,11 @@
         };
         const oiTipoLabels = { 'muestreo_medicion': 'Muestreo y Medición', 'medicion': 'Solo Medición' };
         const oiComposicionLabels = { 'puntual': 'Puntual', 'compuesta': 'Compuesta' };
+        const muestraEstadoLabels = {
+            'pendiente': 'Pendiente',
+            'en_ejecucion': 'En ejecución',
+            'enviada': 'Enviada'
+        };
         const telefonosContacto = {
             'Viviana López': '+56 9 8765 4321',
             'Carlos Mendoza': '+56 9 7654 3210',
@@ -1124,6 +1393,7 @@
         let labMuestrasFecha = {};
         let labMuestrasHora = {};
         let labInspeccionPorGrupo = {};
+        let adjuntoSampleIdActual = '';
         let obsSampleIdActual = '';
         let terrainGrupoActualKey = '';
         let terrainGrupoActualLabel = '';
@@ -1214,6 +1484,30 @@
         function getReplicaCountByMuestra(muestra) {
             const grupoKey = getTerrenoGrupoKeyFromMuestra(muestra);
             return getMuestrasPorGrupo(grupoKey).length;
+        }
+
+        function tieneDatosMuestra(muestra) {
+            if (!muestra) return false;
+            const hasFechaHora = !!(labMuestrasFecha[muestra.id] || labMuestrasHora[muestra.id]);
+            const hasObs = !!String(muestra.observacionPunto || '').trim();
+            const hasAdjuntos = Array.isArray(muestra.adjuntos) && muestra.adjuntos.length > 0;
+            const hasTerreno = replicaTieneInspeccion(muestra) || replicaRegistroFinalizado(muestra);
+            return hasFechaHora || hasObs || hasAdjuntos || hasTerreno;
+        }
+
+        function getEstadoMuestraActual(muestra) {
+            if (!muestra) return 'pendiente';
+            if (muestra.estado === 'enviada') return 'enviada';
+            return tieneDatosMuestra(muestra) ? 'en_ejecucion' : 'pendiente';
+        }
+
+        function syncEstadoMuestra(muestra) {
+            if (!muestra) return;
+            muestra.estado = getEstadoMuestraActual(muestra);
+        }
+
+        function syncEstadoTodasLasMuestras() {
+            labMuestrasDetalladas.forEach(syncEstadoMuestra);
         }
 
         function isTerrenoValoresCompletos(parametros) {
@@ -1785,6 +2079,7 @@
             if (!sid) return;
             const muestraRef = labMuestrasDetalladas.find(m => m.id === sid);
             if (!muestraRef) return;
+            if (muestraRef.estado === 'enviada') return;
             terrainSampleActualId = sid;
             const point = String(muestraRef.punto || '').trim();
             const estrato = String(muestraRef.estrato || '').trim().toUpperCase();
@@ -1937,6 +2232,10 @@
                             codigo,
                             punto: p.punto || '-',
                             lugar: resolverLugarPunto(p.punto, p.lugar),
+                            matriz: p.matriz || '',
+                            plan: p.plan || '',
+                            laboratorio: p.laboratorio || '',
+                            estado: 'pendiente',
                             estrato: estratoLabel,
                             replica: replicaLabel,
                             observacionPunto: p.observacion || ''
@@ -2016,22 +2315,32 @@
             labMuestrasDetalladas.forEach(m => {
                 const mg = muestrasGuardadas.find(x => x.id === m.id);
                 if (mg && typeof mg.observacionPunto === 'string') m.observacionPunto = mg.observacionPunto;
+                if (mg && Array.isArray(mg.adjuntos)) m.adjuntos = mg.adjuntos.map(a => ({ ...a }));
+                if (mg && mg.estado) m.estado = mg.estado;
                 const fechaHora = (mg && (mg.fechaHoraMuestreo || toFechaHoraISO(mg.fechaMuestreo, mg.horaMuestreo)))
                     ? (mg.fechaHoraMuestreo || toFechaHoraISO(mg.fechaMuestreo, mg.horaMuestreo))
                     : fallbackFechaHora;
                 const split = splitFechaHora(fechaHora);
                 labMuestrasFecha[m.id] = split.fecha;
                 labMuestrasHora[m.id] = split.hora;
+                if (!Array.isArray(m.adjuntos)) m.adjuntos = [];
             });
+            syncEstadoTodasLasMuestras();
 
             const confirmadasPrevias = Array.isArray(guardado.muestrasConfirmadas) ? guardado.muestrasConfirmadas : [];
             labMuestrasConfirmadas = new Set(confirmadasPrevias.length ? confirmadasPrevias : labMuestrasDetalladas.map(m => m.id));
 
-            const inspectoresTxt = (oi.usuarios || [])
+            const inspectorFallback = 'Carlos Mendoza';
+            let inspectoresTxt = (oi.usuarios || [])
                 .filter(u => u.tipo === 'inspector' || /inspector/i.test(u.rol || ''))
                 .map(u => u.nombre)
-                .join(', ') || 'Sin asignar';
-            const hasInspector = inspectoresTxt !== 'Sin asignar';
+                .join(', ');
+            if (!inspectoresTxt) {
+                inspectoresTxt = inspectorFallback;
+                oi.usuarios = Array.isArray(oi.usuarios) ? oi.usuarios : [];
+                oi.usuarios.push({ rol: 'Inspector', nombre: inspectorFallback, tipo: 'inspector' });
+            }
+            const hasInspector = !!inspectoresTxt;
             if (hasInspector && (oi.estado === 'pendiente' || oi.estado === 'programada')) {
                 oi.estado = 'en_ejecucion';
                 try {
@@ -2064,8 +2373,6 @@
             setText('topOl', olTxt);
             setText('topProyecto', (navData && navData.proyecto && navData.proyecto.nombre) ? navData.proyecto.nombre : '-');
             setText('labHeadRecepcion', formatearFecha(oi.fecha));
-            setText('labHeadMatriz', matrizTxt);
-            setText('labHeadPlan', planTxt);
             setText('labHeadInspector', inspectoresTxt);
             labOiContext = {
                 codigo: oi.codigo || '-',
@@ -2113,9 +2420,10 @@
             const count = document.getElementById('labConfirmCount');
             const chkAll = document.getElementById('labCheckAll');
             const totalHead = document.getElementById('labHeadTotalMuestras');
+            syncEstadoTodasLasMuestras();
 
             if (!labMuestrasDetalladas.length) {
-                body.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#94a3b8;">No hay muestras para esta OI</td></tr>';
+                body.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#94a3b8;">No hay muestras para esta OI</td></tr>';
                 count.textContent = '0 / 0 confirmadas';
                 chkAll.checked = false;
                 totalHead.textContent = '0';
@@ -2124,8 +2432,8 @@
 
             body.innerHTML = labMuestrasDetalladas.map(m => `
                 <tr>
-                    <td><input type="checkbox" ${labMuestrasConfirmadas.has(m.id) ? 'checked' : ''} onchange="toggleLabMuestra('${esc(m.id)}', this.checked)"></td>
-                    <td class="sample-code">${esc(m.codigo)}</td>
+                    <td><input type="checkbox" ${labMuestrasConfirmadas.has(m.id) ? 'checked' : ''} ${m.estado === 'enviada' ? 'disabled' : ''} onchange="toggleLabMuestra('${esc(m.id)}', this.checked)"></td>
+                    <td class="sample-code"><span class="sample-code-wrap"><span>${esc(m.codigo)}</span><span class="sample-status-badge ${esc(m.estado || 'pendiente')}">${esc(muestraEstadoLabels[m.estado || 'pendiente'] || 'Pendiente')}</span></span></td>
                     <td class="sample-point">
                         <div class="sample-point-main">
                             <span>${esc(m.punto)}</span>
@@ -2136,14 +2444,22 @@
                         ${getReplicaCountByMuestra(m) > 1 ? `<div class="sample-point-shared"><i class="fa-solid fa-link"></i> Registro terreno independiente por replica: ${esc(getReplicaResumenByMuestra(m))}</div>` : ''}
                     </td>
                     <td>
-                        <div class="obs-cell">
-                            <button type="button" class="obs-btn ${m.observacionPunto ? 'has-note' : ''}" onclick="abrirObsModal('${esc(m.id)}')" title="${m.observacionPunto ? 'Editar comentario' : 'Agregar comentario'}"><i class="fa-solid fa-comment-dots"></i></button>
+                        <div class="sample-meta-stack">
+                            <div class="sample-meta-line"><span class="sample-meta-badge">${esc(m.matriz || '-')}</span></div>
+                            <div class="sample-meta-line"><span class="v">${esc(m.plan || '-')}</span></div>
+                            <div class="sample-meta-line lab-small"><span class="v">${esc(m.laboratorio || '-')}</span></div>
                         </div>
                     </td>
-                    <td><input type="date" value="${esc(labMuestrasFecha[m.id] || '')}" onchange="setLabMuestraFecha('${esc(m.id)}', this.value)"></td>
-                    <td><input type="time" value="${esc(labMuestrasHora[m.id] || '')}" onchange="setLabMuestraHora('${esc(m.id)}', this.value)"></td>
+                    <td><input type="date" value="${esc(labMuestrasFecha[m.id] || '')}" ${m.estado === 'enviada' ? 'disabled' : ''} onchange="setLabMuestraFecha('${esc(m.id)}', this.value)"></td>
+                    <td><input type="time" value="${esc(labMuestrasHora[m.id] || '')}" ${m.estado === 'enviada' ? 'disabled' : ''} onchange="setLabMuestraHora('${esc(m.id)}', this.value)"></td>
                     <td>
-                        <button type="button" class="point-terreno-btn ${replicaRegistroFinalizado(m) ? 'done' : (replicaTieneInspeccion(m) ? 'in-progress' : '')}" onclick="abrirPanelTerreno('${esc(m.id)}')" title="${replicaRegistroFinalizado(m) ? 'Registro terreno finalizado' : (replicaTieneInspeccion(m) ? 'Registro terreno en progreso' : 'Registro terreno pendiente')}"><i class="fa-solid fa-clipboard-check"></i></button>
+                        <div class="obs-cell">
+                            <button type="button" class="obs-btn ${m.observacionPunto ? 'has-note' : ''}" onclick="abrirAdjuntoMuestra('${esc(m.id)}')" title="${m.observacionPunto ? 'Editar comentario' : 'Agregar comentario'}"><i class="fa-solid fa-comment-dots"></i></button>
+                            <button type="button" class="obs-btn ${Array.isArray(m.adjuntos) && m.adjuntos.length ? 'has-files' : ''}" onclick="abrirAdjuntoMuestra('${esc(m.id)}')" title="Adjuntar archivo"><i class="fa-solid fa-paperclip"></i>${Array.isArray(m.adjuntos) && m.adjuntos.length ? `<span class="obs-btn-count">${m.adjuntos.length}</span>` : ''}</button>
+                        </div>
+                    </td>
+                    <td>
+                        <button type="button" class="point-terreno-btn ${replicaRegistroFinalizado(m) ? 'done' : (replicaTieneInspeccion(m) ? 'in-progress' : '')} ${m.estado === 'enviada' ? 'disabled' : ''}" onclick="abrirPanelTerreno('${esc(m.id)}')" title="${replicaRegistroFinalizado(m) ? 'Registro terreno finalizado' : (replicaTieneInspeccion(m) ? 'Registro terreno en progreso' : 'Registro terreno pendiente')}"><i class="fa-solid fa-clipboard-check"></i></button>
                     </td>
                 </tr>
             `).join('');
@@ -2155,28 +2471,40 @@
             totalHead.textContent = String(total);
         }
 
-        function setLabMuestraFecha(sampleId, value) { labMuestrasFecha[sampleId] = value || ''; }
-        function setLabMuestraHora(sampleId, value) { labMuestrasHora[sampleId] = value || ''; }
+        function setLabMuestraFecha(sampleId, value) {
+            const muestra = labMuestrasDetalladas.find(x => x.id === sampleId);
+            if (!muestra || muestra.estado === 'enviada') return;
+            labMuestrasFecha[sampleId] = value || '';
+            syncEstadoMuestra(muestra);
+            renderLabMuestras();
+        }
+        function setLabMuestraHora(sampleId, value) {
+            const muestra = labMuestrasDetalladas.find(x => x.id === sampleId);
+            if (!muestra || muestra.estado === 'enviada') return;
+            labMuestrasHora[sampleId] = value || '';
+            syncEstadoMuestra(muestra);
+            renderLabMuestras();
+        }
 
         function toggleLabMuestra(sampleId, checked) {
+            const muestra = labMuestrasDetalladas.find(x => x.id === sampleId);
+            if (!muestra || muestra.estado === 'enviada') return;
             if (checked) labMuestrasConfirmadas.add(sampleId);
             else labMuestrasConfirmadas.delete(sampleId);
             renderLabMuestras();
         }
 
         function toggleLabTodas(checked) {
-            if (checked) labMuestrasConfirmadas = new Set(labMuestrasDetalladas.map(m => m.id));
-            else labMuestrasConfirmadas = new Set();
+            if (checked) labMuestrasConfirmadas = new Set(labMuestrasDetalladas.filter(m => m.estado !== 'enviada').map(m => m.id));
+            else labMuestrasConfirmadas = new Set(Array.from(labMuestrasConfirmadas).filter(id => {
+                const muestra = labMuestrasDetalladas.find(m => m.id === id);
+                return muestra && muestra.estado === 'enviada';
+            }));
             renderLabMuestras();
         }
 
         function abrirObsModal(sampleId) {
-            const m = labMuestrasDetalladas.find(x => x.id === sampleId);
-            if (!m) return;
-            obsSampleIdActual = sampleId;
-            document.getElementById('obsTitulo').textContent = `${m.punto}${m.lugar ? ` · ${m.lugar}` : ''}`;
-            document.getElementById('obsTexto').value = m.observacionPunto || '';
-            document.getElementById('obsOverlay').classList.add('show');
+            abrirAdjuntoMuestra(sampleId);
         }
 
         function cerrarObsModal() {
@@ -2192,7 +2520,103 @@
             renderLabMuestras();
         }
 
-        function guardarEnvioLaboratorio() {
+        function renderPanelAdjuntos() {
+            const list = document.getElementById('attachList');
+            const count = document.getElementById('attachCount');
+            const label = document.getElementById('attachSampleLabel');
+            const obs = document.getElementById('attachObsTexto');
+            const uploadBtn = document.querySelector('label[for="attachFileInput"]');
+            const sample = labMuestrasDetalladas.find(x => x.id === adjuntoSampleIdActual);
+            if (!list || !count || !label || !sample) return;
+            const isReadOnly = sample.estado === 'enviada';
+
+            const total = Array.isArray(sample.adjuntos) ? sample.adjuntos.length : 0;
+            label.textContent = `${sample.codigo} · ${sample.punto}${sample.lugar ? ` · ${sample.lugar}` : ''}`;
+            count.textContent = `${total} archivo${total !== 1 ? 's' : ''}`;
+            if (obs) {
+                obs.value = sample.observacionPunto || '';
+                obs.disabled = isReadOnly;
+                obs.placeholder = isReadOnly ? 'Comentario en modo solo lectura' : 'Ingrese observación para este punto...';
+            }
+            if (uploadBtn) uploadBtn.classList.toggle('disabled', isReadOnly);
+
+            if (!total) {
+                list.innerHTML = '<div class="attach-empty">Sin archivos asociados a esta muestra</div>';
+                return;
+            }
+
+            list.innerHTML = sample.adjuntos.map((file, idx) => `
+                <div class="attach-item">
+                    <div class="attach-item-main">
+                        <div class="attach-item-name">${esc(file.name || 'Archivo sin nombre')}</div>
+                        <div class="attach-item-meta">${esc(file.type || 'Archivo')} · ${esc(file.sizeLabel || '-')}</div>
+                    </div>
+                    <button type="button" class="attach-remove ${isReadOnly ? 'disabled' : ''}" onclick="quitarAdjuntoMuestra(${idx})" title="Quitar archivo">✕</button>
+                </div>
+            `).join('');
+        }
+
+        function abrirAdjuntoMuestra(sampleId) {
+            const sample = labMuestrasDetalladas.find(x => x.id === sampleId);
+            if (!sample) return;
+            adjuntoSampleIdActual = sampleId;
+            renderPanelAdjuntos();
+            document.getElementById('attachOverlay').classList.add('show');
+            document.getElementById('attachPanel').classList.add('show');
+        }
+
+        function cerrarPanelAdjuntos() {
+            document.getElementById('attachPanel').classList.remove('show');
+            document.getElementById('attachOverlay').classList.remove('show');
+            adjuntoSampleIdActual = '';
+            const input = document.getElementById('attachFileInput');
+            if (input) input.value = '';
+        }
+
+        function formatearTamanoArchivo(bytes) {
+            const size = Number(bytes) || 0;
+            if (size >= 1024 * 1024) return `${(size / (1024 * 1024)).toFixed(1)} MB`;
+            if (size >= 1024) return `${Math.round(size / 1024)} KB`;
+            return `${size} B`;
+        }
+
+        function onChangeAdjuntosMuestra(files) {
+            const sample = labMuestrasDetalladas.find(x => x.id === adjuntoSampleIdActual);
+            if (!sample || sample.estado === 'enviada' || !files || !files.length) return;
+            sample.adjuntos = Array.isArray(sample.adjuntos) ? sample.adjuntos : [];
+            Array.from(files).forEach(file => {
+                sample.adjuntos.push({
+                    name: file.name || 'Archivo',
+                    type: file.type || 'Archivo',
+                    size: file.size || 0,
+                    sizeLabel: formatearTamanoArchivo(file.size || 0)
+                });
+            });
+            const input = document.getElementById('attachFileInput');
+            if (input) input.value = '';
+            syncEstadoMuestra(sample);
+            renderPanelAdjuntos();
+            renderLabMuestras();
+        }
+
+        function quitarAdjuntoMuestra(idx) {
+            const sample = labMuestrasDetalladas.find(x => x.id === adjuntoSampleIdActual);
+            if (!sample || sample.estado === 'enviada' || !Array.isArray(sample.adjuntos)) return;
+            sample.adjuntos.splice(idx, 1);
+            syncEstadoMuestra(sample);
+            renderPanelAdjuntos();
+            renderLabMuestras();
+        }
+
+        function actualizarObsAdjuntoActual(value) {
+            const sample = labMuestrasDetalladas.find(x => x.id === adjuntoSampleIdActual);
+            if (!sample || sample.estado === 'enviada') return;
+            sample.observacionPunto = (value || '').trim();
+            syncEstadoMuestra(sample);
+            renderLabMuestras();
+        }
+
+        function obtenerPayloadEnvioLaboratorio() {
             if (oiIndex < 0 || oiIndex >= ordenesInspeccion.length) return;
             const oi = ordenesInspeccion[oiIndex];
             const responsable = (document.getElementById('labRespMuestreo').value || '').trim();
@@ -2223,6 +2647,11 @@
                 codigo: m.codigo,
                 punto: m.punto,
                 lugar: m.lugar,
+                matriz: m.matriz || '',
+                plan: m.plan || '',
+                laboratorio: m.laboratorio || '',
+                adjuntos: Array.isArray(m.adjuntos) ? m.adjuntos.map(a => ({ ...a })) : [],
+                estado: getEstadoMuestraActual(m),
                 estrato: m.estrato,
                 replica: m.replica,
                 observacionPunto: m.observacionPunto || '',
@@ -2231,6 +2660,63 @@
                 horaMuestreo: labMuestrasHora[m.id] || '',
                 fechaHoraMuestreo: toFechaHoraISO(labMuestrasFecha[m.id], labMuestrasHora[m.id])
             }));
+
+            return {
+                oi,
+                responsable,
+                fechaTransporte,
+                horaTransporte,
+                observacionesTerreno,
+                muestras
+            };
+        }
+
+        function guardarEnvioLaboratorio() {
+            const payload = obtenerPayloadEnvioLaboratorio();
+            if (!payload) return;
+            const overlay = document.getElementById('sendConfirmOverlay');
+            const title = document.getElementById('sendConfirmTitle');
+            const text = document.getElementById('sendConfirmText');
+            const actions = document.getElementById('sendConfirmActions');
+            if (title) title.textContent = 'Confirmar envío';
+            if (text) text.textContent = `¿Confirma el envío de ${payload.oi.labIngreso && payload.oi.labIngreso.muestrasConfirmadas ? payload.oi.labIngreso.muestrasConfirmadas.length : payload.muestras.filter(m => m.confirmada).length} muestras al laboratorio?`;
+            if (actions) {
+                actions.innerHTML = `
+                    <button type="button" class="btn btn-secondary" onclick="cerrarConfirmacionEnvio()">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmarEnvioLaboratorio()">Confirmar envío</button>
+                `;
+            }
+            if (overlay) overlay.classList.add('show');
+        }
+
+        function cerrarConfirmacionEnvio() {
+            const overlay = document.getElementById('sendConfirmOverlay');
+            if (overlay) overlay.classList.remove('show');
+        }
+
+        function confirmarEnvioLaboratorio() {
+            const payload = obtenerPayloadEnvioLaboratorio();
+            if (!payload) {
+                cerrarConfirmacionEnvio();
+                return;
+            }
+            const { oi, responsable, fechaTransporte, horaTransporte, observacionesTerreno, muestras } = payload;
+            const enviadasIds = new Set(muestras.filter(m => m.confirmada).map(m => m.id));
+            const title = document.getElementById('sendConfirmTitle');
+            const text = document.getElementById('sendConfirmText');
+            const actions = document.getElementById('sendConfirmActions');
+            if (title) title.textContent = 'Enviando muestras';
+            if (text) text.textContent = 'Simulando envío al laboratorio...';
+            if (actions) actions.innerHTML = '';
+
+            labMuestrasDetalladas.forEach(m => {
+                if (enviadasIds.has(m.id)) m.estado = 'enviada';
+                else syncEstadoMuestra(m);
+            });
+            muestras.forEach(m => {
+                m.estado = enviadasIds.has(m.id) ? 'enviada' : (m.estado || 'pendiente');
+            });
+            renderLabMuestras();
 
             oi.labIngreso = {
                 responsableMuestreo: responsable,
@@ -2252,7 +2738,15 @@
                 // noop
             }
 
-            showToast(`Muestras preparadas para laboratorio (${oi.labIngreso.muestrasConfirmadas.length})`);
+            showToast('Enviando muestras al laboratorio...');
+            setTimeout(() => {
+                if (title) title.textContent = 'Envío confirmado';
+                if (text) text.textContent = `${oi.labIngreso.muestrasConfirmadas.length} muestras fueron enviadas correctamente al laboratorio.`;
+                if (actions) {
+                    actions.innerHTML = `<button type="button" class="btn btn-primary" onclick="cerrarConfirmacionEnvio()">Cerrar</button>`;
+                }
+                showToast(`Muestras enviadas al laboratorio (${oi.labIngreso.muestrasConfirmadas.length})`);
+            }, 500);
         }
 
         document.addEventListener('click', function(e) {
