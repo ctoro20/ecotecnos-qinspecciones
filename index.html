@@ -159,11 +159,6 @@
             margin: 0;
         }
 
-        .header-actions {
-            display: flex;
-            gap: 10px;
-        }
-
         .btn {
             padding: 10px 20px;
             border: none;
@@ -191,156 +186,331 @@
         }
 
         /* Section Card */
-        .section {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            overflow: hidden;
+        /* Filters and cards */
+        .listing-shell {
+            display: grid;
+            gap: 18px;
         }
 
-        .section-header {
-            background: #fafafa;
-            padding: 14px 20px;
-            font-weight: 600;
-            font-size: 14px;
-            color: #333;
-            border-bottom: 1px solid #eee;
+        .filter-panel {
+            background: linear-gradient(180deg, #f8f7f5 0%, #ffffff 100%);
+            border: 1px solid #ebe5de;
+            border-radius: 22px;
+            padding: 26px 26px 22px;
+            display: grid;
+            gap: 18px;
+            box-shadow: 0 12px 32px rgba(56, 42, 31, 0.06);
+        }
+
+        .filter-topbar {
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
         }
 
-        .section-body {
-            padding: 20px;
+        .filter-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
-        /* Search */
-        .search-bar {
+        .btn-filter-action {
+            min-height: 38px;
+            border-radius: 999px;
+            padding: 0 18px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.02em;
+        }
+
+        .btn-download {
+            background: #68cb95;
+            color: white;
+        }
+
+        .btn-download:hover {
+            background: #54bb82;
+        }
+
+        .btn-secondary {
+            background: #6c655d;
+            color: white;
+            border: none;
+        }
+
+        .btn-secondary:hover {
+            background: #5c554e;
+        }
+
+        .filter-form {
+            display: grid;
+            gap: 14px 20px;
+        }
+
+        .filter-row {
+            display: grid;
+            gap: 14px 20px;
+            align-items: end;
+        }
+
+        .filter-row-primary {
+            grid-template-columns: minmax(220px, 1.1fr) minmax(220px, 1.1fr) minmax(190px, 1fr) minmax(170px, 0.9fr) auto;
+        }
+
+        .filter-row-secondary {
+            grid-template-columns: minmax(220px, 1.1fr) 1fr;
+        }
+
+        .filter-row-secondary.is-collapsed {
+            display: none;
+        }
+
+        .filter-search-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .filter-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .filter-field label {
+            font-size: 14px;
+            color: #554d47;
+            font-weight: 500;
+        }
+
+        .search-input,
+        .filter-select {
             width: 100%;
+            min-height: 42px;
             padding: 10px 14px;
-            border: 1px solid #ddd;
+            border: 1px solid #ddd8d3;
             border-radius: 6px;
+            background: #fff;
+            color: #4b453f;
             font-size: 13px;
-            margin-bottom: 15px;
-            transition: border-color 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
-        .search-bar:focus {
+        .search-input:focus,
+        .filter-select:focus {
             outline: none;
             border-color: #ee8866;
+            box-shadow: 0 0 0 3px rgba(238, 136, 102, 0.14);
         }
 
-        /* Table */
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .filter-trigger-btn {
+            min-height: 36px;
+            border-radius: 999px;
+            padding: 0 18px;
+            border: none;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
         }
 
-        thead {
-            background-color: #f8f8f8;
-            border-bottom: 2px solid #e0e0e0;
+        .btn-search {
+            background: #ffc857;
+            color: white;
         }
 
-        th {
-            padding: 12px;
-            text-align: left;
+        .btn-search:hover {
+            background: #f0b63d;
+        }
+
+        .btn-toggle {
+            background: #ffc857;
+            color: white;
+        }
+
+        .btn-toggle:hover {
+            background: #f0b63d;
+        }
+
+        .btn-toggle i {
+            transition: transform 0.2s;
+        }
+
+        .btn-toggle.is-collapsed i {
+            transform: rotate(180deg);
+        }
+
+        .active-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 999px;
+            padding: 8px 12px;
+            background: #fff;
+            border: 1px solid #efd7cc;
+            color: #7b5b4f;
+            font-size: 12px;
             font-weight: 600;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .project-card {
+            background: white;
+            border: 1px solid #e6e0d8;
+            border-radius: 10px;
+            padding: 14px 18px;
+            display: grid;
+            gap: 10px;
+            box-shadow: 0 4px 14px rgba(63, 51, 39, 0.08);
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+        }
+
+        .project-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(63, 51, 39, 0.12);
+            border-color: #d8d0c7;
+        }
+
+        .project-card-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .project-card-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .project-code {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             font-size: 13px;
-            color: #333;
+            color: #51c7d4;
+            font-weight: 700;
         }
 
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #f0f0f0;
-            font-size: 13px;
-            color: #666;
+        .project-name {
+            font-size: 16px;
+            line-height: 1.2;
+            color: #1f2328;
+            font-weight: 700;
         }
 
-        tr:hover {
-            background-color: #f9f9f9;
+        .project-info-lines {
+            display: grid;
+            gap: 8px;
         }
 
-        .scrollable-table {
-            overflow-x: auto;
+        .project-info-line {
+            font-size: 12px;
+            line-height: 1.45;
+            color: #4c5561;
+        }
+
+        .project-info-line strong {
+            color: #49586b;
+        }
+
+        .project-detail-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .project-detail {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            color: #556171;
+        }
+
+        .project-detail strong {
+            color: #4f5965;
+            font-weight: 600;
         }
 
         /* Status Badges */
         .status-badge {
             display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
+            padding: 5px 11px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 700;
+            white-space: nowrap;
+            text-transform: uppercase;
         }
 
         .status-sin-iniciar {
-            background: #f5f5f5;
-            color: #666;
+            background: #2d96ed;
+            color: white;
         }
 
         .status-en-ejecucion {
-            background: #fff3e0;
-            color: #e65100;
+            background: #ff9800;
+            color: white;
         }
 
         .status-finalizado {
-            background: #e8f5e9;
-            color: #2e7d32;
+            background: #28a745;
+            color: white;
         }
 
-        /* Action Buttons */
-        .btn-small {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 500;
-            transition: all 0.2s;
+        .project-open-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            color: #51c7d4;
+            text-decoration: none;
+            transition: background-color 0.2s, color 0.2s;
         }
 
-        .btn-ver {
-            background: #e3f2fd;
-            color: #1565c0;
-        }
-
-        .btn-ver:hover {
-            background: #bbdefb;
-        }
-
-        .btn-calendario {
-            background: #fff3e0;
-            color: #e65100;
-        }
-
-        .btn-calendario:hover {
-            background: #ffe0b2;
-        }
-
-        .btn-editar {
-            background: #f5f5f5;
-            color: #555;
-        }
-
-        .btn-editar:hover {
-            background: #e0e0e0;
-        }
-
-        .actions-cell {
-            display: flex;
-            gap: 6px;
-        }
-
-        .td-code {
-            font-weight: 600;
-            color: #333;
+        .project-open-link:hover {
+            background: #e7f8fa;
+            color: #2eaebb;
         }
 
         /* Empty state */
         .empty-state {
             text-align: center;
-            padding: 40px 20px;
-            color: #999;
+            padding: 48px 20px;
+            color: #8f8a85;
+            background: linear-gradient(180deg, #fffdfa 0%, #faf7f4 100%);
+            border: 1px dashed #e6d7d0;
+            border-radius: 20px;
         }
 
         .empty-state span {
@@ -349,11 +519,62 @@
             margin-bottom: 10px;
         }
 
-        /* Project count */
-        .project-count {
-            font-size: 12px;
-            color: #999;
-            font-weight: 400;
+        @media (max-width: 1100px) {
+            .filter-row-primary,
+            .filter-row-secondary {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .filter-row-primary {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .filter-search-actions {
+                grid-column: 1 / -1;
+                justify-content: flex-start;
+            }
+        }
+
+        @media (max-width: 720px) {
+            body {
+                flex-direction: column;
+                height: auto;
+                min-height: 100vh;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .main-content {
+                overflow: visible;
+            }
+
+            .header {
+                padding: 14px 16px;
+            }
+
+            .content {
+                padding: 16px;
+            }
+
+            .filter-row-primary,
+            .filter-row-secondary,
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .project-card-header,
+            .filter-topbar,
+            .filter-search-actions {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .filter-panel {
+                padding: 18px;
+            }
+
         }
 
         /* Modal */
@@ -581,44 +802,78 @@
         </nav>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
         <div class="header">
             <h1>Gestión de Proyectos</h1>
-            <div class="header-actions">
-                <a href="ficha-proyecto-inicial.html" class="btn btn-primary" style="text-decoration:none;">+ Nuevo Proyecto</a>
-            </div>
         </div>
 
         <div class="content">
-            <div class="section">
-                <div class="section-header">
-                    LISTA DE PROYECTOS
-                    <span class="project-count" id="projectCount"></span>
+            <div class="listing-shell">
+                <div class="filter-panel">
+                    <div class="filter-topbar">
+                        <div class="filter-actions">
+                            <button class="btn btn-filter-action btn-download" id="downloadProjectsBtn" type="button">
+                                <i class="fa-solid fa-file-arrow-down"></i>
+                                Descargar proyectos
+                            </button>
+                        </div>
+                        <div class="filter-actions">
+                            <button class="btn btn-filter-action btn-secondary" type="button" onclick="window.location.href='ficha-proyecto-inicial.html'">
+                                <i class="fa-solid fa-plus"></i>
+                                Crear proyecto
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="filter-form">
+                        <div class="filter-row filter-row-primary">
+                            <div class="filter-field">
+                                <label for="clienteFilter">Cliente</label>
+                                <input type="text" class="search-input" id="clienteFilter" placeholder="Buscar por cliente">
+                            </div>
+                            <div class="filter-field">
+                                <label for="searchInput">Proyecto o Código</label>
+                                <input type="text" class="search-input" id="searchInput" placeholder="Nombre, código o descripción">
+                            </div>
+                            <div class="filter-field">
+                                <label for="responsableFilter">Responsable</label>
+                                <select class="filter-select" id="responsableFilter">
+                                    <option value="">Todos los responsables</option>
+                                </select>
+                            </div>
+                            <div class="filter-field">
+                                <label for="olFilter">OL</label>
+                                <input type="text" class="search-input" id="olFilter" placeholder="Buscar por OL">
+                            </div>
+                            <div class="filter-search-actions">
+                                <button class="filter-trigger-btn btn-search" id="searchProjectsBtn" type="button">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                    Buscar
+                                </button>
+                                <button class="filter-trigger-btn btn-toggle is-collapsed" id="toggleAdvancedFilters" type="button">
+                                    <span id="toggleAdvancedLabel">Mas</span>
+                                    <i class="fa-solid fa-angle-up"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="filter-row filter-row-secondary is-collapsed" id="advancedFiltersRow">
+                            <div class="filter-field">
+                                <label for="estadoFilter">Estado</label>
+                                <select class="filter-select" id="estadoFilter">
+                                    <option value="">Todos los estados</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="active-filters" id="activeFilters"></div>
                 </div>
-                <div class="section-body">
-                    <input type="text" class="search-bar" id="searchInput" placeholder="Buscar proyecto por nombre, código o cliente...">
-                    <div class="scrollable-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Código</th>
-                                    <th>Nombre del Proyecto</th>
-                                    <th>Cliente</th>
-                                    <th>OL</th>
-                                    <th>Responsable</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="projectTableBody">
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="empty-state" id="emptyState" style="display:none;">
-                        <span>📁</span>
-                        No se encontraron proyectos
-                    </div>
+
+                <div class="cards-grid" id="projectCardsContainer"></div>
+                <div class="empty-state" id="emptyState" style="display:none;">
+                    <span>📁</span>
+                    No se encontraron proyectos
                 </div>
             </div>
         </div>
@@ -768,53 +1023,197 @@
             'finalizado': 'Finalizado'
         };
 
-        // Renderizar tabla
-        function renderTabla(filtro) {
-            const tbody = document.getElementById('projectTableBody');
-            const emptyState = document.getElementById('emptyState');
-            const search = (filtro || '').toLowerCase();
+        const filtros = {
+            search: '',
+            estado: '',
+            cliente: '',
+            responsable: '',
+            ol: ''
+        };
 
-            const filtrados = proyectos.filter(p => {
-                if (!search) return true;
-                return p.nombre.toLowerCase().includes(search) ||
-                       p.codigo.toLowerCase().includes(search) ||
-                       p.cliente.toLowerCase().includes(search) ||
-                       p.ol.toLowerCase().includes(search) ||
-                       p.responsable.toLowerCase().includes(search);
+        function popularFiltroSelect(id, valores, placeholder) {
+            const select = document.getElementById(id);
+            const currentValue = select.value;
+            select.innerHTML = `<option value="">${placeholder}</option>`;
+
+            valores.forEach(valor => {
+                const option = document.createElement('option');
+                option.value = valor;
+                option.textContent = id === 'estadoFilter' ? estadoLabels[valor] : valor;
+                select.appendChild(option);
             });
 
-            document.getElementById('projectCount').textContent = `(${filtrados.length} de ${proyectos.length})`;
+            if (valores.includes(currentValue)) {
+                select.value = currentValue;
+            }
+        }
+
+        function poblarFiltros() {
+            popularFiltroSelect('estadoFilter', Object.keys(estadoLabels), 'Todos los estados');
+            popularFiltroSelect('responsableFilter', [...new Set(proyectos.map(p => p.responsable).filter(Boolean))].sort(), 'Todos los responsables');
+        }
+
+        function getProyectosFiltrados() {
+            return proyectos.filter(p => {
+                const matchesSearch = !filtros.search || [
+                    p.nombre,
+                    p.codigo,
+                    p.cliente,
+                    p.ol,
+                    p.responsable,
+                    p.descripcion
+                ].some(valor => (valor || '').toLowerCase().includes(filtros.search));
+
+                const matchesEstado = !filtros.estado || p.estado === filtros.estado;
+                const matchesCliente = !filtros.cliente || (p.cliente || '').toLowerCase().includes(filtros.cliente);
+                const matchesResponsable = !filtros.responsable || p.responsable === filtros.responsable;
+                const matchesOl = !filtros.ol || (p.ol || '').toLowerCase().includes(filtros.ol);
+
+                return matchesSearch && matchesEstado && matchesCliente && matchesResponsable && matchesOl;
+            });
+        }
+
+        function renderFiltrosActivos() {
+            const activeFilters = document.getElementById('activeFilters');
+            const chips = [];
+
+            if (filtros.estado) chips.push(`Estado: ${estadoLabels[filtros.estado]}`);
+            if (filtros.responsable) chips.push(`Responsable: ${filtros.responsable}`);
+
+            activeFilters.innerHTML = chips.map(chip => `<span class="filter-chip">${chip}</span>`).join('');
+            activeFilters.style.display = chips.length ? 'flex' : 'none';
+        }
+
+        // Renderizar proyectos
+        function renderTabla() {
+            const container = document.getElementById('projectCardsContainer');
+            const emptyState = document.getElementById('emptyState');
+            const filtrados = getProyectosFiltrados();
+
+            renderFiltrosActivos();
 
             if (filtrados.length === 0) {
-                tbody.innerHTML = '';
+                container.innerHTML = '';
                 emptyState.style.display = 'block';
                 return;
             }
 
             emptyState.style.display = 'none';
 
-            tbody.innerHTML = filtrados.map(p => `
-                <tr>
-                    <td class="td-code">${p.codigo}</td>
-                    <td>${p.nombre}</td>
-                    <td>${p.cliente}</td>
-                    <td>${p.ol}</td>
-                    <td>${p.responsable}</td>
-                    <td><span class="status-badge status-${p.estado}">${estadoLabels[p.estado]}</span></td>
-                    <td>
-                        <div class="actions-cell">
-                            <button class="btn-small btn-ver" onclick="verFicha('${p.codigo}')">Ficha</button>
-                            <button class="btn-small btn-calendario" onclick="verCalendario('${p.codigo}')">Calendario</button>
-                            <button class="btn-small btn-editar" onclick="editarProyecto('${p.codigo}')">Editar</button>
+            container.innerHTML = filtrados.map(p => `
+                <article class="project-card">
+                    <div class="project-card-header">
+                        <div class="project-card-title">
+                            <a class="project-open-link" href="javascript:void(0)" onclick="verFicha('${p.codigo}')" aria-label="Ver detalle del proyecto ${p.codigo}">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </a>
+                            <h3 class="project-name">Proyecto ${p.codigo.replace('SGS-', '')}</h3>
                         </div>
-                    </td>
-                </tr>
+                        <span class="status-badge status-${p.estado}">${estadoLabels[p.estado]}</span>
+                    </div>
+
+                    <div class="project-info-lines">
+                        <div class="project-info-line">
+                            <strong>OL:</strong> ${p.ol || 'Sin OL'} <strong>Cliente:</strong> ${p.cliente}
+                        </div>
+                        <div class="project-detail-row">
+                            <span class="project-detail"><i class="fa-solid fa-diagram-project"></i><strong>Proyecto:</strong> ${p.nombre}</span>
+                            <span class="project-detail"><i class="fa-solid fa-user-gear"></i><strong>Responsable:</strong> ${p.responsable || 'Sin responsable'}</span>
+                            <span class="project-detail"><i class="fa-regular fa-file-lines"></i><strong>Codigo:</strong> ${p.codigo}</span>
+                        </div>
+                    </div>
+                </article>
             `).join('');
         }
 
         // Búsqueda
         document.getElementById('searchInput').addEventListener('input', function() {
-            renderTabla(this.value);
+            filtros.search = this.value.trim().toLowerCase();
+            renderTabla();
+        });
+
+        document.getElementById('estadoFilter').addEventListener('change', function() {
+            filtros.estado = this.value;
+            renderTabla();
+        });
+
+        document.getElementById('clienteFilter').addEventListener('input', function() {
+            filtros.cliente = this.value.trim().toLowerCase();
+            renderTabla();
+        });
+
+        document.getElementById('responsableFilter').addEventListener('change', function() {
+            filtros.responsable = this.value;
+            renderTabla();
+        });
+
+        document.getElementById('olFilter').addEventListener('input', function() {
+            filtros.ol = this.value.trim().toLowerCase();
+            renderTabla();
+        });
+
+        function limpiarFiltros() {
+            filtros.search = '';
+            filtros.estado = '';
+            filtros.cliente = '';
+            filtros.responsable = '';
+            filtros.ol = '';
+
+            document.getElementById('searchInput').value = '';
+            document.getElementById('estadoFilter').value = '';
+            document.getElementById('clienteFilter').value = '';
+            document.getElementById('responsableFilter').value = '';
+            document.getElementById('olFilter').value = '';
+
+            renderTabla();
+        }
+
+        document.getElementById('searchProjectsBtn').addEventListener('click', function() {
+            const hayFiltrosActivos = filtros.search || filtros.estado || filtros.cliente || filtros.responsable || filtros.ol;
+            const searchValue = document.getElementById('searchInput').value.trim().toLowerCase();
+
+            if (!searchValue && !hayFiltrosActivos) {
+                limpiarFiltros();
+                return;
+            }
+
+            filtros.search = searchValue;
+            renderTabla();
+        });
+
+        document.getElementById('downloadProjectsBtn').addEventListener('click', function() {
+            const proyectosFiltrados = getProyectosFiltrados();
+            const encabezados = ['Codigo', 'Nombre', 'Cliente', 'OL', 'Responsable', 'Estado', 'Descripcion'];
+            const filas = proyectosFiltrados.map(p => [
+                p.codigo,
+                p.nombre,
+                p.cliente,
+                p.ol,
+                p.responsable,
+                estadoLabels[p.estado],
+                (p.descripcion || '').replace(/\r?\n/g, ' ')
+            ]);
+
+            const csv = [encabezados, ...filas]
+                .map(fila => fila.map(valor => `"${String(valor || '').replace(/"/g, '""')}"`).join(','))
+                .join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'proyectos-filtrados.csv';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        });
+
+        document.getElementById('toggleAdvancedFilters').addEventListener('click', function() {
+            const advancedRow = document.getElementById('advancedFiltersRow');
+            const isCollapsed = advancedRow.classList.toggle('is-collapsed');
+            this.classList.toggle('is-collapsed', isCollapsed);
+            document.getElementById('toggleAdvancedLabel').textContent = isCollapsed ? 'Mas' : 'Menos';
         });
 
         // Poblar combo de clientes
@@ -931,7 +1330,8 @@
             });
 
             cerrarModal();
-            renderTabla(document.getElementById('searchInput').value);
+            poblarFiltros();
+            renderTabla();
             mostrarToast(`Proyecto "${nombre}" creado exitosamente`);
         }
 
@@ -987,7 +1387,8 @@
                 proyecto.descripcion = document.getElementById('inputDescripcion').value.trim();
 
                 cerrarModal();
-                renderTabla(document.getElementById('searchInput').value);
+                poblarFiltros();
+                renderTabla();
                 mostrarToast('Proyecto actualizado');
             };
         }
@@ -1010,7 +1411,8 @@
             if (e.target === this) cerrarModal();
         });
 
-        // Renderizar al cargar
+        // Inicializar filtros y renderizar
+        poblarFiltros();
         renderTabla();
     </script>
 </body>

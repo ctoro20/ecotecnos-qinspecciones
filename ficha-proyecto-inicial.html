@@ -350,6 +350,23 @@
             grid-column: 1 / -1;
         }
 
+        .form-composite-box {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background: #fafafa;
+            padding: 14px;
+        }
+
+        .form-composite-box .panel-section-title {
+            margin-bottom: 10px;
+        }
+
+        .form-composite-grid {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr;
+            gap: 14px 16px;
+        }
+
         .etfa-info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -401,6 +418,12 @@
         .form-group select:disabled {
             background: #f5f5f5;
             color: #999;
+        }
+
+        @media (max-width: 900px) {
+            .form-composite-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* Form actions */
@@ -1086,6 +1109,18 @@
             vertical-align: middle;
         }
 
+        .muestreo-origin-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .muestreo-origin-date {
+            font-size: 11px;
+            color: #9aa1aa;
+            line-height: 1.2;
+        }
+
         .muestreo-table tbody tr:hover {
             background: #fafafa;
         }
@@ -1648,6 +1683,12 @@
         }
 
         @media (max-width: 920px) {
+            .panel-lateral.campana-panel-lateral {
+                right: -100vw;
+                width: 100vw;
+                max-width: 100vw;
+            }
+
             .lab-panel-lateral {
                 width: 100vw;
                 max-width: 100vw;
@@ -1934,6 +1975,64 @@
             background: #ecfdf5;
         }
 
+        .campana-cotizacion-picker {
+            display: grid;
+            gap: 10px;
+        }
+
+        .campana-cotizacion-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .campana-cotizacion-add {
+            height: 40px;
+            padding: 0 14px;
+            border: none;
+            border-radius: 8px;
+            background: #ee8866;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .campana-cotizacion-add:hover {
+            background: #e67550;
+        }
+
+        .campana-cotizacion-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-height: 30px;
+        }
+
+        .campana-cotizacion-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: #fff3e0;
+            color: #b45309;
+            border: 1px solid #f6d5a8;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .campana-cotizacion-chip button {
+            border: none;
+            background: transparent;
+            color: inherit;
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1;
+            padding: 0;
+        }
+
         .oi-campana-chip .count {
             font-size: 11px;
             color: #64748b;
@@ -1983,8 +2082,254 @@
 
         .campana-puntos-count {
             font-size: 12px;
-            color: #64748b;
+            color: #ee8866;
             font-weight: 600;
+        }
+
+        .campana-puntos-simple-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 16px;
+            margin-top: 10px;
+            min-width: 0;
+        }
+
+        .campana-puntos-panel {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            background: #fff;
+            padding: 0;
+            display: grid;
+            gap: 12px;
+            align-content: start;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .campana-puntos-panel-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            border-bottom: 1px solid #eef2f6;
+            min-height: 52px;
+        }
+
+        .campana-puntos-panel-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #334155;
+        }
+
+        .campana-puntos-search {
+            display: block;
+            width: calc(100% - 28px);
+            min-width: 0;
+            padding: 10px 12px;
+            border: 1px solid #d7dce2;
+            border-radius: 8px;
+            font-size: 13px;
+            margin: 0 14px;
+        }
+
+        .campana-puntos-available-list {
+            display: grid;
+            gap: 10px;
+            padding: 0 14px 14px;
+        }
+
+        .campana-punto-card {
+            border: 1px solid #edf1f5;
+            border-radius: 10px;
+            background: #fafcfe;
+            overflow: hidden;
+        }
+
+        .campana-punto-card summary {
+            list-style: none;
+        }
+
+        .campana-punto-card summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .campana-punto-card-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+            padding: 12px;
+            cursor: pointer;
+        }
+
+        .campana-punto-card-main {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .campana-punto-origin-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 12px;
+        }
+
+        .campana-punto-origin-icon.proyecto {
+            background: #ecfdf5;
+            color: #15803d;
+        }
+
+        .campana-punto-origin-icon.cotizacion {
+            background: #fff7ed;
+            color: #c2410c;
+        }
+
+        .campana-punto-card-text {
+            min-width: 0;
+            display: grid;
+            gap: 4px;
+        }
+
+        .campana-punto-card-tools {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .campana-punto-expand {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            transition: transform 0.2s ease;
+        }
+
+        .campana-punto-card[open] .campana-punto-expand,
+        .campana-punto-associated[open] .campana-punto-expand {
+            transform: rotate(180deg);
+        }
+
+        .campana-punto-card-action {
+            padding: 4px 8px;
+            border: 1px solid #d8dee7;
+            border-radius: 999px;
+            background: white;
+            color: #475569;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .campana-punto-card-action:hover {
+            border-color: #ee8866;
+            color: #ee8866;
+        }
+
+        .campana-punto-card-body {
+            padding: 0 12px 12px 50px;
+            display: grid;
+            gap: 8px;
+            border-top: 1px solid #eef2f6;
+        }
+
+        .campana-punto-card-section {
+            display: grid;
+            gap: 8px;
+            padding-top: 2px;
+        }
+
+        .campana-punto-card-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 10px;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .campana-punto-card-meta strong {
+            color: #475569;
+        }
+
+        .campana-punto-associated {
+            border: 1px solid #edf1f5;
+            border-radius: 10px;
+            background: #fff;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .campana-punto-associated summary {
+            list-style: none;
+        }
+
+        .campana-punto-associated summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .campana-punto-associated-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 12px;
+            cursor: pointer;
+        }
+
+        .campana-punto-associated-main {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .campana-punto-associated-text {
+            min-width: 0;
+            display: grid;
+            gap: 4px;
+        }
+
+        .campana-punto-associated-tools {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .campana-punto-associated-remove {
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+            border-radius: 50%;
+        }
+
+        .campana-punto-associated-remove:hover {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .campana-punto-associated-body {
+            padding: 0 12px 12px 48px;
+            display: grid;
+            gap: 10px;
+            border-top: 1px solid #eef2f6;
         }
 
         .campana-mini-btn {
@@ -2391,6 +2736,16 @@
         }
 
         .panel-lateral.show {
+            right: 0;
+        }
+
+        .panel-lateral.campana-panel-lateral {
+            right: -760px;
+            width: 760px;
+            max-width: calc(100vw - 48px);
+        }
+
+        .panel-lateral.campana-panel-lateral.show {
             right: 0;
         }
 
@@ -3300,8 +3655,12 @@
                                 <input type="text" id="inputNombre" placeholder="Nombre descriptivo del proyecto">
                             </div>
                             <div class="form-group">
-                                <label for="inputCodigo">Código</label>
-                                <input type="text" id="inputCodigo" placeholder="Ej: SGS-2026-005">
+                                <label for="inputCodigo">Código del Proyecto</label>
+                                <input type="text" id="inputCodigo" placeholder="Generado automáticamente por el sistema" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputCodigoCliente">Código Cliente del Proyecto</label>
+                                <input type="text" id="inputCodigoCliente" placeholder="Ej: CHQ-MA-AMB-2026">
                             </div>
                             <div class="form-group">
                                 <label for="inputResponsable">Responsable</label>
@@ -3309,12 +3668,31 @@
                                     <option value="">Seleccione responsable...</option>
                                 </select>
                             </div>
+                            <div class="form-group">
+                                <label for="inputFechaCreacionProyecto">Fecha de Creación del Proyecto</label>
+                                <input type="date" id="inputFechaCreacionProyecto" readonly>
+                            </div>
+                            <div class="form-group full-width">
+                                <div class="form-composite-box">
+                                    <label class="panel-section-title">Datos de Cotización de Origen</label>
+                                    <div class="form-composite-grid">
+                                        <div class="form-group">
+                                            <label for="inputCotizacionOrigen">Cotización</label>
+                                            <input type="text" id="inputCotizacionOrigen" placeholder="Ej: COT-2026-001">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputFechaCotizacionOrigen">Fecha de Cotización</label>
+                                            <input type="date" id="inputFechaCotizacionOrigen">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group full-width">
                                 <label for="inputDescripcion">Descripción</label>
                                 <textarea id="inputDescripcion" placeholder="Breve descripción del proyecto y sus objetivos..."></textarea>
                             </div>
                             <div class="form-group full-width">
-                                <label class="panel-section-title">Proyecto ETFA</label>
+                                <label class="panel-section-title">Datos ETFA del Proyecto</label>
                                 <div class="etfa-info-grid">
                                     <div class="form-group">
                                         <label for="inputEtfaActividadFuente">Proyecto Actividad o Fuente</label>
@@ -3344,7 +3722,6 @@
                             </div>
                         </div>
                         <div class="form-actions">
-                            <button class="btn btn-secondary" onclick="limpiarFormulario()">Limpiar</button>
                             <button class="btn btn-primary" id="btnGuardar" onclick="guardarProyecto()">Crear Proyecto</button>
                         </div>
                     </div>
@@ -3363,11 +3740,14 @@
                                     <th>Nombre del Punto Muestreo/Estación</th>
                                     <th>Lugar de Muestreo</th>
                                     <th>Matriz</th>
-                                    <th>Latitud</th>
-                                    <th>Longitud</th>
+                                    <th>Este</th>
+                                    <th>Norte</th>
+                                    <th>Huso UTM</th>
+                                    <th>Datum</th>
                                     <th class="col-input">Estratos</th>
                                     <th class="col-input">Réplicas</th>
                                     <th class="col-input">Muestras</th>
+                                    <th>Origen</th>
                                     <th class="col-action">Acción</th>
                                 </tr>
                             </thead>
@@ -3579,12 +3959,22 @@
                 </div>
                 <div style="display:flex; gap:12px;">
                     <div class="form-group" style="flex:1;">
-                        <label>Latitud</label>
-                        <input type="text" id="newLatitud" placeholder="Ej: -33.4569">
+                        <label>Este</label>
+                        <input type="text" id="newEste" placeholder="Ej: 365432">
                     </div>
                     <div class="form-group" style="flex:1;">
-                        <label>Longitud</label>
-                        <input type="text" id="newLongitud" placeholder="Ej: -70.6483">
+                        <label>Norte</label>
+                        <input type="text" id="newNorte" placeholder="Ej: 7421890">
+                    </div>
+                </div>
+                <div style="display:flex; gap:12px;">
+                    <div class="form-group" style="flex:1;">
+                        <label>Huso UTM</label>
+                        <input type="text" id="newHuso" placeholder="Ej: 19S">
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label>Datum</label>
+                        <input type="text" id="newDatum" placeholder="Ej: WGS84">
                     </div>
                 </div>
             </div>
@@ -3633,10 +4023,6 @@
                     <label for="campanaNombre">Nombre de campaña</label>
                     <input type="text" id="campanaNombre" placeholder="Ej: Campaña febrero 2026">
                 </div>
-                <div class="form-group full">
-                    <label for="campanaCotizacion">Cotización asociada</label>
-                    <select id="campanaCotizacion"></select>
-                </div>
                 <div class="form-group">
                     <label for="campanaInicio">Fecha inicio</label>
                     <input type="date" id="campanaInicio">
@@ -3650,39 +4036,40 @@
                     <textarea id="campanaDescripcion" placeholder="Descripción breve de la campaña..."></textarea>
                 </div>
                 <div class="form-group full">
+                    <label for="campanaCotizacion">Cotizaciones asociadas</label>
+                    <div class="campana-cotizacion-picker">
+                        <div class="campana-cotizacion-row">
+                            <select id="campanaCotizacion"></select>
+                            <button type="button" class="campana-cotizacion-add" onclick="agregarCotizacionCampana()">Agregar</button>
+                        </div>
+                        <div class="campana-cotizacion-chips" id="campanaCotizacionChips"></div>
+                    </div>
+                    <div class="field-help">Seleccione una cotización y agréguela a la campaña.</div>
+                </div>
+                <div class="form-group full">
                     <label>Puntos de muestreo/estaciones de la campaña</label>
-                    <button type="button" class="btn-abrir-form" id="btnAbrirFormMuestrasCampana" onclick="toggleCampanaAddMuestrasForm(true)">
-                        <span class="ico">+</span>
-                        Agregar muestras
-                    </button>
-
-                    <div class="add-muestras-form" id="addMuestrasFormCampana">
-                        <div class="form-title-bar">
-                            <span>Agregar muestras</span>
-                            <button type="button" onclick="toggleCampanaAddMuestrasForm(false)" title="Cerrar">✕</button>
-                        </div>
-                        <div class="form-inner">
-                            <div class="form-row">
-                                <div class="form-field">
-                                    <label>Puntos de muestreo</label>
-                                    <div class="puntos-toolbar">
-                                        <input type="text" id="campanaFormPuntosSearch" class="puntos-search-input" placeholder="Buscar por código o lugar..." oninput="setFiltroCampanaPuntos(this.value)">
-                                    </div>
-                                    <div class="puntos-selection-info" id="campanaFormPuntosInfo">0 seleccionados</div>
-                                    <div class="puntos-check-list modern" id="campanaFormPuntosChecklist"></div>
-                                    <div class="field-help">Los estratos y réplicas se tomarán desde cada punto del proyecto.</div>
-                                </div>
+                    <div class="field-help">Puede usar puntos ya cargados al proyecto o migrar directamente puntos desde las cotizaciones asociadas.</div>
+                    <div class="campana-puntos-simple-grid">
+                        <div class="campana-puntos-panel">
+                            <div class="campana-puntos-panel-head">
+                                <span class="campana-puntos-panel-title">Puntos disponibles</span>
+                                <span class="campana-puntos-count" id="campanaDisponiblesCount">0 puntos</span>
                             </div>
-                            <button type="button" class="btn-agregar-muestras" onclick="agregarPuntosCampanaDesdeForm()">Agregar muestras seleccionadas</button>
+                            <input type="text" id="campanaFormPuntosSearch" class="campana-puntos-search" placeholder="Buscar por punto, lugar, matriz u origen..." oninput="setFiltroCampanaPuntos(this.value)">
+                            <div class="campana-puntos-available-list" id="campanaDisponiblesList">
+                                <div class="puntos-empty-msg">Seleccione cotizaciones para ver puntos disponibles.</div>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="puntos-list-header">
-                        <span class="panel-section-title">Puntos asignados</span>
-                        <span class="puntos-list-count" id="campanaPuntosAsignadosCount">0 puntos</span>
-                    </div>
-                    <div id="campanaPuntosListContainer">
-                        <div class="puntos-empty-msg">Sin puntos asignados</div>
+                        <div class="campana-puntos-panel">
+                            <div class="campana-puntos-panel-head">
+                                <span class="campana-puntos-panel-title">Puntos asociados a la campaña</span>
+                                <span class="campana-puntos-count" id="campanaPuntosAsignadosCount">0 puntos</span>
+                            </div>
+                            <div id="campanaPuntosListContainer" style="padding: 0 14px 14px;">
+                                <div class="puntos-empty-msg">Sin puntos asignados</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -4029,6 +4416,44 @@
         const proyectoResponsableParam = urlParams.get('responsable');
         const proyectoNombreParam = urlParams.get('nombre');
         const proyectoTabParam = urlParams.get('tab');
+        const proyectoEjemploEtfa = {
+            codigoCliente: 'CHQ-MA-AMB-2026',
+            fechaCreacionProyecto: '2026-03-19',
+            cotizacionOrigen: 'COT-2026-001',
+            fechaCotizacionOrigen: '2026-01-12',
+            actividadFuente: 'Monitoreo Ambiental Chuquicamata',
+            instrumento: 'RCA N° 010-2012',
+            titular: 'Corp Nacional del Cobre de Chile',
+            rutTitular: '61.704.000-K',
+            representante: 'Juan Pablo Arancibia',
+            rutRrll: '16.905.805-9'
+        };
+
+        function generarCodigoProyecto() {
+            if (proyectoCodigo) return proyectoCodigo;
+            const year = new Date().getFullYear();
+            return `SGS-${year}-001`;
+        }
+
+        function aplicarPrefillEtfa() {
+            const defaults = {
+                inputCodigoCliente: proyectoEjemploEtfa.codigoCliente,
+                inputFechaCreacionProyecto: proyectoEjemploEtfa.fechaCreacionProyecto,
+                inputCotizacionOrigen: proyectoEjemploEtfa.cotizacionOrigen,
+                inputFechaCotizacionOrigen: proyectoEjemploEtfa.fechaCotizacionOrigen,
+                inputEtfaActividadFuente: proyectoEjemploEtfa.actividadFuente,
+                inputEtfaInstrumento: proyectoEjemploEtfa.instrumento,
+                inputEtfaTitular: proyectoEjemploEtfa.titular,
+                inputEtfaRutTitular: proyectoEjemploEtfa.rutTitular,
+                inputEtfaRepresentante: proyectoEjemploEtfa.representante,
+                inputEtfaRutRrll: proyectoEjemploEtfa.rutRrll
+            };
+
+            Object.entries(defaults).forEach(([id, value]) => {
+                const input = document.getElementById(id);
+                if (input && !input.value) input.value = value;
+            });
+        }
 
         // ==========================================
         // Inicialización de combos
@@ -4081,7 +4506,9 @@
         // Inicializar
         poblarComboClientes();
         poblarComboResponsables();
+        document.getElementById('inputCodigo').value = generarCodigoProyecto();
         precargarProyectoDesdeURL();
+        aplicarPrefillEtfa();
 
         function precargarProyectoDesdeURL() {
             if (!proyectoCodigo && !proyectoClienteParam && !proyectoOLParam) return;
@@ -4091,6 +4518,10 @@
             const respSel = document.getElementById('inputResponsable');
             const nombreInp = document.getElementById('inputNombre');
             const codigoInp = document.getElementById('inputCodigo');
+            const codigoClienteInp = document.getElementById('inputCodigoCliente');
+            const fechaCreacionInp = document.getElementById('inputFechaCreacionProyecto');
+            const cotizacionInp = document.getElementById('inputCotizacionOrigen');
+            const fechaCotizacionInp = document.getElementById('inputFechaCotizacionOrigen');
 
             if (proyectoClienteParam) {
                 clienteSel.value = proyectoClienteParam;
@@ -4107,7 +4538,11 @@
             if (proyectoOLParam) olSel.value = proyectoOLParam;
             if (proyectoResponsableParam) respSel.value = proyectoResponsableParam;
             if (proyectoNombreParam) nombreInp.value = proyectoNombreParam;
-            if (proyectoCodigo) codigoInp.value = proyectoCodigo;
+            codigoInp.value = generarCodigoProyecto();
+            if (!codigoClienteInp.value) codigoClienteInp.value = proyectoEjemploEtfa.codigoCliente;
+            if (!fechaCreacionInp.value) fechaCreacionInp.value = proyectoEjemploEtfa.fechaCreacionProyecto;
+            if (!cotizacionInp.value) cotizacionInp.value = proyectoEjemploEtfa.cotizacionOrigen;
+            if (!fechaCotizacionInp.value) fechaCotizacionInp.value = proyectoEjemploEtfa.fechaCotizacionOrigen;
 
             modoEdicion = true;
             document.getElementById('headerTitle').textContent = 'Ficha Proyecto';
@@ -4165,9 +4600,9 @@
         function actualizarHeaderCampanaActiva() {
             const el = document.getElementById('headerCampanaActiva');
             if (!el) return;
-            const activa = (campanas || []).find(c => c.activa);
-            if (activa && activa.nombre) {
-                el.textContent = activa.nombre;
+            const activas = (campanas || []).filter(c => c.activa && c.nombre);
+            if (activas.length) {
+                el.textContent = activas.map(c => c.nombre).join(', ');
                 el.classList.remove('empty');
             } else {
                 el.textContent = 'Sin campaña activa';
@@ -4220,14 +4655,27 @@
         // CAMPAÑAS
         // ==========================================
         const cotizacionesCampana = ['COT-2026-001', 'COT-2026-002', 'COT-2026-003'];
+        const puntosCotizacionCatalogo = {
+            'COT-2026-001': [
+                { estacion: 'EST-01', lugar: 'Descarga principal', matriz: 'AGUA_SUPERFICIAL', este: '365432', norte: '7421890', huso: '19S', datum: 'WGS84', estratos: 2, replicas: 2 },
+                { estacion: 'EST-04', lugar: 'Canal descarga sur', matriz: 'AGUA_SUPERFICIAL', este: '366220', norte: '7421601', huso: '19S', datum: 'WGS84', estratos: 1, replicas: 2 }
+            ],
+            'COT-2026-002': [
+                { estacion: 'EST-02', lugar: 'Canal norte', matriz: 'AGUA_SUPERFICIAL', este: '365780', norte: '7422144', huso: '19S', datum: 'WGS84', estratos: 2, replicas: 1 },
+                { estacion: 'EST-05', lugar: 'Pozo control', matriz: 'AGUA_SUBTERRANEA', este: '366510', norte: '7422310', huso: '19S', datum: 'WGS84', estratos: 1, replicas: 1 }
+            ],
+            'COT-2026-003': [
+                { estacion: 'EST-06', lugar: 'Estación perimetral', matriz: 'AIRE', este: '364990', norte: '7423055', huso: '19S', datum: 'WGS84', estratos: 1, replicas: 3 }
+            ]
+        };
+        let campanaCotizacionesSeleccionadas = [];
         let campanaPanelPuntos = [];
         let campanaFormPuntosFiltro = '';
-        let campanaFormPuntosSeleccionados = new Set();
         var campanas = [
             {
                 id: 'CAMP-001',
                 nombre: 'Campaña febrero 2026',
-                cotizacion: 'COT-2026-001',
+                cotizaciones: ['COT-2026-001', 'COT-2026-002'],
                 fechaInicio: '2026-02-01',
                 fechaTermino: '2026-02-28',
                 descripcion: 'Campaña mensual de seguimiento ambiental',
@@ -4237,7 +4685,7 @@
             {
                 id: 'CAMP-002',
                 nombre: 'Campaña cierre mes',
-                cotizacion: 'COT-2026-002',
+                cotizaciones: ['COT-2026-002'],
                 fechaInicio: '2026-02-20',
                 fechaTermino: '2026-02-29',
                 descripcion: 'Campaña de cierre y verificación de muestras',
@@ -4245,6 +4693,46 @@
                 oiAsignadas: ['OI-2026-002']
             }
         ];
+
+        function normalizarCotizacionesCampana(value) {
+            if (Array.isArray(value)) return value.filter(Boolean);
+            if (!value) return [];
+            return [value].filter(Boolean);
+        }
+
+        function getCotizacionesSeleccionadasCampana() {
+            return [...campanaCotizacionesSeleccionadas];
+        }
+
+        function renderCampanaCotizacionChips() {
+            const container = document.getElementById('campanaCotizacionChips');
+            if (!container) return;
+            if (!campanaCotizacionesSeleccionadas.length) {
+                container.innerHTML = '';
+                return;
+            }
+            container.innerHTML = campanaCotizacionesSeleccionadas.map(cot => `
+                <span class="campana-cotizacion-chip">
+                    ${cot}
+                    <button type="button" onclick="removerCotizacionCampana('${String(cot).replace(/'/g, "\\'")}')" aria-label="Quitar ${cot}">&times;</button>
+                </span>
+            `).join('');
+        }
+
+        function agregarCotizacionCampana() {
+            const select = document.getElementById('campanaCotizacion');
+            if (!select || !select.value) return;
+            if (!campanaCotizacionesSeleccionadas.includes(select.value)) {
+                campanaCotizacionesSeleccionadas.push(select.value);
+                renderCampanaCotizacionChips();
+            }
+            select.value = '';
+        }
+
+        function removerCotizacionCampana(cotizacion) {
+            campanaCotizacionesSeleccionadas = campanaCotizacionesSeleccionadas.filter(c => c !== cotizacion);
+            renderCampanaCotizacionChips();
+        }
 
         function toggleCampanaForm(open) {
             const overlay = document.getElementById('panelCampanaOverlay');
@@ -4269,6 +4757,7 @@
             if (!sel) return;
             sel.innerHTML = '<option value="">Seleccione cotización...</option>' +
                 cotizacionesCampana.map(c => `<option value="${c}">${c}</option>`).join('');
+            renderCampanaCotizacionChips();
         }
 
         function getCampanaActivaId() {
@@ -4318,6 +4807,42 @@
             return `${p.estacion || ''}|${p.lugar || ''}|${p.matriz || ''}`;
         }
 
+        function getPuntosDisponiblesCampana() {
+            const items = [];
+            const projectKeys = new Set((puntosMuestreo || []).map(getCampanaPuntoKey));
+            const assignedKeys = new Set((campanaPanelPuntos || []).map(getCampanaPuntoKey));
+
+            (puntosMuestreo || []).forEach(pm => {
+                items.push({
+                    ...pm,
+                    key: getCampanaPuntoKey(pm),
+                    disponibleDesde: 'proyecto',
+                    origenVisible: formatearOrigenPunto(pm),
+                    pendienteMigracion: false,
+                    yaAsignado: assignedKeys.has(getCampanaPuntoKey(pm))
+                });
+            });
+
+            campanaCotizacionesSeleccionadas.forEach(cot => {
+                (puntosCotizacionCatalogo[cot] || []).forEach(p => {
+                    const key = getCampanaPuntoKey(p);
+                    if (projectKeys.has(key)) return;
+                    items.push({
+                        ...p,
+                        key,
+                        origenTipo: 'cotizacion',
+                        origenRef: cot,
+                        disponibleDesde: 'cotizacion',
+                        origenVisible: `Cotización ${cot}`,
+                        pendienteMigracion: true,
+                        yaAsignado: assignedKeys.has(key)
+                    });
+                });
+            });
+
+            return items;
+        }
+
         function getCampanaEstratosTexto(p) {
             let estratos = normalizarEstratosCampana(p.estratos);
             if (!estratos.length && p.estratos !== null && p.estratos !== undefined && p.estratos !== '') {
@@ -4344,90 +4869,117 @@
         }
 
         function renderCampanaMuestrasDisponibles() {
-            renderCampanaFormPuntos();
+            renderCampanaPuntosDisponibles();
             renderCampanaPanelPuntos();
         }
 
-        function renderCampanaFormPuntos() {
-            const checklist = document.getElementById('campanaFormPuntosChecklist');
-            const info = document.getElementById('campanaFormPuntosInfo');
-            if (!checklist) return;
-            if (!Array.isArray(puntosMuestreo) || !puntosMuestreo.length) {
-                checklist.innerHTML = '<div class="campana-puntos-empty">No hay puntos de muestreo configurados en el proyecto.</div>';
-                if (info) info.textContent = '0 seleccionados';
-                return;
-            }
+        function renderCampanaPuntosDisponibles() {
+            const list = document.getElementById('campanaDisponiblesList');
+            const count = document.getElementById('campanaDisponiblesCount');
+            if (!list || !count) return;
+
+            const disponibles = getPuntosDisponiblesCampana().filter(pm => !pm.yaAsignado);
             const filtro = (campanaFormPuntosFiltro || '').trim().toLowerCase();
-            const visibles = puntosMuestreo.filter(pm => {
+            const visibles = disponibles.filter(pm => {
                 if (!filtro) return true;
-                return `${pm.estacion || ''} ${pm.lugar || ''}`.toLowerCase().includes(filtro);
+                return `${pm.estacion || ''} ${pm.lugar || ''} ${pm.matriz || ''} ${pm.origenVisible || ''}`.toLowerCase().includes(filtro);
             });
+
+            count.textContent = `${visibles.length} puntos`;
+
             if (!visibles.length) {
-                checklist.innerHTML = '<div class="campana-puntos-empty">No hay puntos que coincidan con la búsqueda.</div>';
-                if (info) info.textContent = `${campanaFormPuntosSeleccionados.size} seleccionados`;
+                list.innerHTML = '<div class="puntos-empty-msg">No hay puntos disponibles para el criterio actual.</div>';
                 return;
             }
-            checklist.innerHTML = visibles.map(pm => {
-                const key = getCampanaPuntoKey(pm);
+
+            list.innerHTML = visibles.map(pm => {
                 const estratosTxt = getCampanaEstratosTexto(pm);
-                const replicas = parseInt(pm.replicas, 10) || 1;
-                return `<label class="punto-check-item">
-                    <input type="checkbox" value="${key}" ${campanaFormPuntosSeleccionados.has(key) ? 'checked' : ''} onchange="toggleCampanaPuntoFormSeleccion('${key.replace(/'/g, "\\'")}', this.checked)">
-                    <span class="punto-check-text">
-                        <span class="punto-check-line"><span class="pci-name">${pm.estacion}</span><span class="pci-detail">${pm.lugar || '-'}</span></span>
-                    </span>
-                    <span class="punto-check-badges">
-                        <span class="pci-badge">E ${estratosTxt}</span>
-                        <span class="pci-badge">R ${replicas}</span>
-                    </span>
-                </label>`;
+                const iconClass = pm.pendienteMigracion ? 'cotizacion' : 'proyecto';
+                const icon = pm.pendienteMigracion ? 'fa-regular fa-file-lines' : 'fa-regular fa-folder-open';
+                const actionLabel = 'Agregar';
+
+                return `<details class="campana-punto-card">
+                    <summary class="campana-punto-card-head">
+                        <div class="campana-punto-card-main">
+                            <span class="campana-punto-origin-icon ${iconClass}" title="${pm.pendienteMigracion ? 'Punto desde cotización' : 'Punto del proyecto'}">
+                                <i class="${icon}"></i>
+                            </span>
+                            <div class="campana-punto-card-text">
+                                <div class="punto-list-name">${pm.estacion || '-'}</div>
+                                <div class="punto-list-place"><strong>Lugar:</strong> ${pm.lugar || 'Sin lugar de muestreo'}</div>
+                                <div class="punto-list-details">
+                                    <span class="punto-list-tag tag-estrato">${pm.matriz || '-'}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="campana-punto-card-tools">
+                            <button type="button" class="campana-punto-card-action" onclick="event.preventDefault(); event.stopPropagation(); agregarPuntoDisponibleACampana('${String(pm.key).replace(/'/g, "\\'")}')">${actionLabel}</button>
+                            <span class="campana-punto-expand"><i class="fa-solid fa-chevron-down"></i></span>
+                        </div>
+                    </summary>
+                    <div class="campana-punto-card-body">
+                        <div class="campana-punto-card-section">
+                            <div class="campana-punto-card-meta">
+                                <span><strong>Origen:</strong> ${pm.origenVisible || '-'}</span>
+                            </div>
+                        </div>
+                        <div class="campana-punto-card-section">
+                            <div class="campana-punto-card-meta">
+                                <span><strong>Estratos:</strong> ${estratosTxt}</span>
+                                <span><strong>Réplicas:</strong> ${parseInt(pm.replicas, 10) || 1}</span>
+                            </div>
+                        </div>
+                        <div class="campana-punto-card-section">
+                            <div class="campana-punto-card-meta">
+                                <span><strong>Este:</strong> ${pm.este || '-'}</span>
+                                <span><strong>Norte:</strong> ${pm.norte || '-'}</span>
+                                <span><strong>Huso:</strong> ${pm.huso || '-'}</span>
+                                <span><strong>Datum:</strong> ${pm.datum || '-'}</span>
+                            </div>
+                        </div>
+                    </div>
+                </details>`;
             }).join('');
-            if (info) info.textContent = `${campanaFormPuntosSeleccionados.size} seleccionados`;
         }
 
-        function toggleCampanaPuntoFormSeleccion(key, checked) {
-            if (checked) campanaFormPuntosSeleccionados.add(key);
-            else campanaFormPuntosSeleccionados.delete(key);
-            const info = document.getElementById('campanaFormPuntosInfo');
-            if (info) info.textContent = `${campanaFormPuntosSeleccionados.size} seleccionados`;
+        function agregarPuntoDisponibleACampana(key) {
+            const disponibles = getPuntosDisponiblesCampana();
+            const punto = disponibles.find(p => p.key === key);
+            if (!punto) return;
+            if (campanaPanelPuntos.some(p => getCampanaPuntoKey(p) === key)) return;
+
+            if (punto.pendienteMigracion && !puntosMuestreo.some(p => getCampanaPuntoKey(p) === key)) {
+                puntosMuestreo.push({
+                    estacion: punto.estacion,
+                    origenTipo: 'cotizacion',
+                    origenRef: punto.origenRef || '',
+                    fechaCreacion: '2026-03-19',
+                    lugar: punto.lugar,
+                    matriz: punto.matriz,
+                    este: punto.este || '',
+                    norte: punto.norte || '',
+                    huso: punto.huso || '19S',
+                    datum: punto.datum || 'WGS84',
+                    estratos: punto.estratos || 1,
+                    replicas: punto.replicas || 1,
+                    muestras: 1
+                });
+                renderPuntos();
+            }
+
+            campanaPanelPuntos.push({
+                estacion: punto.estacion,
+                lugar: punto.lugar,
+                matriz: punto.matriz,
+                estratos: punto.estratos,
+                replicas: punto.replicas
+            });
+            renderCampanaMuestrasDisponibles();
         }
 
         function setFiltroCampanaPuntos(valor) {
             campanaFormPuntosFiltro = valor || '';
-            renderCampanaFormPuntos();
-        }
-
-        function toggleCampanaAddMuestrasForm(open) {
-            const form = document.getElementById('addMuestrasFormCampana');
-            const btn = document.getElementById('btnAbrirFormMuestrasCampana');
-            if (!form || !btn) return;
-            form.classList.toggle('show', open);
-            btn.style.display = open ? 'none' : 'flex';
-            if (open) renderCampanaFormPuntos();
-        }
-
-        function agregarPuntosCampanaDesdeForm() {
-            const selectedKeys = Array.from(campanaFormPuntosSeleccionados);
-            if (!selectedKeys.length) { alert('Seleccione al menos un punto de muestreo'); return; }
-            const byKey = new Set(campanaPanelPuntos.map(getCampanaPuntoKey));
-            selectedKeys.forEach(key => {
-                const pm = (puntosMuestreo || []).find(x => getCampanaPuntoKey(x) === key);
-                if (!pm || byKey.has(key)) return;
-                campanaPanelPuntos.push({
-                    estacion: pm.estacion,
-                    lugar: pm.lugar,
-                    matriz: pm.matriz,
-                    estratos: pm.estratos,
-                    replicas: pm.replicas
-                });
-                byKey.add(key);
-            });
-            campanaFormPuntosSeleccionados = new Set();
-            const input = document.getElementById('campanaFormPuntosSearch');
-            if (input) input.value = '';
-            campanaFormPuntosFiltro = '';
-            renderCampanaMuestrasDisponibles();
-            toggleCampanaAddMuestrasForm(false);
+            renderCampanaPuntosDisponibles();
         }
 
         function renderCampanaPanelPuntos() {
@@ -4440,29 +4992,54 @@
                 return;
             }
             container.innerHTML = campanaPanelPuntos.map((p, i) => {
+                const puntoProyecto = (puntosMuestreo || []).find(pm => getCampanaPuntoKey(pm) === getCampanaPuntoKey(p)) || {};
                 const estratosTxt = getCampanaEstratosTexto(p);
                 const replicas = parseInt(p.replicas, 10) || 1;
-                return `<div class="punto-list-item">
-                    <div class="punto-list-icon">${i + 1}</div>
-                    <div class="punto-list-info">
-                        <div class="punto-list-name">${p.estacion || '-'}</div>
-                        <div class="punto-list-place"><strong>Lugar:</strong> ${p.lugar || 'Sin lugar de muestreo'}</div>
-                        <div class="punto-list-details">
-                            <span class="punto-list-tag tag-estrato">${p.matriz || '-'}</span>
-                            <span class="detail-sep">·</span>
-                            <span class="punto-list-tag tag-estrato">E ${estratosTxt}</span>
-                            <span class="detail-sep">·</span>
-                            <span class="punto-list-tag tag-estrato">R ${replicas}</span>
+                return `<details class="campana-punto-associated">
+                    <summary class="campana-punto-associated-head">
+                        <div class="campana-punto-associated-main">
+                            <div class="punto-list-icon">${i + 1}</div>
+                            <div class="campana-punto-associated-text">
+                                <div class="punto-list-name">${p.estacion || '-'}</div>
+                                <div class="punto-list-place"><strong>Lugar:</strong> ${p.lugar || 'Sin lugar de muestreo'}</div>
+                                <div class="punto-list-details">
+                                    <span class="punto-list-tag tag-estrato">${p.matriz || '-'}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="campana-punto-associated-tools">
+                            <button type="button" class="campana-punto-associated-remove" onclick="event.preventDefault(); event.stopPropagation(); removeCampanaPanelPunto(${i})" title="Quitar">✕</button>
+                            <span class="campana-punto-expand"><i class="fa-solid fa-chevron-down"></i></span>
+                        </div>
+                    </summary>
+                    <div class="campana-punto-associated-body">
+                        <div class="campana-punto-card-section">
+                            <div class="campana-punto-card-meta">
+                                <span><strong>Origen:</strong> ${formatearOrigenPunto(puntoProyecto)}</span>
+                            </div>
+                        </div>
+                        <div class="campana-punto-card-section">
+                            <div class="campana-punto-card-meta">
+                                <span><strong>Estratos:</strong> ${estratosTxt}</span>
+                                <span><strong>Réplicas:</strong> ${replicas}</span>
+                            </div>
+                        </div>
+                        <div class="campana-punto-card-section">
+                            <div class="campana-punto-card-meta">
+                                <span><strong>Este:</strong> ${puntoProyecto.este || '-'}</span>
+                                <span><strong>Norte:</strong> ${puntoProyecto.norte || '-'}</span>
+                                <span><strong>Huso:</strong> ${puntoProyecto.huso || '-'}</span>
+                                <span><strong>Datum:</strong> ${puntoProyecto.datum || '-'}</span>
+                            </div>
                         </div>
                     </div>
-                    <button class="punto-list-remove" onclick="removeCampanaPanelPunto(${i})" title="Quitar">✕</button>
-                </div>`;
+                </details>`;
             }).join('');
         }
 
         function removeCampanaPanelPunto(idx) {
             campanaPanelPuntos.splice(idx, 1);
-            renderCampanaPanelPuntos();
+            renderCampanaMuestrasDisponibles();
         }
 
         function syncCampanaAssignmentsFromOIs() {
@@ -4490,27 +5067,27 @@
             if (desc) desc.value = '';
             if (btn) btn.textContent = 'Crear campaña';
             if (title) title.textContent = 'Nueva campaña';
+            campanaCotizacionesSeleccionadas = [];
             campanaPanelPuntos = [];
             campanaFormPuntosFiltro = '';
-            campanaFormPuntosSeleccionados = new Set();
             const search = document.getElementById('campanaFormPuntosSearch');
             if (search) search.value = '';
+            renderCampanaCotizacionChips();
             renderCampanaMuestrasDisponibles();
-            toggleCampanaAddMuestrasForm(false);
             if (!silent) toggleCampanaForm(false);
         }
 
         function guardarCampana() {
             const editId = document.getElementById('campanaEditId').value;
             const nombre = document.getElementById('campanaNombre').value.trim();
-            const cotizacion = document.getElementById('campanaCotizacion').value;
+            const cotizaciones = getCotizacionesSeleccionadasCampana();
             const fechaInicio = document.getElementById('campanaInicio').value;
             const fechaTermino = document.getElementById('campanaTermino').value;
             const descripcion = document.getElementById('campanaDescripcion').value.trim();
             const puntosSeleccionados = campanaPanelPuntos.map(getCampanaPuntoKey);
 
             if (!nombre) { alert('Ingrese un nombre de campaña'); return; }
-            if (!cotizacion) { alert('Seleccione una cotización asociada'); return; }
+            if (!cotizaciones.length) { alert('Seleccione al menos una cotización asociada'); return; }
             if (!fechaInicio || !fechaTermino) { alert('Seleccione fecha inicio y término'); return; }
             if (fechaInicio > fechaTermino) { alert('La fecha inicio no puede ser mayor que la fecha término'); return; }
             if (!puntosSeleccionados.length) { alert('Seleccione al menos un punto de muestreo para la campaña'); return; }
@@ -4519,7 +5096,7 @@
                 const idx = campanas.findIndex(c => c.id === editId);
                 if (idx >= 0) {
                     campanas[idx].nombre = nombre;
-                    campanas[idx].cotizacion = cotizacion;
+                    campanas[idx].cotizaciones = cotizaciones;
                     campanas[idx].fechaInicio = fechaInicio;
                     campanas[idx].fechaTermino = fechaTermino;
                     campanas[idx].descripcion = descripcion;
@@ -4531,7 +5108,7 @@
                 campanas.push({
                     id,
                     nombre,
-                    cotizacion,
+                    cotizaciones,
                     fechaInicio,
                     fechaTermino,
                     descripcion,
@@ -4557,7 +5134,9 @@
             const title = document.getElementById('panelCampanaTitle');
             document.getElementById('campanaEditId').value = c.id;
             document.getElementById('campanaNombre').value = c.nombre || '';
-            document.getElementById('campanaCotizacion').value = c.cotizacion || '';
+            campanaCotizacionesSeleccionadas = normalizarCotizacionesCampana(c.cotizaciones || c.cotizacion);
+            document.getElementById('campanaCotizacion').value = '';
+            renderCampanaCotizacionChips();
             document.getElementById('campanaInicio').value = c.fechaInicio || '';
             document.getElementById('campanaTermino').value = c.fechaTermino || '';
             document.getElementById('campanaDescripcion').value = c.descripcion || '';
@@ -4575,25 +5154,28 @@
                 }));
             }
             campanaFormPuntosFiltro = '';
-            campanaFormPuntosSeleccionados = new Set();
             const search = document.getElementById('campanaFormPuntosSearch');
             if (search) search.value = '';
             renderCampanaMuestrasDisponibles();
-            toggleCampanaAddMuestrasForm(false);
             toggleCampanaForm(true);
             activarTab('campana');
         }
 
         function setCampanaActiva(campanaId) {
+            const campana = campanas.find(c => c.id === campanaId);
+            if (!campana) return;
+
             let changed = false;
-            campanas.forEach(c => {
-                const next = c.id === campanaId;
-                if (c.activa !== next) changed = true;
-                c.activa = next;
-            });
+            if (campana.activa) {
+                campana.activa = false;
+                changed = true;
+            } else {
+                campana.activa = true;
+                changed = true;
+            }
+
             if (!changed) return;
-            oiCampanaFiltro = campanaId;
-            calCampanaFiltro = campanaId;
+
             renderCampanas();
             renderCampanasSelectOI();
             actualizarHeaderCampanaActiva();
@@ -4637,12 +5219,11 @@
             container.style.display = 'grid';
             empty.style.display = 'none';
             container.innerHTML = campanas.map(c => {
-                const muestrasCampana = (c.oiAsignadas || []).map(cod => {
+                const totalMuestras = (c.oiAsignadas || []).reduce((acc, cod) => {
                     const oi = ordenesInspeccion.find(x => x.codigo === cod);
-                    const n = oi ? getMuestrasFromOI(oi) : 0;
-                    return { codigo: cod, muestras: n };
-                });
-                const totalMuestras = muestrasCampana.reduce((acc, x) => acc + x.muestras, 0);
+                    return acc + (oi ? getMuestrasFromOI(oi) : 0);
+                }, 0);
+                const cotizaciones = normalizarCotizacionesCampana(c.cotizaciones || c.cotizacion);
                 return `<div class="campana-card ${c.activa ? 'active' : ''}">
                     <div class="campana-card-head">
                         <div class="campana-card-title">${c.nombre} ${c.activa ? '<span class="campana-badge" style="margin-left:6px; background:#ecfdf5; border-color:#a7f3d0; color:#047857;">Activa</span>' : ''}</div>
@@ -4651,24 +5232,19 @@
                                 Opciones <span>▾</span>
                             </button>
                             <div class="oi-options-menu" id="campanaOptionsMenu-${c.id}">
-                                <button class="oi-options-item" onclick="setCampanaActiva('${c.id}'); closeAllOiOptions();">Activar Campaña</button>
+                                <button class="oi-options-item" onclick="setCampanaActiva('${c.id}'); closeAllOiOptions();">${c.activa ? 'Desactivar campaña' : 'Activar campaña'}</button>
                                 <button class="oi-options-item" onclick="editarCampana('${c.id}'); closeAllOiOptions();">Editar</button>
                                 <button class="oi-options-item delete" onclick="eliminarCampana('${c.id}'); closeAllOiOptions();">Eliminar</button>
                             </div>
                         </div>
                     </div>
                     <div class="campana-card-line">
-                        <span><strong>Cotización:</strong> ${c.cotizacion}</span>
+                        <span><strong>Cotizaciones:</strong> ${cotizaciones.join(', ') || '-'}</span>
                         <span><strong>Inicio:</strong> ${formatearFecha(c.fechaInicio)}</span>
                         <span><strong>Término:</strong> ${formatearFecha(c.fechaTermino)}</span>
                         <span><strong>Muestras:</strong> ${totalMuestras}</span>
                     </div>
                     ${c.descripcion ? `<div class="campana-card-line"><span><strong>Descripción:</strong> ${c.descripcion}</span></div>` : ''}
-                    <div>
-                        ${(muestrasCampana.length
-                            ? muestrasCampana.map(m => `<span class="campana-badge">${m.codigo} · ${m.muestras} mues.</span>`).join('')
-                            : '<span class="oi-count-info">Sin muestras asignadas</span>')}
-                    </div>
                 </div>`;
             }).join('');
             actualizarHeaderCampanaActiva();
@@ -4682,6 +5258,10 @@
             const ol = document.getElementById('inputOL').value;
             const nombre = document.getElementById('inputNombre').value.trim();
             const codigo = document.getElementById('inputCodigo').value.trim();
+            const codigoCliente = document.getElementById('inputCodigoCliente').value.trim();
+            const fechaCreacionProyecto = document.getElementById('inputFechaCreacionProyecto').value;
+            const cotizacionOrigen = document.getElementById('inputCotizacionOrigen').value.trim();
+            const fechaCotizacionOrigen = document.getElementById('inputFechaCotizacionOrigen').value;
             const responsable = document.getElementById('inputResponsable').value;
             const descripcion = document.getElementById('inputDescripcion').value.trim();
 
@@ -4697,8 +5277,20 @@
                 alert('Por favor ingrese el nombre del proyecto');
                 return;
             }
-            if (!codigo) {
-                alert('Por favor ingrese el código del proyecto');
+            if (!codigoCliente) {
+                alert('Por favor ingrese el código cliente del proyecto');
+                return;
+            }
+            if (!fechaCreacionProyecto) {
+                alert('Por favor seleccione la fecha de creación del proyecto');
+                return;
+            }
+            if (!cotizacionOrigen) {
+                alert('Por favor ingrese la cotización de origen');
+                return;
+            }
+            if (!fechaCotizacionOrigen) {
+                alert('Por favor seleccione la fecha de la cotización');
                 return;
             }
 
@@ -4731,9 +5323,20 @@
             document.getElementById('inputCliente').value = '';
             poblarComboOLs('');
             document.getElementById('inputNombre').value = '';
-            document.getElementById('inputCodigo').value = '';
+            document.getElementById('inputCodigo').value = generarCodigoProyecto();
+            document.getElementById('inputCodigoCliente').value = '';
+            document.getElementById('inputFechaCreacionProyecto').value = '';
+            document.getElementById('inputCotizacionOrigen').value = '';
+            document.getElementById('inputFechaCotizacionOrigen').value = '';
             document.getElementById('inputResponsable').value = '';
             document.getElementById('inputDescripcion').value = '';
+            document.getElementById('inputEtfaActividadFuente').value = '';
+            document.getElementById('inputEtfaInstrumento').value = '';
+            document.getElementById('inputEtfaTitular').value = '';
+            document.getElementById('inputEtfaRutTitular').value = '';
+            document.getElementById('inputEtfaRepresentante').value = '';
+            document.getElementById('inputEtfaRutRrll').value = '';
+            aplicarPrefillEtfa();
             actualizarHeader();
         }
 
@@ -4751,10 +5354,25 @@
         // PUNTOS DE MUESTREO
         // ==========================================
         const puntosMuestreo = [
-            { estacion: 'EST-01', lugar: 'Descarga principal', matriz: 'AGUA_SUPERFICIAL', latitud: '-33.4569', longitud: '-70.6483', estratos: 2, replicas: 2, muestras: 1 },
-            { estacion: 'EST-02', lugar: 'Canal norte', matriz: 'AGUA_SUPERFICIAL', latitud: '-33.4574', longitud: '-70.6472', estratos: 2, replicas: 1, muestras: 1 },
-            { estacion: 'EST-03', lugar: 'Canal sur', matriz: 'AGUA_SUPERFICIAL', latitud: '-33.4581', longitud: '-70.6490', estratos: 1, replicas: 2, muestras: 1 }
+            { estacion: 'EST-01', origenTipo: 'cotizacion', origenRef: 'COT-2026-001', fechaCreacion: '2026-01-15', lugar: 'Descarga principal', matriz: 'AGUA_SUPERFICIAL', este: '365432', norte: '7421890', huso: '19S', datum: 'WGS84', estratos: 2, replicas: 2, muestras: 1 },
+            { estacion: 'EST-02', origenTipo: 'proyecto', origenRef: '', fechaCreacion: '2026-03-19', lugar: 'Canal norte', matriz: 'AGUA_SUPERFICIAL', este: '365780', norte: '7422144', huso: '19S', datum: 'WGS84', estratos: 2, replicas: 1, muestras: 1 },
+            { estacion: 'EST-03', origenTipo: 'carga-masiva', origenRef: 'CM-2026-003', fechaCreacion: '2026-02-04', lugar: 'Canal sur', matriz: 'AGUA_SUPERFICIAL', este: '366105', norte: '7421678', huso: '19S', datum: 'SIRGAS', estratos: 1, replicas: 2, muestras: 1 }
         ];
+
+        function formatearOrigenPunto(punto) {
+            if (!punto) return '-';
+            if (punto.origenTipo === 'cotizacion') return `Cotización${punto.origenRef ? ` ${punto.origenRef}` : ''}`;
+            if (punto.origenTipo === 'carga-masiva') return `Carga masiva${punto.origenRef ? ` ${punto.origenRef}` : ''}`;
+            if (punto.origenTipo === 'proyecto') return 'Proyecto';
+            return punto.origenRef || 'Proyecto';
+        }
+
+        function formatearFechaPunto(fecha) {
+            if (!fecha) return '';
+            const [y, m, d] = String(fecha).split('-');
+            if (!y || !m || !d) return fecha;
+            return `${d}/${m}/${y}`;
+        }
 
         function renderPuntos() {
             const tbody = document.getElementById('tbodyPuntos');
@@ -4773,11 +5391,19 @@
                         <td>${p.estacion}</td>
                         <td>${p.lugar}</td>
                         <td>${p.matriz}</td>
-                        <td>${p.latitud || '-'}</td>
-                        <td>${p.longitud || '-'}</td>
+                        <td>${p.este || '-'}</td>
+                        <td>${p.norte || '-'}</td>
+                        <td>${p.huso || '-'}</td>
+                        <td>${p.datum || '-'}</td>
                         <td class="col-input"><input type="number" value="${p.estratos}" min="1" onchange="actualizarPuntoCampo(${i}, 'estratos', this.value)"></td>
                         <td class="col-input"><input type="number" value="${p.replicas}" min="1" onchange="actualizarPuntoCampo(${i}, 'replicas', this.value)"></td>
                         <td class="col-input" style="font-weight:600; text-align:center;">${p.estratos * p.replicas}</td>
+                        <td>
+                            <div class="muestreo-origin-cell">
+                                <span>${formatearOrigenPunto(p)}</span>
+                                ${p.fechaCreacion ? `<span class="muestreo-origin-date">Creado: ${formatearFechaPunto(p.fechaCreacion)}</span>` : ''}
+                            </div>
+                        </td>
                         <td class="col-action"><button class="btn-delete-row" onclick="eliminarPunto(${i})">✕</button></td>
                     </tr>
                 `).join('');
@@ -4794,8 +5420,10 @@
             document.getElementById('newMatriz').value = '';
             document.getElementById('newLugar').value = '';
             document.getElementById('newEstacion').value = '';
-            document.getElementById('newLatitud').value = '';
-            document.getElementById('newLongitud').value = '';
+            document.getElementById('newEste').value = '';
+            document.getElementById('newNorte').value = '';
+            document.getElementById('newHuso').value = '19S';
+            document.getElementById('newDatum').value = 'WGS84';
             document.getElementById('modalPunto').classList.add('show');
         }
 
@@ -4807,8 +5435,10 @@
             const matriz = document.getElementById('newMatriz').value;
             const lugar = document.getElementById('newLugar').value.trim();
             const estacion = document.getElementById('newEstacion').value.trim();
-            const latitud = document.getElementById('newLatitud').value.trim();
-            const longitud = document.getElementById('newLongitud').value.trim();
+            const este = document.getElementById('newEste').value.trim();
+            const norte = document.getElementById('newNorte').value.trim();
+            const huso = document.getElementById('newHuso').value.trim();
+            const datum = document.getElementById('newDatum').value.trim();
 
             if (!matriz) { alert('Seleccione una matriz'); return; }
             if (!lugar) { alert('Ingrese el lugar de monitoreo'); return; }
@@ -4816,10 +5446,15 @@
 
             puntosMuestreo.push({
                 estacion,
+                origenTipo: 'proyecto',
+                origenRef: '',
+                fechaCreacion: '2026-03-19',
                 lugar,
                 matriz,
-                latitud,
-                longitud,
+                este,
+                norte,
+                huso,
+                datum,
                 estratos: 1,
                 replicas: 1,
                 muestras: 1
