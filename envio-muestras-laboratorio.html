@@ -1292,7 +1292,8 @@
     <div class="toast" id="toast"></div>
 
     <script>
-        const OI_STATE_STORAGE_KEY = 'sgs_fp_ordenes_v2_demo';
+        const OI_STATE_STORAGE_KEY = 'sgs_fp_ordenes_v3_demo';
+        const OI_STATE_STORAGE_LEGACY_KEYS = ['sgs_fp_ordenes_v2_demo'];
         const LAB_NAV_STORAGE_KEY = 'sgs_lab_nav_v1';
         const oiEstadoLabels = {
             'pendiente': 'Pendiente',
@@ -2248,8 +2249,20 @@
 
         function cargarContexto() {
             try {
-                const raw = sessionStorage.getItem(OI_STATE_STORAGE_KEY);
-                const parsed = raw ? JSON.parse(raw) : [];
+                const storageKeys = [OI_STATE_STORAGE_KEY].concat(OI_STATE_STORAGE_LEGACY_KEYS);
+                let parsed = [];
+                for (const key of storageKeys) {
+                    const raw = sessionStorage.getItem(key);
+                    if (!raw) continue;
+                    const candidate = JSON.parse(raw);
+                    if (Array.isArray(candidate)) {
+                        parsed = candidate;
+                        if (key !== OI_STATE_STORAGE_KEY) {
+                            sessionStorage.setItem(OI_STATE_STORAGE_KEY, JSON.stringify(candidate));
+                        }
+                        break;
+                    }
+                }
                 ordenesInspeccion = Array.isArray(parsed) ? parsed : [];
             } catch (e) {
                 ordenesInspeccion = [];
@@ -2263,6 +2276,20 @@
             }
 
             const params = new URLSearchParams(window.location.search);
+            if (!navData || !navData.proyecto) {
+                navData = {
+                    oiIdx: null,
+                    from: params.get('from') || 'ficha-proyecto-inicial.html',
+                    tab: params.get('tab') || 'listado-oi',
+                    proyecto: {
+                        proyecto: params.get('proyecto') || '',
+                        cliente: params.get('cliente') || '',
+                        ol: params.get('ol') || '',
+                        responsable: params.get('responsable') || '',
+                        nombre: params.get('nombre') || ''
+                    }
+                };
+            }
             const idxParam = parseInt(params.get('oi'), 10);
             if (!Number.isNaN(idxParam)) oiIndex = idxParam;
             else if (navData && Number.isInteger(navData.oiIdx)) oiIndex = navData.oiIdx;
@@ -2282,6 +2309,8 @@
             const guardado = oi.labIngreso || {};
             const fallbackFechaHora = guardado.fechaHoraMuestreo || '';
             const muestrasGuardadas = Array.isArray(guardado.muestras) ? guardado.muestras : [];
+            const puntos = Array.isArray(oi.puntos) ? oi.puntos : [];
+            const proyectoData = (navData && navData.proyecto && typeof navData.proyecto === 'object') ? navData.proyecto : {};
 
             labMuestrasDetalladas = generarMuestrasDetalladasDesdeOI(oi);
             labMuestrasFecha = {};
@@ -2353,17 +2382,22 @@
                 .filter(u => u.tipo === 'supervisor' || /supervisor/i.test(u.rol || ''))
                 .map(u => u.nombre)
                 .join(', ') || 'Sin asignar';
+            const coordinadoresTxt = (oi.usuarios || [])
+                .filter(u => u.tipo === 'coordinador' || /coordinador/i.test(u.rol || ''))
+                .map(u => u.nombre)
+                .join(', ');
 
-            const matrizTxt = oi.matriz || (oi.puntos[0] && oi.puntos[0].matriz) || '-';
-            const planTxt = oi.plan || ((oi.puntos || []).map(p => p.plan).filter(Boolean)[0] || '-');
-            const laboratorios = Array.from(new Set((oi.puntos || []).map(p => p.laboratorio).filter(Boolean)));
+            const matrizTxt = oi.matriz || (puntos[0] && puntos[0].matriz) || '-';
+            const planTxt = oi.plan || (puntos.map(p => p.plan).filter(Boolean)[0] || '-');
+            const laboratorios = Array.from(new Set(puntos.map(p => p.laboratorio).filter(Boolean)));
             const laboratorioTxt = laboratorios.length > 1 ? 'Mixto' : (laboratorios[0] || '-');
             const estadoTxt = oiEstadoLabels[oi.estado] || oi.estado || 'Pendiente';
             const tipoTxt = oiTipoLabels[oi.tipo] || 'Muestreo y Medición';
             const composicionTxt = oiComposicionLabels[oi.composicion] || 'Puntual';
-            const clienteTxt = navData && navData.proyecto && navData.proyecto.cliente ? navData.proyecto.cliente : '-';
-            const olTxt = navData && navData.proyecto && navData.proyecto.ol ? navData.proyecto.ol : '-';
-            const contactoTxt = navData && navData.proyecto && navData.proyecto.responsable ? navData.proyecto.responsable : '';
+            const clienteTxt = proyectoData.cliente || oi.cliente || 'Cliente demo';
+            const olTxt = proyectoData.ol || oi.ol || 'OL-demo';
+            const contactoTxt = proyectoData.responsable || oi.responsable || coordinadoresTxt || supervisoresTxt || inspectoresTxt || inspectorFallback;
+            const proyectoNombreTxt = proyectoData.nombre || oi.proyectoNombre || 'Proyecto demo';
 
             setText('labHeadCodigo', oi.codigo || 'XXX');
             setText('labHeadEstado', estadoTxt);
@@ -2371,7 +2405,7 @@
             setText('labHeadComposicion', composicionTxt);
             setText('topCliente', clienteTxt);
             setText('topOl', olTxt);
-            setText('topProyecto', (navData && navData.proyecto && navData.proyecto.nombre) ? navData.proyecto.nombre : '-');
+            setText('topProyecto', proyectoNombreTxt);
             setText('labHeadRecepcion', formatearFecha(oi.fecha));
             setText('labHeadInspector', inspectoresTxt);
             labOiContext = {
@@ -2389,7 +2423,7 @@
             const contactoNombre = contactoTxt || '-';
             const telefono = telefonosContacto[contactoNombre] || '-';
             const email = correosContacto[contactoNombre] || '-';
-            const usaEtfa = (oi.puntos || []).some(p => !!p.etfa);
+            const usaEtfa = puntos.some(p => !!p.etfa);
 
             document.getElementById('exCliente').textContent = clienteTxt;
             document.getElementById('exOl').textContent = olTxt;
@@ -2403,7 +2437,7 @@
             document.getElementById('exSupervisor').textContent = supervisoresTxt;
             document.getElementById('exInspector').textContent = inspectoresTxt;
 
-            document.getElementById('exEtfaProyecto').textContent = (navData && navData.proyecto && navData.proyecto.nombre) ? navData.proyecto.nombre : 'Proyecto sin nombre';
+            document.getElementById('exEtfaProyecto').textContent = proyectoNombreTxt;
             document.getElementById('exEtfaIga').textContent = usaEtfa ? 'RCA: N° 010-2012' : 'No aplica';
             document.getElementById('exEtfaTitular').textContent = clienteTxt;
             document.getElementById('exEtfaRutTitular').textContent = rutTitularPorCliente[clienteTxt] || '-';
