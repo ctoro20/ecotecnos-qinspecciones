@@ -3185,9 +3185,24 @@
             display: block;
             margin-top: 4px;
             text-align: left;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 9px;
+            font-weight: 500;
+            color: #94a3b8;
+        }
+
+        .campana-matrix-point-chip-mode {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3px 8px;
+            border-radius: 999px;
+            background: rgba(23, 50, 77, 0.08);
             color: #64748b;
+            font-size: 9px;
+            font-weight: 700;
+            line-height: 1;
+            white-space: nowrap;
+            flex: 0 0 auto;
         }
 
         .campana-matrix-point-chip-plan {
@@ -8510,10 +8525,20 @@
 
         function getCampanaBiologicoConfigDefault(detail) {
             if (detail === 'FITOPLANCTON') {
-                return { tipos: { cualitativo: false, cuantitativo: false } };
+                return {
+                    tipoMuestreo: 'PUNTO_MUESTRA',
+                    replicas: 1,
+                    estaciones: 1,
+                    estratos: ['S', 'F'],
+                    tipos: { cualitativo: false, cuantitativo: false }
+                };
             }
             if (detail === 'ZOOPLANCTON') {
                 return {
+                    tipoMuestreo: 'PUNTO_MUESTRA',
+                    replicas: 1,
+                    estaciones: 1,
+                    estratos: ['S', 'F'],
                     arrastres: {
                         ARRASTRE_VERTICAL: { diurno: false, nocturno: false },
                         ARRASTRE_HORIZONTAL: { diurno: false, nocturno: false }
@@ -8523,6 +8548,9 @@
             if (detail === 'CENSO_AVES_MAMIFEROS_MARINOS_Y_REPTILES') {
                 return {
                     tipoMuestreo: 'PUNTO_MUESTRA',
+                    replicas: 1,
+                    estaciones: 1,
+                    estratos: ['S', 'F'],
                     ambientes: {
                         MAR: { diurno: false, nocturno: false },
                         TIERRA: { diurno: false, nocturno: false }
@@ -8532,11 +8560,29 @@
             return {};
         }
 
+        function getCampanaBiologicoModalConfigBase(points, matrix, detail) {
+            const selectedPoints = Array.isArray(points) ? points : [];
+            const existing = selectedPoints
+                .map(point => getCampanaBiologicoPointConfig(point, detail))
+                .find(item => item && typeof item === 'object');
+            const base = existing || getCampanaBiologicoConfigDefault(detail);
+            return {
+                ...base,
+                replicas: Math.max(1, parseInt(base.replicas, 10) || getCampanaReplicaConfigValue(selectedPoints, 'replicas') || 1),
+                estaciones: Math.max(1, parseInt(base.estaciones, 10) || 1),
+                estratos: Array.isArray(base.estratos) && base.estratos.length ? [...base.estratos] : getCampanaModalEstratosBase(selectedPoints, matrix)
+            };
+        }
+
         function getCampanaBiologicoPointConfig(point, detail) {
             const byDetail = point && point.biologicoConfig && typeof point.biologicoConfig === 'object' ? point.biologicoConfig : {};
             const raw = byDetail[detail] && typeof byDetail[detail] === 'object' ? byDetail[detail] : {};
             if (detail === 'FITOPLANCTON') {
                 return {
+                    tipoMuestreo: raw.tipoMuestreo === 'TRANSECTA' ? 'TRANSECTA' : 'PUNTO_MUESTRA',
+                    replicas: Math.max(1, parseInt(raw.replicas, 10) || 1),
+                    estaciones: Math.max(1, parseInt(raw.estaciones, 10) || 1),
+                    estratos: Array.isArray(raw.estratos) && raw.estratos.length ? raw.estratos.filter(Boolean) : [],
                     tipos: {
                         cualitativo: !!(raw.tipos && raw.tipos.cualitativo),
                         cuantitativo: !!(raw.tipos && raw.tipos.cuantitativo)
@@ -8545,6 +8591,10 @@
             }
             if (detail === 'ZOOPLANCTON') {
                 return {
+                    tipoMuestreo: raw.tipoMuestreo === 'TRANSECTA' ? 'TRANSECTA' : 'PUNTO_MUESTRA',
+                    replicas: Math.max(1, parseInt(raw.replicas, 10) || 1),
+                    estaciones: Math.max(1, parseInt(raw.estaciones, 10) || 1),
+                    estratos: Array.isArray(raw.estratos) && raw.estratos.length ? raw.estratos.filter(Boolean) : [],
                     arrastres: {
                         ARRASTRE_VERTICAL: {
                             diurno: !!(raw.arrastres && raw.arrastres.ARRASTRE_VERTICAL && raw.arrastres.ARRASTRE_VERTICAL.diurno),
@@ -8560,6 +8610,9 @@
             if (detail === 'CENSO_AVES_MAMIFEROS_MARINOS_Y_REPTILES') {
                 return {
                     tipoMuestreo: raw.tipoMuestreo === 'TRANSECTA' ? 'TRANSECTA' : 'PUNTO_MUESTRA',
+                    replicas: Math.max(1, parseInt(raw.replicas, 10) || 1),
+                    estaciones: Math.max(1, parseInt(raw.estaciones, 10) || 1),
+                    estratos: Array.isArray(raw.estratos) && raw.estratos.length ? raw.estratos.filter(Boolean) : [],
                     ambientes: {
                         MAR: {
                             diurno: !!(raw.ambientes && raw.ambientes.MAR && raw.ambientes.MAR.diurno),
@@ -8577,6 +8630,10 @@
 
         function getCampanaBiologicoSummary(point, detail) {
             const config = getCampanaBiologicoPointConfig(point, detail);
+            const typeLabel = config.tipoMuestreo === 'TRANSECTA' ? 'Transecta' : 'Punto de muestra';
+            const strataLabel = Array.isArray(config.estratos) && config.estratos.length ? config.estratos.join('/') : '1 estrato';
+            const replicaLabel = `R${Math.max(1, parseInt(config.replicas, 10) || 1)}`;
+            const stationsLabel = `${Math.max(1, parseInt(config.estaciones, 10) || 1)} est.`;
             if (detail === 'FITOPLANCTON') {
                 const items = [
                     config.tipos.cualitativo ? 'Cualitativo' : '',
@@ -8585,7 +8642,9 @@
                 return {
                     icon: 'fa-solid fa-seedling',
                     title: 'Fitoplancton',
-                    subtitle: items.length ? items.join(' · ') : 'Sin especificación',
+                    subtitle: config.tipoMuestreo === 'PUNTO_MUESTRA'
+                        ? `${typeLabel} · ${strataLabel} · ${replicaLabel}`
+                        : `${typeLabel} · ${stationsLabel} · ${replicaLabel}`,
                     items
                 };
             }
@@ -8606,7 +8665,9 @@
                 return {
                     icon: 'fa-solid fa-fish',
                     title: 'Zooplancton',
-                    subtitle: items.length ? `${items.length} selección(es)` : 'Sin especificación',
+                    subtitle: config.tipoMuestreo === 'PUNTO_MUESTRA'
+                        ? `${typeLabel} · ${strataLabel} · ${replicaLabel}`
+                        : `${typeLabel} · ${stationsLabel} · ${replicaLabel}`,
                     items
                 };
             }
@@ -8614,7 +8675,6 @@
                 const items = [];
                 const zoneLabels = { MAR: 'Mar', TIERRA: 'Tierra' };
                 const periodLabels = { diurno: 'Diurno', nocturno: 'Nocturno' };
-                const typeLabel = config.tipoMuestreo === 'TRANSECTA' ? 'Transecta' : 'Punto de muestra';
                 Object.keys(config.ambientes || {}).forEach(zoneKey => {
                     ['diurno', 'nocturno'].forEach(periodKey => {
                         if (config.ambientes[zoneKey] && config.ambientes[zoneKey][periodKey]) {
@@ -8625,7 +8685,9 @@
                 return {
                     icon: 'fa-solid fa-binoculars',
                     title: 'Censo',
-                    subtitle: items.length ? `${typeLabel} · ${items.length} selección(es)` : `${typeLabel} · Sin especificación`,
+                    subtitle: config.tipoMuestreo === 'PUNTO_MUESTRA'
+                        ? `${typeLabel} · ${strataLabel} · ${replicaLabel}`
+                        : `${typeLabel} · ${stationsLabel} · ${replicaLabel}`,
                     items
                 };
             }
@@ -8645,7 +8707,7 @@
                 return;
             }
             campanaBiologicoModalMatrix = matrix;
-            campanaBiologicoModalConfig = getCampanaBiologicoPointConfig(points[0], campanaMatrizDetalleSeleccionada);
+            campanaBiologicoModalConfig = getCampanaBiologicoModalConfigBase(points, matrix, campanaMatrizDetalleSeleccionada);
             renderCampanaBiologicoModal();
             const modal = document.getElementById('modalCampanaBiologico');
             if (modal) modal.classList.add('show');
@@ -8667,20 +8729,63 @@
             const title = document.getElementById('campanaBiologicoModalTitle');
             const body = document.getElementById('campanaBiologicoModalBody');
             const points = getCampanaSelectedAssociatedPointsByMatrix(matrix);
-            const config = campanaBiologicoModalConfig || getCampanaBiologicoPointConfig(points[0] || {}, detail);
+            const config = campanaBiologicoModalConfig || getCampanaBiologicoModalConfigBase(points, matrix, detail);
             if (title) title.textContent = `Configurar ${getCampanaMatrizDetalleLabel(detail)}`;
             if (label) label.textContent = formatCampanaMatrixLabel(matrix);
             if (count) count.textContent = `${points.length} punto(s) asociados`;
             if (help) {
                 help.textContent = detail === 'FITOPLANCTON'
-                    ? 'Indique si el levantamiento de fitoplancton será cualitativo, cuantitativo o ambos.'
+                    ? 'Defina si el levantamiento de fitoplancton se hará como punto de muestra o transecta, e indique si será cualitativo, cuantitativo o ambos.'
                     : detail === 'ZOOPLANCTON'
-                        ? 'Seleccione si el levantamiento de zooplancton considera arrastre vertical u horizontal, y en qué horario.'
+                        ? 'Defina si el levantamiento de zooplancton se hará como punto de muestra o transecta, y seleccione arrastre vertical u horizontal según horario.'
                         : 'Defina si el censo se realizará como punto de muestra o transecta, y marque la cobertura diurna o nocturna.';
             }
             if (!body) return;
+            const tipoBlock = `
+                <div class="campana-biologico-type-toggle">
+                    <label class="campana-biologico-check-item">
+                        <input type="radio" name="campanaBiologicoTipoMuestreo" value="PUNTO_MUESTRA" onchange="toggleCampanaBiologicoCensoSampleConfig()" ${config.tipoMuestreo !== 'TRANSECTA' ? 'checked' : ''}>
+                        <span>Punto de muestra</span>
+                    </label>
+                    <label class="campana-biologico-check-item">
+                        <input type="radio" name="campanaBiologicoTipoMuestreo" value="TRANSECTA" onchange="toggleCampanaBiologicoCensoSampleConfig()" ${config.tipoMuestreo === 'TRANSECTA' ? 'checked' : ''}>
+                        <span>Transecta</span>
+                    </label>
+                </div>
+                <div class="campana-terreno-modal-config" id="campanaBiologicoCensoSampleConfig" style="${config.tipoMuestreo === 'TRANSECTA' ? 'display:none;' : ''}">
+                    <div class="form-group">
+                        <label>Replicas para punto de muestra</label>
+                        <input type="number" min="1" value="${Math.max(1, parseInt(config.replicas, 10) || 1)}" onchange="setCampanaBiologicoModalReplica(this.value)">
+                    </div>
+                    <div class="field-help">Configure estratos y replicas para punto de muestra con la misma logica aplicada a laboratorio.</div>
+                    <div class="campana-strata-modal-inputs" id="campanaBiologicoCensoEstratosInputs">
+                        ${(Array.isArray(config.estratos) ? config.estratos : []).map((estrato, idx) => `
+                            <div class="campana-strata-config-field">
+                                <label>Estrato ${idx + 1}</label>
+                                <input type="text" value="${String(estrato || '').replace(/"/g, '&quot;')}" maxlength="20" placeholder="Ej: S" oninput="setCampanaBiologicoModalEstrato(${idx}, this.value)">
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="campana-strata-modal-actions">
+                        <button type="button" class="campana-badge-btn" onclick="agregarEstratoModalCampanaBiologico()"><i class="fa-solid fa-plus"></i>AGREGAR ESTRATO</button>
+                        <button type="button" class="campana-badge-btn" onclick="quitarEstratoModalCampanaBiologico()"><i class="fa-solid fa-minus"></i>QUITAR ESTRATO</button>
+                    </div>
+                </div>
+                <div class="campana-terreno-modal-config" id="campanaBiologicoCensoTransectaConfig" style="${config.tipoMuestreo === 'TRANSECTA' ? '' : 'display:none;'}">
+                    <div class="form-group">
+                        <label>Cantidad de estaciones</label>
+                        <input type="number" min="1" value="${Math.max(1, parseInt(config.estaciones, 10) || 1)}" onchange="setCampanaBiologicoModalEstaciones(this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label>Replicas para transecta</label>
+                        <input type="number" min="1" value="${Math.max(1, parseInt(config.replicas, 10) || 1)}" onchange="setCampanaBiologicoModalReplica(this.value)">
+                    </div>
+                    <div class="field-help">Defina la cantidad de estaciones y replicas que aplican al muestreo por transecta.</div>
+                </div>
+            `;
             if (detail === 'FITOPLANCTON') {
                 body.innerHTML = `
+                    ${tipoBlock}
                     <div class="campana-biologico-check-list">
                         <label class="campana-biologico-check-item">
                             <input type="checkbox" id="campanaBiologicoFitoplanctonCualitativo" ${config.tipos && config.tipos.cualitativo ? 'checked' : ''}>
@@ -8696,6 +8801,7 @@
             }
             if (detail === 'ZOOPLANCTON') {
                 body.innerHTML = `
+                    ${tipoBlock}
                     <div class="campana-biologico-grid">
                         <table>
                             <thead>
@@ -8723,16 +8829,7 @@
                 return;
             }
             body.innerHTML = `
-                <div class="campana-biologico-type-toggle">
-                    <label class="campana-biologico-check-item">
-                        <input type="radio" name="campanaBiologicoTipoMuestreo" value="PUNTO_MUESTRA" ${config.tipoMuestreo !== 'TRANSECTA' ? 'checked' : ''}>
-                        <span>Punto de muestra</span>
-                    </label>
-                    <label class="campana-biologico-check-item">
-                        <input type="radio" name="campanaBiologicoTipoMuestreo" value="TRANSECTA" ${config.tipoMuestreo === 'TRANSECTA' ? 'checked' : ''}>
-                        <span>Transecta</span>
-                    </label>
-                </div>
+                ${tipoBlock}
                 <div class="campana-biologico-grid">
                     <table>
                         <thead>
@@ -8765,18 +8862,50 @@
             const body = document.getElementById('campanaBiologicoModalBody');
             if (!body) return;
             let nextConfig = getCampanaBiologicoConfigDefault(detail);
+            syncCampanaBiologicoCensoModalState();
+            const selectedType = body.querySelector('input[name="campanaBiologicoTipoMuestreo"]:checked');
+            nextConfig.tipoMuestreo = selectedType && selectedType.value === 'TRANSECTA' ? 'TRANSECTA' : 'PUNTO_MUESTRA';
+            if (nextConfig.tipoMuestreo === 'PUNTO_MUESTRA') {
+                nextConfig.replicas = Math.max(1, parseInt(campanaBiologicoModalConfig && campanaBiologicoModalConfig.replicas, 10) || 0);
+                if (!nextConfig.replicas) {
+                    alert('Ingrese la cantidad de replicas para punto de muestra');
+                    return;
+                }
+                nextConfig.estratos = (Array.isArray(campanaBiologicoModalConfig && campanaBiologicoModalConfig.estratos) ? campanaBiologicoModalConfig.estratos : [])
+                    .map(item => String(item || '').trim())
+                    .filter(Boolean);
+                if (!nextConfig.estratos.length) {
+                    alert('Ingrese al menos un estrato para punto de muestra');
+                    return;
+                }
+                nextConfig.estaciones = 1;
+            } else {
+                nextConfig.estaciones = Math.max(1, parseInt(campanaBiologicoModalConfig && campanaBiologicoModalConfig.estaciones, 10) || 0);
+                if (!nextConfig.estaciones) {
+                    alert('Ingrese la cantidad de estaciones para transecta');
+                    return;
+                }
+                nextConfig.replicas = Math.max(1, parseInt(campanaBiologicoModalConfig && campanaBiologicoModalConfig.replicas, 10) || 0);
+                if (!nextConfig.replicas) {
+                    alert('Ingrese la cantidad de replicas para transecta');
+                    return;
+                }
+                nextConfig.estratos = [];
+            }
             if (detail === 'FITOPLANCTON') {
-                nextConfig = {
-                    tipos: {
-                        cualitativo: !!(document.getElementById('campanaBiologicoFitoplanctonCualitativo') || {}).checked,
-                        cuantitativo: !!(document.getElementById('campanaBiologicoFitoplanctonCuantitativo') || {}).checked
-                    }
+                nextConfig.tipos = {
+                    cualitativo: !!(document.getElementById('campanaBiologicoFitoplanctonCualitativo') || {}).checked,
+                    cuantitativo: !!(document.getElementById('campanaBiologicoFitoplanctonCuantitativo') || {}).checked
                 };
                 if (!nextConfig.tipos.cualitativo && !nextConfig.tipos.cuantitativo) {
                     alert('Seleccione al menos una especificación para Fitoplancton');
                     return;
                 }
             } else if (detail === 'ZOOPLANCTON') {
+                nextConfig.arrastres = {
+                    ARRASTRE_VERTICAL: { diurno: false, nocturno: false },
+                    ARRASTRE_HORIZONTAL: { diurno: false, nocturno: false }
+                };
                 body.querySelectorAll('[data-biologico-zoo]').forEach(input => {
                     const parts = String(input.getAttribute('data-biologico-zoo') || '').split(':');
                     if (parts.length !== 2) return;
@@ -8787,8 +8916,6 @@
                     return;
                 }
             } else if (detail === 'CENSO_AVES_MAMIFEROS_MARINOS_Y_REPTILES') {
-                const selectedType = body.querySelector('input[name="campanaBiologicoTipoMuestreo"]:checked');
-                nextConfig.tipoMuestreo = selectedType && selectedType.value === 'TRANSECTA' ? 'TRANSECTA' : 'PUNTO_MUESTRA';
                 body.querySelectorAll('[data-biologico-censo]').forEach(input => {
                     const parts = String(input.getAttribute('data-biologico-censo') || '').split(':');
                     if (parts.length !== 2) return;
@@ -8822,6 +8949,87 @@
             if (updated > 0) mostrarToast(`${getCampanaMatrizDetalleLabel(detail)} configurado en ${updated} punto(s)`);
         }
 
+        function toggleCampanaBiologicoCensoSampleConfig() {
+            const selectedType = document.querySelector('input[name="campanaBiologicoTipoMuestreo"]:checked');
+            const sampleConfig = document.getElementById('campanaBiologicoCensoSampleConfig');
+            const transectaConfig = document.getElementById('campanaBiologicoCensoTransectaConfig');
+            const isTransecta = !!(selectedType && selectedType.value === 'TRANSECTA');
+            if (sampleConfig) sampleConfig.style.display = isTransecta ? 'none' : '';
+            if (transectaConfig) transectaConfig.style.display = isTransecta ? '' : 'none';
+        }
+
+        function setCampanaBiologicoModalReplica(valor) {
+            if (!campanaBiologicoModalConfig || typeof campanaBiologicoModalConfig !== 'object') return;
+            campanaBiologicoModalConfig.replicas = Math.max(1, parseInt(valor, 10) || 1);
+        }
+
+        function setCampanaBiologicoModalEstaciones(valor) {
+            if (!campanaBiologicoModalConfig || typeof campanaBiologicoModalConfig !== 'object') return;
+            campanaBiologicoModalConfig.estaciones = Math.max(1, parseInt(valor, 10) || 1);
+        }
+
+        function setCampanaBiologicoModalEstrato(idx, valor) {
+            if (!campanaBiologicoModalConfig || typeof campanaBiologicoModalConfig !== 'object') return;
+            if (!Array.isArray(campanaBiologicoModalConfig.estratos)) campanaBiologicoModalConfig.estratos = [];
+            campanaBiologicoModalConfig.estratos[idx] = valor;
+        }
+
+        function syncCampanaBiologicoCensoModalState() {
+            if (!campanaBiologicoModalConfig || typeof campanaBiologicoModalConfig !== 'object') return;
+            const body = document.getElementById('campanaBiologicoModalBody');
+            if (!body) return;
+            const selectedType = body.querySelector('input[name="campanaBiologicoTipoMuestreo"]:checked');
+            campanaBiologicoModalConfig.tipoMuestreo = selectedType && selectedType.value === 'TRANSECTA' ? 'TRANSECTA' : 'PUNTO_MUESTRA';
+            if (!campanaBiologicoModalConfig.ambientes || typeof campanaBiologicoModalConfig.ambientes !== 'object') {
+                campanaBiologicoModalConfig.ambientes = {
+                    MAR: { diurno: false, nocturno: false },
+                    TIERRA: { diurno: false, nocturno: false }
+                };
+            }
+            body.querySelectorAll('[data-biologico-censo]').forEach(input => {
+                const parts = String(input.getAttribute('data-biologico-censo') || '').split(':');
+                if (parts.length !== 2) return;
+                if (!campanaBiologicoModalConfig.ambientes[parts[0]]) {
+                    campanaBiologicoModalConfig.ambientes[parts[0]] = { diurno: false, nocturno: false };
+                }
+                campanaBiologicoModalConfig.ambientes[parts[0]][parts[1]] = !!input.checked;
+            });
+        }
+
+        function agregarEstratoModalCampanaBiologico() {
+            if (!campanaBiologicoModalConfig || typeof campanaBiologicoModalConfig !== 'object') return;
+            syncCampanaBiologicoCensoModalState();
+            const estratos = Array.isArray(campanaBiologicoModalConfig.estratos) ? campanaBiologicoModalConfig.estratos : [];
+            estratos.push(`E${estratos.length + 1}`);
+            campanaBiologicoModalConfig.estratos = estratos;
+            renderCampanaBiologicoModal();
+        }
+
+        function quitarEstratoModalCampanaBiologico() {
+            if (!campanaBiologicoModalConfig || typeof campanaBiologicoModalConfig !== 'object') return;
+            syncCampanaBiologicoCensoModalState();
+            const estratos = Array.isArray(campanaBiologicoModalConfig.estratos) ? campanaBiologicoModalConfig.estratos : [];
+            if (estratos.length <= 1) return;
+            estratos.pop();
+            campanaBiologicoModalConfig.estratos = estratos;
+            renderCampanaBiologicoModal();
+        }
+
+        function getCampanaCardGeoData(point, key, index) {
+            const source = point || {};
+            const hashBase = String(key || source.estacion || index || 'PTO');
+            let seed = 0;
+            for (let i = 0; i < hashBase.length; i++) seed = (seed * 31 + hashBase.charCodeAt(i)) % 2147483647;
+            const nextRand = () => {
+                seed = (seed * 48271) % 2147483647;
+                return seed / 2147483647;
+            };
+            const datum = source.datum || (nextRand() > 0.5 ? 'WGS84' : 'SIRGAS');
+            const latitud = source.latitud || source.lat || `${(-18 - (nextRand() * 38)).toFixed(6)}`;
+            const longitud = source.longitud || source.lng || source.lon || `${(-67 - (nextRand() * 9)).toFixed(6)}`;
+            return { datum, latitud, longitud };
+        }
+
         function renderCampanaBiologicoPointCards(matrix, points) {
             const items = Array.isArray(points) ? points : [];
             if (!items.length) {
@@ -8832,10 +9040,16 @@
                 ${items.map((punto, index) => {
                     const key = getCampanaPuntoKey(punto);
                     const associatedPoint = getCampanaAssociatedPointByKey(key);
+                    const sourcePoint = associatedPoint || punto || {};
                     const active = !!associatedPoint;
                     const selected = isCampanaPointSelectedForConfig(key);
                     const summary = active ? getCampanaBiologicoSummary(associatedPoint, detail) : null;
                     const alias = getCampanaBiologicoPointAlias(index, detail);
+                    const biologicoConfig = active ? getCampanaBiologicoPointConfig(associatedPoint, detail) : null;
+                    const geo = getCampanaCardGeoData(sourcePoint, key, index);
+                    const modeBadge = active && biologicoConfig
+                        ? `<span class="campana-matrix-point-chip-mode">${summary.subtitle && summary.subtitle.startsWith('Transecta') ? 'Transecta' : 'PM'}</span>`
+                        : '';
                     const summaryItems = summary && detail === 'FITOPLANCTON' ? [] : (summary && Array.isArray(summary.items) ? summary.items : []);
                     const summaryBlock = active && summary
                         ? `<span class="campana-matrix-point-chip-extra">
@@ -8852,7 +9066,9 @@
                             <button type="button" class="campana-matrix-point-chip-main" onclick="toggleCampanaProjectPointAssociation('${String(key).replace(/'/g, "\\'")}')">
                                 <span class="campana-matrix-point-chip-head">
                                     <span class="campana-matrix-point-chip-label">${alias}</span>
+                                    ${modeBadge}
                                 </span>
+                                <span class="campana-matrix-point-chip-meta">D: ${geo.datum} · Lt: ${geo.latitud} · Lg: ${geo.longitud}</span>
                             </button>
                             ${summaryBlock}
                         </div>
@@ -8864,7 +9080,7 @@
         function renderCampanaBiologicoContent(config, matrizPuntos, puntosProyectoMatriz, matricesProyecto) {
             const puntosBiologicos = getCampanaBiologicoVisiblePoints(matrizPuntos);
             return `
-                <details class="campana-collapsible" ${campanaPuntosCollapseOpen ? 'open' : ''} ontoggle="syncCampanaPuntosCollapseState(this.open)">
+                <details class="campana-collapsible" open ontoggle="syncCampanaPuntosCollapseState(this.open)">
                     <summary>
                         <span class="campana-subsection-heading">
                             <span class="campana-subsection-icon"><i class="fa-solid fa-location-dot"></i></span>
@@ -9344,6 +9560,7 @@
                                                     <span class="campana-matrix-point-chip-label">${punto.estacion}</span>
                                                     ${oiMockCount ? `<span class="campana-matrix-point-chip-oi-count">${oiMockCount} OIs</span>` : ''}
                                                 </span>
+                                                <span class="campana-matrix-point-chip-meta">D: ${getCampanaCardGeoData(associatedPoint || punto, key, 0).datum} · Lt: ${getCampanaCardGeoData(associatedPoint || punto, key, 0).latitud} · Lg: ${getCampanaCardGeoData(associatedPoint || punto, key, 0).longitud}</span>
                                             </button>
                                             ${planInfo}
                                             ${terrenoInfo}
